@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.footer-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid #F2B569;
+  }
+  
+  .footer-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  @media (max-width: 1024px) {
+    .footer-content {
+      flex-direction: column;
+    }
+  
+    .footer-item {
+      margin-bottom: 10px;
+    }
+  }
+  
