@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/Morphmorph/e-portal/static/css/main.b122c9a3.css",
+    "main.js": "/Morphmorph/e-portal/static/js/main.880dc0eb.js",
+    "static/js/453.ccfaeec0.chunk.js": "/Morphmorph/e-portal/static/js/453.ccfaeec0.chunk.js",
+    "static/media/schlogo.png": "/Morphmorph/e-portal/static/media/schlogo.f36dad83e9c098e6ae5d.png",
+    "static/media/uccplogo.png": "/Morphmorph/e-portal/static/media/uccplogo.5e01bf426dc85c0331c6.png",
+    "index.html": "/Morphmorph/e-portal/index.html",
+    "main.b122c9a3.css.map": "/Morphmorph/e-portal/static/css/main.b122c9a3.css.map",
+    "main.880dc0eb.js.map": "/Morphmorph/e-portal/static/js/main.880dc0eb.js.map",
+    "453.ccfaeec0.chunk.js.map": "/Morphmorph/e-portal/static/js/453.ccfaeec0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b122c9a3.css",
+    "static/js/main.880dc0eb.js"
+  ]
+}
