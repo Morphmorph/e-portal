@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import uccplogo from '../assets/uccplogo.png';
 import schlogo from '../assets/schlogo.png';
 import { styled } from '@mui/system';
@@ -19,11 +15,12 @@ import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import throttle from 'lodash/throttle';
 
 const pages = ['Home', 'About', 'Contact'];
 
 // Styled button with hover animation
-const HoverButton = styled(Button)({
+const HoverButton = React.memo(styled(Button)({
   transition: 'transform 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out',
   borderBottom: '5px solid transparent',
   borderRadius: 0,
@@ -31,7 +28,7 @@ const HoverButton = styled(Button)({
     transform: 'scale(1.1)',
     borderBottomColor: '#F2B569',
   },
-});
+}));
   
   const HoverMenuIcon = styled(MenuIcon)({
    
@@ -41,7 +38,9 @@ const HoverButton = styled(Button)({
       color: '#F2B569',
     },
   });
-  
+
+
+
   const Footer = () => {
     return (
       <footer style={{ position: 'static', bottom: 0, backgroundColor: '#079440', color: 'white', padding: '20px', textAlign: 'center', width: '100%' }}>
@@ -73,6 +72,17 @@ const HoverButton = styled(Button)({
   
 function Dashboard() {
 
+  const handleScroll = throttle(() => {
+    // Your scroll handling logic here
+  }, 200);
+
+  // Attach the throttled scroll handler to the scroll event
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
   const cardStyle = {
     backdropFilter: 'blur(5px) saturate(190%)',
     WebkitBackdropFilter: 'blur(5px) saturate(190%)',
@@ -122,8 +132,8 @@ function Dashboard() {
      <AppBar position="sticky" sx={{ bgcolor: '#079440' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img src={uccplogo} alt="" className="h-12 w-12 lg:h-20 lg:w-20 transition-all duration-300" />
-          <img src={schlogo} alt="" className="h-16 w-16 lg:h-24 lg:w-24 transition-all duration-300" />
+          <img src={uccplogo} alt="" className="h-12 w-12 lg:h-20 lg:w-20 transition-all duration-300" loading='lazy'/>
+          <img src={schlogo} alt="" className="h-16 w-16 lg:h-24 lg:w-24 transition-all duration-300" loading='lazy'/>
 
           <Typography
             variant="h6"
@@ -239,12 +249,13 @@ function Dashboard() {
         </Toolbar>
       </Container>
     </AppBar>
-    <section id="home" className='lg:h-screen grid gap-8 md:grid-cols-2 pt-5 pb-5 md:pb-5 md:pt-0 md:bottom-40' style={{marginTop: -50, paddingTop: 20 }}>
-    <div className='flex-1 flex flex-col pt-10 md:pt-10 items-center justify-center md:items-center md:justify-center'>
+    <section id="home" className='lg:h-screen grid gap-8 md:grid-cols-2 pb-5 md:pb-5 md:pt-0 md:bottom-40' style={{marginTop: -50, paddingTop: 20 }}>
+    <div className='flex-1 flex flex-col pt-10 md:pt-5 items-center justify-center md:items-center md:justify-center'>
       <img
         src={imageSources[currentImage]}
         alt=""
         style={currentImageStyle} // Apply the specific style for the current image
+        loading='lazy'
       />
     </div>
     <div className='flex-1 px-4 flex flex-col text-center justify-center pb-10 pt-10 md:pt-10 lg:pb-0 mt-0 mx-2 lg:text-start lg:justify-center'>
@@ -266,7 +277,7 @@ function Dashboard() {
     </div>
   </div>
   <div className='flex-1 px-4 flex flex-col items-center justify-center pb-5 md:pb-0 mt-0 mx-2 lg:text-start lg:justify-center'>
-    <img src={schlogo} alt="" className='h-48 w-48 sm:h-60 sm:w-60 lg:h-96 lg:w-96'/>
+    <img src={schlogo} alt="" className='h-48 w-48 sm:h-60 sm:w-60 lg:h-96 lg:w-96' loading='lazy'/>
   </div>
 </section>
 

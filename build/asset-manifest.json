@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/e-portal/static/css/main.b122c9a3.css",
-    "main.js": "/e-portal/static/js/main.122487a5.js",
+    "main.css": "/e-portal/static/css/main.95f8b19b.css",
+    "main.js": "/e-portal/static/js/main.c0794def.js",
     "static/js/453.ccfaeec0.chunk.js": "/e-portal/static/js/453.ccfaeec0.chunk.js",
     "static/media/schlogo.png": "/e-portal/static/media/schlogo.f36dad83e9c098e6ae5d.png",
     "static/media/uccplogo.png": "/e-portal/static/media/uccplogo.5e01bf426dc85c0331c6.png",
     "index.html": "/e-portal/index.html",
-    "main.b122c9a3.css.map": "/e-portal/static/css/main.b122c9a3.css.map",
-    "main.122487a5.js.map": "/e-portal/static/js/main.122487a5.js.map",
+    "main.95f8b19b.css.map": "/e-portal/static/css/main.95f8b19b.css.map",
+    "main.c0794def.js.map": "/e-portal/static/js/main.c0794def.js.map",
     "453.ccfaeec0.chunk.js.map": "/e-portal/static/js/453.ccfaeec0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b122c9a3.css",
-    "static/js/main.122487a5.js"
+    "static/css/main.95f8b19b.css",
+    "static/js/main.c0794def.js"
   ]
 }
