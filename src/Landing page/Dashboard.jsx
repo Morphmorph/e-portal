@@ -60,7 +60,7 @@ const HoverButton = styled(Button)({
           </div>
           <div className="footer-item">
             <FacebookIcon fontSize="small" />
-            <span style={{ marginLeft: '5px' }}> Cagayan de Oro Christian School - UCCP</span>
+            <span className="sm:text-sm" style={{ marginLeft: '5px' }}> Cagayan de Oro Christian School - UCCP</span>
           </div>
           </div>
           <p>&copy; 2024 Cagayan de Oro Christian School - UCCP. All rights reserved.</p>
@@ -111,8 +111,8 @@ function Dashboard() {
       }, [imageSources.length]);
     
       const imageStyles = {
-        image1: { height: '25rem', width: '25rem' }, // Adjust the height and width for the first image
-        image2: { height: '25rem', width: '25rem' }, // Adjust the height and width for the second image
+        image1: { height: '20rem', width: '20rem' }, // Adjust the height and width for the first image
+        image2: { height: '20rem', width: '20rem' }, // Adjust the height and width for the second image
         // Add more styles for additional images as needed
       };
     
@@ -239,17 +239,17 @@ function Dashboard() {
         </Toolbar>
       </Container>
     </AppBar>
-    <section id="home" className='h-screen grid gap-8 md:grid-cols-2' style={{marginTop: -50, paddingTop: 20 }}>
-    <div className='flex-1 flex flex-col items-center justify-center md:items-center md:justify-center'>
+    <section id="home" className='lg:h-screen grid gap-8 md:grid-cols-2 pt-5 pb-5 md:pb-5 md:pt-0 md:bottom-40' style={{marginTop: -50, paddingTop: 20 }}>
+    <div className='flex-1 flex flex-col pt-10 md:pt-10 items-center justify-center md:items-center md:justify-center'>
       <img
         src={imageSources[currentImage]}
         alt=""
         style={currentImageStyle} // Apply the specific style for the current image
       />
     </div>
-    <div className='flex-1 px-4 flex flex-col text-center justify-center pb-10 lg:pb-0 mt-0 mx-2 lg:text-start lg:justify-center'>
-      <p className='text-2xl sm:text-2xl md:text-3xl font-bold mb-2' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>WELCOME TO</p>
-      <h1 className='text-2xl sm:text-3xl md:text-6xl font-bold mb-2' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+    <div className='flex-1 px-4 flex flex-col text-center justify-center pb-10 pt-10 md:pt-10 lg:pb-0 mt-0 mx-2 lg:text-start lg:justify-center'>
+      <p className='text-2xl sm:text-2xl md:text-2xl font-bold mb-2 italic' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>WELCOME TO</p>
+      <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold mb-2' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
         Cagayan de Oro Christian School - UCCP <span style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>E-Portal</span>
       </h1>
       <p className='text-2xl sm:text-2xl md:text-2xl font-semibold mb-2 italic'>
@@ -258,30 +258,30 @@ function Dashboard() {
     </div>
   </section>
   
-  <section id="about" className='h-screen grid gap-8 md:grid-cols-2 pt-5 md:pt-0 bottom-40' style={{backgroundColor: '#F2B569' }}>
-  <div className='flex-1   flex flex-col px-4 items-center justify-center md:items-center md:justify-center'>
+  <section id="about" className='lg:h-screen grid gap-8 md:grid-cols-2 pt-5 pb-5 md:pb-5 md:pt-0 md:bottom-40' style={{backgroundColor: '#F2B569' }}>
+  <div className='flex-1 flex flex-col px-4 items-center justify-center md:items-center md:justify-center'>
     <div className='p-5 rounded-lg text-center md:mt-5' style={cardStyle}>
-      <h1 className='text-white text-2xl sm:text-3xl md:text-6xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>ABOUT US</h1>
-      <p className='text-white text-2xl sm:text-2xl md:text-2xl font-semibold mb-2 italic'style={{ textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
+      <h1 className='text-white text-xl sm:text-3xl md:text-5xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>ABOUT US</h1>
+      <p className='text-white text-xl sm:text-2xl md:text-xl font-semibold mb-2 italic'style={{ textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
     </div>
   </div>
   <div className='flex-1 px-4 flex flex-col items-center justify-center pb-5 md:pb-0 mt-0 mx-2 lg:text-start lg:justify-center'>
-  <img src={schlogo} alt="" className=' h-48 w-48 sm:h-96 sm:w-96'/>
-</div>
+    <img src={schlogo} alt="" className='h-48 w-48 sm:h-60 sm:w-60 lg:h-96 lg:w-96'/>
+  </div>
 </section>
 
 
-<section id="contact" className='min-h-screen grid gap-8 md:grid-cols-2 pt-5 md:pt-0 pb-5' style={{backgroundColor: '' }}>
+<section id="contact" className='lg:h-screen grid gap-8 md:grid-cols-2 pt-5 pb-5 md:pb-5 md:pt-0 md:bottom-40' style={{backgroundColor: '' }}>
   <div className='flex-1 mt:5 flex flex-col px-4 items-center justify-center md:items-center md:justify-center md:mt-0'>
     <div className='p-5 rounded-lg text-center md:mt-5' style={cardStyle2}>
-      <h1 className='text-white text-2xl sm:text-3xl md:text-6xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>VISION</h1>
-      <p className='text-black text-2xl sm:text-2xl md:text-2xl font-semibold mb-2 italic'style={{}}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
+      <h1 className='text-white text-2xl sm:text-2xl md:text-4xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>VISION</h1>
+      <p className='text-black text-xl sm:text-xl md:text-xl font-semibold mb-2 italic'style={{}}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
     </div>
   </div>
-  <div className='flex-1 flex flex-col px-4 items-center pb-5 justify-center md:items-center md:justify-center md:pb-0'>
+  <div className='flex-1 flex flex-col px-4 items-center justify-center md:items-center md:justify-center '>
     <div className='p-5 rounded-lg text-center md:mt-5' style={cardStyle2}>
-      <h1 className='text-white text-2xl sm:text-3xl md:text-6xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>MISSION</h1>
-      <p className='text-black text-2xl sm:text-2xl md:text-2xl font-semibold mb-2 italic'style={{  }}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
+      <h1 className='text-white text-2xl sm:text-2xl md:text-4xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>MISSION</h1>
+      <p className='text-black text-xl sm:text-xl md:text-xl font-semibold mb-2 italic'style={{  }}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
     </div>
   </div>
 </section>
