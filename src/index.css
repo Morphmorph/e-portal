@@ -24,4 +24,23 @@
       margin-bottom: 10px;
     }
   }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
   
+  .fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    
+  }
+  html, body {
+    overflow-x: hidden;
+  }  
