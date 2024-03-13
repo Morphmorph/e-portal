@@ -1,17 +1,22 @@
 {
   "files": {
-    "main.css": "/e-portal/static/css/main.3954310d.css",
-    "main.js": "/e-portal/static/js/main.cf52f6c9.js",
+    "main.css": "/e-portal/static/css/main.7802181d.css",
+    "main.js": "/e-portal/static/js/main.b531bf60.js",
     "static/js/453.ccfaeec0.chunk.js": "/e-portal/static/js/453.ccfaeec0.chunk.js",
     "static/media/schlogo.png": "/e-portal/static/media/schlogo.f36dad83e9c098e6ae5d.png",
+    "static/media/attendance.png": "/e-portal/static/media/attendance.d4c289176ba8ca6f89ad.png",
     "static/media/uccplogo.png": "/e-portal/static/media/uccplogo.5e01bf426dc85c0331c6.png",
+    "static/media/star.png": "/e-portal/static/media/star.0298ced3447ac99530fb.png",
+    "static/media/ledger.png": "/e-portal/static/media/ledger.b9f9ff9d1e727f4b6f16.png",
+    "static/media/billings.png": "/e-portal/static/media/billings.70eb824d1df1e86433f6.png",
+    "static/media/users.png": "/e-portal/static/media/users.1bff3480569569972f5a.png",
     "index.html": "/e-portal/index.html",
-    "main.3954310d.css.map": "/e-portal/static/css/main.3954310d.css.map",
-    "main.cf52f6c9.js.map": "/e-portal/static/js/main.cf52f6c9.js.map",
+    "main.7802181d.css.map": "/e-portal/static/css/main.7802181d.css.map",
+    "main.b531bf60.js.map": "/e-portal/static/js/main.b531bf60.js.map",
     "453.ccfaeec0.chunk.js.map": "/e-portal/static/js/453.ccfaeec0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3954310d.css",
-    "static/js/main.cf52f6c9.js"
+    "static/css/main.7802181d.css",
+    "static/js/main.b531bf60.js"
   ]
 }
