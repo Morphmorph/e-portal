@@ -3,6 +3,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import adduser from '../assets/adduser.png';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../surface/Dropdown';
+import UserTable from './UserTable';
 
 function Users({onCancelClick}) {
   const userOptions = [
@@ -27,10 +28,10 @@ function Users({onCancelClick}) {
         />
         
         </div>
-       <div className='flex flex-col md:flex-row justify-center sm:justify-start mt-8 md:mt-0 items-center ' style={{top: '10px', right: '10px'}}>
+       <div className='flex flex-col md:flex-row justify-center sm:justify-start mt-0 md:mt-0 items-center ' style={{top: '10px', right: '10px'}}>
         
        
-        <div className='justify-start items-start md:justify-center sm:items-center'>
+        <div className='justify-center items-center lg:justify-start md:items-start'>
             <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440'}}>USER ACCOUNTS</h1>
         </div>
         
@@ -46,7 +47,7 @@ function Users({onCancelClick}) {
           }}
         />
         </div>
-        <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center ' style={{top: '10px', right: '10px', }}>
+        <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{top: '10px', right: '10px', }}>
             
             <div className='flex items-center justify-center rounded-lg px-5 py-2 w-full lg:w-56' style={{backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px'}}>
                 <img src={adduser} alt="" className="h-12 w-12 lg:h-10 lg:w-10"/>
@@ -55,28 +56,7 @@ function Users({onCancelClick}) {
             <Dropdown options={userOptions} label="User Type" />
         </div>
         <div style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-      <table className='w-full mt-8 '>
-        <thead>
-          <tr>
-            <th className='px-4 py-2'>ID</th>
-            <th className='px-4 py-2'>Name</th>
-            <th className='px-4 py-2'>Email</th>
-            <th className='px-4 py-2'>Details</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr className='flex-1 items-center justify-center'>
-            <td className='border px-4 py-2'>1</td>
-            <td className='border px-4 py-2'>John Doe</td>
-            <td className='border px-4 py-2'>john.doe@example.com</td>
-            <td className='border px-4 py-2'>
-              <div className='flex items-center justify-center bg-blue-500 h-8 w-full rounded-md'>
-                <span className='text-white'>View</span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <UserTable/>
     </div>
   )
 }

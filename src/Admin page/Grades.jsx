@@ -2,6 +2,7 @@ import React from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../surface/Dropdown';
+import GradeTable from './GradeTable';
 
 
 function Grades({onCancelClick}) {
@@ -41,7 +42,7 @@ function Grades({onCancelClick}) {
         />
         
         </div>
-       <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-8 md:mt-0 items-center ' style={{top: '10px', right: '10px'}}>
+       <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-0 items-center ' style={{top: '10px', right: '10px'}}>
         
        
         <div className='justify-start items-start sm:justify-center sm:items-center'>
@@ -60,7 +61,7 @@ function Grades({onCancelClick}) {
           }}
         />
         </div>
-        <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-8 md:mt-5 items-center ' style={{top: '10px', right: '10px', }}>
+        <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center ' style={{top: '10px', right: '10px', }}>
         <Dropdown options={sy} label="School Year" />
         <Dropdown options={gradelevel} label="Grade level" />
         <Dropdown options={sections} label="Section" />
@@ -71,26 +72,7 @@ function Grades({onCancelClick}) {
           <span className='text-xl font-medium px-3 uppercase'>Son Goku</span>
           <span className='ml-0 text-center lg:ml-auto text-blue-600 px-2'>View details</span>
         </div>
-      <table className='w-full mt-8 '>
-        <thead>
-          <tr>
-            <th className='px-4 py-2'>ID</th>
-            <th className='px-4 py-2'>Name</th>
-            <th className='px-4 py-2'>Grades</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr className='flex-1 items-center justify-center'>
-            <td className='border px-4 py-2'>1</td>
-            <td className='border px-4 py-2'>John Doe</td>
-            <td className='border px-4 py-2'>
-            <div className='flex items-center justify-center h-8 w-full rounded-md' style={{backgroundColor: '#079440'}}>
-                <span className='text-white'>View</span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <GradeTable/>
     </div>
   )
 }
