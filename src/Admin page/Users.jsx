@@ -31,7 +31,7 @@ function Users({onCancelClick}) {
         
        
         <div className='justify-start items-start md:justify-center sm:items-center'>
-            <h1 className='text-2xl font-serif font-semibold pl-5' style={{color: '#079440'}}>USER ACCOUNTS</h1>
+            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440'}}>USER ACCOUNTS</h1>
         </div>
         
         <TextField
