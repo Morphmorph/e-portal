@@ -5,12 +5,12 @@ import App from './App';
 
 import reportWebVitals from './reportWebVitals';
 import Login from './Landing page/Login';
+import ADashboard from './Admin page/ADashboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-
-    <App />
+    <ADashboard />
   </React.StrictMode>
 );
 

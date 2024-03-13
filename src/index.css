@@ -36,6 +36,23 @@
     transform: translateY(0);
   }
 
+  .container-hover:hover {
+    transform: scale(1.05); /* You can adjust the scale factor */
+    transition: transform 0.3s ease-in-out; /* You can adjust the transition duration and easing */
+  }
+  
+  /* Hover effect for the item divs */
+  .item-div:hover {
+    transform: scale(0.95);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  /* Hover effect for the item images */
+  .item-div:hover .item-image {
+    transform: scale(1.4); /* You can adjust the scale factor */
+    transition: transform 0.3s ease-in-out; /* You can adjust the transition duration and easing */
+  }
+
   body {
     margin: 0;
     padding: 0;
