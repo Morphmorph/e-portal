@@ -1,22 +1,24 @@
 {
   "files": {
-    "main.css": "/e-portal/static/css/main.7802181d.css",
-    "main.js": "/e-portal/static/js/main.b531bf60.js",
+    "main.css": "/e-portal/static/css/main.089a4bbc.css",
+    "main.js": "/e-portal/static/js/main.59cf2dc4.js",
     "static/js/453.ccfaeec0.chunk.js": "/e-portal/static/js/453.ccfaeec0.chunk.js",
-    "static/media/schlogo.png": "/e-portal/static/media/schlogo.f36dad83e9c098e6ae5d.png",
-    "static/media/attendance.png": "/e-portal/static/media/attendance.d4c289176ba8ca6f89ad.png",
-    "static/media/uccplogo.png": "/e-portal/static/media/uccplogo.5e01bf426dc85c0331c6.png",
-    "static/media/star.png": "/e-portal/static/media/star.0298ced3447ac99530fb.png",
-    "static/media/ledger.png": "/e-portal/static/media/ledger.b9f9ff9d1e727f4b6f16.png",
-    "static/media/billings.png": "/e-portal/static/media/billings.70eb824d1df1e86433f6.png",
-    "static/media/users.png": "/e-portal/static/media/users.1bff3480569569972f5a.png",
+    "static/media/schlogo.webp": "/e-portal/static/media/schlogo.05ffa8ebb926ad87681b.webp",
+    "static/media/attendance.webp": "/e-portal/static/media/attendance.c38b62cfa59d3e31cbd8.webp",
+    "static/media/uccplogo.webp": "/e-portal/static/media/uccplogo.2996c6462dbc2f38b3f4.webp",
+    "static/media/star.webp": "/e-portal/static/media/star.23fc6b33ab6ee46f2662.webp",
+    "static/media/ledger.webp": "/e-portal/static/media/ledger.6ccf6beb7868dcf4c1c8.webp",
+    "static/media/billings.webp": "/e-portal/static/media/billings.cbbfde9ca0c62457c660.webp",
+    "static/media/users.webp": "/e-portal/static/media/users.ccc0aff09f27bf3d7e88.webp",
+    "static/media/adduser.webp": "/e-portal/static/media/adduser.7dcf17dfe8d972282039.webp",
+    "static/media/add.webp": "/e-portal/static/media/add.cce92f26e34896081ec4.webp",
     "index.html": "/e-portal/index.html",
-    "main.7802181d.css.map": "/e-portal/static/css/main.7802181d.css.map",
-    "main.b531bf60.js.map": "/e-portal/static/js/main.b531bf60.js.map",
+    "main.089a4bbc.css.map": "/e-portal/static/css/main.089a4bbc.css.map",
+    "main.59cf2dc4.js.map": "/e-portal/static/js/main.59cf2dc4.js.map",
     "453.ccfaeec0.chunk.js.map": "/e-portal/static/js/453.ccfaeec0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7802181d.css",
-    "static/js/main.b531bf60.js"
+    "static/css/main.089a4bbc.css",
+    "static/js/main.59cf2dc4.js"
   ]
 }
