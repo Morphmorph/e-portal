@@ -7,7 +7,7 @@ export default function DatePickerViews({ className }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className=''>
-        <DatePicker label={'Month & year'} views={['month', 'year']} />
+        <DatePicker label={'Month & Year'} views={['month', 'year']} />
       </div>
     </LocalizationProvider>
   );

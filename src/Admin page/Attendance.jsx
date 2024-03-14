@@ -1,11 +1,33 @@
 import React from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
-import Dropdown from '../surface/Dropdown';
-import DatePickerViews from '../surface/Datepicker';
+import Dropdown from '../component/Dropdown';
+import DatePickerViews from '../component/Datepicker';
 import AttendanceTable from './AttendanceTable';
+import Aos from 'aos';
+import 'aos/dist/aos.css'
+
 
 function Attendance({ onCancelClick }) {
+  Aos.init({
+    // Global settings:
+    disable: false, 
+    startEvent: 'DOMContentLoaded', 
+    initClassName: 'aos-init',
+    animatedClassName: 'aos-animate', 
+    useClassNames: false, 
+    disableMutationObserver: false, 
+    debounceDelay: 50, 
+    throttleDelay: 99, 
+    
+    offset: 0, 
+    delay: 100, 
+    duration: 500, 
+    easing: 'ease', 
+    once: false, 
+    mirror: false, 
+    anchorPlacement: 'top-bottom', 
+  });
   const sy = [
     { value: '1', label: '2023-2024' },
     { value: '2', label: '2024-2025' },
@@ -24,7 +46,14 @@ function Attendance({ onCancelClick }) {
     { value: '2', label: 'Peace' },
     { value: '3', label: 'Faith' },
   ];
-
+  const Style = {
+    backdropFilter: 'blur(16px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+    backgroundColor: 'rgba(17, 25, 40, 0.75)',
+    borderRadius: '10px',
+    border: '1px solid rgba(255, 255, 255, 0.125)',
+    boxShadow: '5px -4px 1px rgb(173, 173, 172)',
+  };
   return (
     <div>
       <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
@@ -42,9 +71,9 @@ function Attendance({ onCancelClick }) {
           onClick={onCancelClick}
         />
       </div>
-      <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-0 items-center'>
-        <div className='justify-start items-start sm:justify-center sm:items-center'>
-          <h1 className='text-2xl font-serif font-semibold px-5' style={{ color: '#079440' }}>ATTENDANCE</h1>
+      <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-0 items-center'>
+        <div className='justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0'>
+          <h1 className='text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>ATTENDANCE</h1>
         </div>
         <TextField
           id="outlined-basic"
@@ -61,18 +90,20 @@ function Attendance({ onCancelClick }) {
           <DatePickerViews />
         </div>
       </div>
-      <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center'>
+      <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center'>
         <Dropdown options={sy} label="School Year" />
         <Dropdown options={gradelevel} label="Grade level" />
         <Dropdown options={sections} label="Section" />
       </div>
-      <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
-      <div className='flex flex-col lg:flex-row justify-center sm:justify-start mt-5 items-center p-2 rounded-md' style={{ top: '10px', right: '10px', backgroundColor: '#F2B569' }}>
-        <h1 className='text-2xl font-semibold' style={{ color: '#079440' }}>Class adviser:</h1>
-        <span className='text-xl font-medium px-3 uppercase'>Son Goku</span>
-        <span className='ml-0 text-center lg:ml-auto text-blue-600 px-2'>View details</span>
-      </div>
+      <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
+      <div data-aos='fade-right' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5' style={Style}>
+          <h1 className='text-2xl font-semibold' style={{color: '#F2B569'}}>Class adviser:</h1>
+          <span className='text-xl font-medium px-3 uppercase text-white'>Son Goku</span>
+          <span className='ml-0 text-center sm:ml-auto text-green-600 px-2 item-div'>View details</span>
+        </div>
+        <div data-aos='fade-right' >
       <AttendanceTable/>
+      </div>
     </div>
   );
 }

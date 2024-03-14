@@ -1,11 +1,33 @@
 import React from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
-import Dropdown from '../surface/Dropdown';
+import Dropdown from '../component/Dropdown';
 import LedgerTable from './LedgerTable';
-import add from '../assets/add.png';
+import add from '../assets/add.webp';
+import Aos from 'aos';
+import 'aos/dist/aos.css'
+
 
 function Ledger({onCancelClick}) {
+  Aos.init({
+    // Global settings:
+    disable: false, 
+    startEvent: 'DOMContentLoaded', 
+    initClassName: 'aos-init',
+    animatedClassName: 'aos-animate', 
+    useClassNames: false, 
+    disableMutationObserver: false, 
+    debounceDelay: 50, 
+    throttleDelay: 99, 
+    
+    offset: 0, 
+    delay: 100, 
+    duration: 500, 
+    easing: 'ease', 
+    once: false, 
+    mirror: false, 
+    anchorPlacement: 'top-bottom', 
+  });
   const sy = [
     { value: '1', label: '2023-2024' },
     { value: '2', label: '2024-2025' },
@@ -46,11 +68,11 @@ function Ledger({onCancelClick}) {
         />
         
         </div>
-       <div className='flex flex-col md:flex-row justify-center sm:justify-start mt-0 items-center ' style={{top: '10px', right: '10px'}}>
+       <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center sm:justify-start mt-0 items-center ' style={{top: '10px', right: '10px'}}>
         
        
-        <div className='justify-start items-start sm:justify-center sm:items-center'>
-            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440'}}>LEDGER</h1>
+        <div className='justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0'>
+            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>LEDGER</h1>
         </div>
         
         <TextField
@@ -69,15 +91,16 @@ function Ledger({onCancelClick}) {
                 <h1 className='text-xl font-serif px-1' style={{color: '#079440'}}>Add New Payment</h1>
             </div>
         </div>
-        <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center ' style={{top: '10px', right: '10px', }}>
+        <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center ' style={{top: '10px', right: '10px', }}>
         <Dropdown options={sy} label="School Year" />
         <Dropdown options={gradelevel} label="Grade level" />
         <Dropdown options={sections} label="Section" />
         <Dropdown options={status} label="Status" />
         </div>
-        <div style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-        
+        <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
+        <div data-aos='fade-right'>
       <LedgerTable/>
+      </div>
     </div>
   )
 }

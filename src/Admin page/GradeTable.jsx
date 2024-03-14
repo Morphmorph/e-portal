@@ -20,6 +20,13 @@ const columns = [
    
   },
   {
+    id: 'ranking',
+    label: 'Rankings',
+    align: 'center',
+    minWidth: 170,
+    
+  },
+  {
     id: 'grade',
     label: 'Grades',
     minWidth: 170,
@@ -30,17 +37,18 @@ const columns = [
       </Button>
     ),
   },
+  
 ];
 
-function createData(id, name, email) {
-  return { id, name, email };
+function createData(id, name, email, ranking) {
+  return { id, name, email, ranking };
 }
 
 const rows = [
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
+  createData(1234567890, 'John Doe', 'johndoe@gmail.com', 'Honor'),
+  createData(1234567890, 'John Doe', 'johndoe@gmail.com', 'Honor'),
+  createData(1234567890, 'John Doe', 'johndoe@gmail.com', 'With High Honor'),
+  createData(1234567890, 'John Doe', 'johndoe@gmail.com', 'With Highest Honor'),
 ];
 
 export default function GradeTable() {
