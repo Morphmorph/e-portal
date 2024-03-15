@@ -7,14 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Button from "@mui/material/Button";
 
 const columns = [
   { id: "id", label: "ID", minWidth: 170 },
   { id: "name", label: "Name", minWidth: 170 },
-  { id: "contact", label: "Contact no.", minWidth: 170 },
   { id: "gradelevel", label: "Grade level", minWidth: 170 },
   { id: "section", label: "Section", minWidth: 170 },
+  { id: "subject", label: "Subject", minWidth: 170 },
   { id: "adviser", label: "Adviser", minWidth: 170 },
   {
     id: "status",
@@ -36,27 +35,27 @@ const columns = [
   },
 ];
 
-function createData(id, name, contact, gradelevel, section, adviser, status) {
-  return { id, name, contact, gradelevel, section, adviser, status };
+function createData(id, name, gradelevel, section, subject, adviser, status) {
+  return { id, name, gradelevel, section, subject, adviser, status };
 }
 
 const rows = [
   createData(
     1234567890,
     "John Doe Dobido",
-    9876543210,
     "Grade 1",
     "Peace",
+    "Mathematics",
     "Son Goku",
     "Absent"
   ),
   createData(
-    6231811933,
-    " Doe Dobido-bido",
-    9663718826,
+    1234567890,
+    "John Doe Dobido",
     "Grade 1",
     "Peace",
-    "Son Goku",
+    "English",
+    "Evelyn Stone",
     "Present"
   ),
 ];

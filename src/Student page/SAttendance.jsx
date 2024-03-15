@@ -88,17 +88,6 @@ export default function SAttendance({ onCancelClick }) {
             ATTENDANCE
           </h1>
         </div>
-        <TextField
-          id="outlined-basic"
-          variant="outlined"
-          label="Search"
-          sx={{
-            width: "100%",
-            maxWidth: { md: "500px" },
-            mx: 2,
-            marginBottom: "10px",
-          }}
-        />
         <div className="mb-2 mx-2 mt-2 sm:mt-0" style={{ width: "100%" }}>
           <DatePickerViews />
         </div>
