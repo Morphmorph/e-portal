@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-import TextField from "@mui/material/TextField";
 import Dropdown from "../component/Dropdown";
-import SGradeTable from "./SGradeTable";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import SViewGrades from "../Student page/SViewGrades";
+import SGradeTable from "./SGradeTable";
 
 export default function SGrades({ onCancelClick }) {
   Aos.init({
@@ -55,17 +53,6 @@ export default function SGrades({ onCancelClick }) {
     boxShadow: "5px -4px 1px rgb(173, 173, 172)",
   };
 
-  const [viewId, setViewId] = useState(null);
-
-  const handleViewClick = (id) => {
-    setViewId(id); // Set the id of the row to view
-  };
-
-  // Redirect to SViewGrades component if viewId is set
-  if (viewId !== null) {
-    return <SViewGrades id={viewId} onCancelClick={() => setViewId(null)} />;
-  }
-
   return (
     <div>
       <div
@@ -99,29 +86,15 @@ export default function SGrades({ onCancelClick }) {
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
             }}
           >
-            GRADES
+            REPORT OF GRADES
           </h1>
         </div>
-
-        <TextField
-          id="outlined-basic"
-          variant="outlined"
-          label="Search"
-          sx={{
-            width: "100%",
-            maxWidth: { md: "500px" },
-            mx: 2,
-            marginBottom: "10px",
-          }}
-        />
       </div>
       <div
         data-aos="fade-left"
         className="flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center "
       >
-        <Dropdown options={sy} label="School Year" />
         <Dropdown options={gradelevel} label="Grade level" />
-        <Dropdown options={sections} label="Section" />
       </div>
       <div
         data-aos="fade-right"
@@ -143,7 +116,7 @@ export default function SGrades({ onCancelClick }) {
         </span>
       </div>
       <div data-aos="fade-right">
-        <SGradeTable onViewClick={handleViewClick} />
+        <SGradeTable />
       </div>
     </div>
   );

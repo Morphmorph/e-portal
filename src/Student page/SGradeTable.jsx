@@ -7,52 +7,148 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Button from "@mui/material/Button";
 
 const columns = [
-  { id: "id", label: "ID", minWidth: 170 },
-  { id: "name", label: "Name", minWidth: 170 },
+  { id: "id", label: "#", minWidth: 170 },
+  { id: "subject", label: "Subject", minWidth: 170 },
   {
-    id: "email",
-    label: "Email",
+    id: "firstGrading",
+    label: "1st Grading",
     align: "center",
     minWidth: 170,
   },
   {
-    id: "ranking",
-    label: "Rankings",
+    id: "secondGrading",
+    label: "2nd Grading",
     align: "center",
     minWidth: 170,
   },
   {
-    id: "grade",
-    label: "Grades",
-    minWidth: 170,
+    id: "thirdGrading",
+    label: "3rd Grading",
     align: "center",
-    render: (value, row, onViewClick) => (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => onViewClick(row.id)}
-      >
-        View
-      </Button>
-    ),
+    minWidth: 170,
+  },
+  {
+    id: "fourthGrading",
+    label: "4th Grading",
+    align: "center",
+    minWidth: 170,
+  },
+  {
+    id: "remarks",
+    label: "Remarks",
+    align: "center",
+    minWidth: 170,
   },
 ];
 
-function createData(id, name, email, ranking) {
-  return { id, name, email, ranking };
+function createData(
+  id,
+  subject,
+  firstGrading,
+  secondGrading,
+  thirdGrading,
+  fourthGrading,
+  remarks
+) {
+  return {
+    id,
+    subject,
+    firstGrading,
+    secondGrading,
+    thirdGrading,
+    fourthGrading,
+    remarks,
+  };
 }
 
 const rows = [
-  createData(1234567890, "John Doe", "johndoe@gmail.com", "Honor"),
-  createData(1234567890, "John Doe", "johndoe@gmail.com", "Honor"),
-  createData(1234567890, "John Doe", "johndoe@gmail.com", "With High Honor"),
-  createData(1234567890, "John Doe", "johndoe@gmail.com", "With Highest Honor"),
+  createData(
+    1,
+    "Mathematics",
+    85,
+    88,
+    90,
+    87,
+    "Excellent progress throughout the year."
+  ),
+  createData(2, "English", 78, 80, 82, 79, "Consistent improvement shown."),
+  createData(
+    3,
+    "Science",
+    92,
+    89,
+    91,
+    93,
+    "Outstanding performance in all quarters."
+  ),
+  createData(
+    4,
+    "History",
+    75,
+    77,
+    78,
+    76,
+    "Satisfactory progress, but room for improvement noted."
+  ),
+  createData(
+    5,
+    "Geography",
+    86,
+    88,
+    84,
+    87,
+    "Strong understanding of concepts demonstrated consistently."
+  ),
+  createData(
+    6,
+    "Art",
+    80,
+    82,
+    79,
+    81,
+    "Creativity and effort reflected in performance."
+  ),
+  createData(
+    7,
+    "Physical Education",
+    90,
+    91,
+    88,
+    92,
+    "Exceptional participation and fitness levels maintained."
+  ),
+  createData(
+    8,
+    "Computer Science",
+    88,
+    85,
+    86,
+    89,
+    "Proficient in understanding programming concepts."
+  ),
+  createData(
+    9,
+    "Music",
+    82,
+    83,
+    80,
+    84,
+    "Improvement shown in practical skills and theoretical knowledge."
+  ),
+  createData(
+    10,
+    "Foreign Language (French)",
+    87,
+    89,
+    85,
+    88,
+    "Competent understanding of vocabulary and grammar structures."
+  ),
 ];
 
-export default function SGradeTable({ onViewClick }) {
+export default function SGradeTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -100,9 +196,7 @@ export default function SGradeTable({ onViewClick }) {
                           align={column.align}
                           style={{ borderLeft: "1px solid #ccc" }}
                         >
-                          {column.render
-                            ? column.render(value, row, onViewClick)
-                            : value}
+                          {column.render ? column.render(value) : value}
                         </TableCell>
                       );
                     })}
