@@ -7,11 +7,12 @@ import reportWebVitals from "./reportWebVitals";
 import Login from "./Landing page/Login";
 import ADashboard from "./Admin page/ADashboard";
 import TDashboard from "./Teacher page/TDashboard";
+import SDashboard from "./Student page/SDashboard";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ADashboard />
+    <SDashboard />
   </React.StrictMode>
 );
 
