@@ -25,10 +25,6 @@ export default function SGrades({ onCancelClick }) {
     mirror: false,
     anchorPlacement: "top-bottom",
   });
-  const sy = [
-    { value: "1", label: "2023-2024" },
-    { value: "2", label: "2024-2025" },
-  ];
   const gradelevel = [
     { value: "1", label: "Kinder" },
     { value: "2", label: "Grade 1" },
@@ -37,11 +33,6 @@ export default function SGrades({ onCancelClick }) {
     { value: "5", label: "Grade 4" },
     { value: "6", label: "Grade 5" },
     { value: "7", label: "Grade 6" },
-  ];
-  const sections = [
-    { value: "1", label: "Love" },
-    { value: "2", label: "Peace" },
-    { value: "3", label: "Faith" },
   ];
 
   const Style = {

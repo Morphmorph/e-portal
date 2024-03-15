@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-import add from "../assets/add.webp";
 import SBillingsTable from "./SBillingsTable";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import NewBillingModal from "../component/NewBillingModal";
+import Dropdown from "../component/Dropdown";
 
 export default function SBillings({ onCancelClick }) {
   Aos.init({
@@ -26,14 +25,16 @@ export default function SBillings({ onCancelClick }) {
     mirror: false,
     anchorPlacement: "top-bottom",
   });
-
-  {
-    /* For modal */
-  }
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const sy = [
+    { value: "1", label: "2023-2024" },
+    { value: "2", label: "2024-2025" },
+  ];
+  const perGrading = [
+    { value: "1", label: "1st Grading" },
+    { value: "2", label: "2nd Grading" },
+    { value: "3", label: "3rd Grading" },
+    { value: "4", label: "4th Grading" },
+  ];
 
   return (
     <div>
@@ -77,24 +78,9 @@ export default function SBillings({ onCancelClick }) {
         className="flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center "
         style={{ top: "10px", right: "10px" }}
       >
-        <div
-          className="flex items-center justify-center rounded-lg px-5 py-2 w-full lg:w-64"
-          style={{
-            backgroundColor: "#F2B569",
-            cursor: "pointer",
-            marginBottom: "10px",
-          }}
-          onClick={handleOpen}
-        >
-          <img src={add} alt="" className="h-12 w-12 lg:h-10 lg:w-10" />
-          <h1 className="text-xl font-serif px-1" style={{ color: "#079440" }}>
-            Add New Billings
-          </h1>
-        </div>
+        <Dropdown options={sy} label="SY" />
+        <Dropdown options={perGrading} label="Per grading" />
       </div>
-
-      {/* Modal component */}
-      <NewBillingModal open={open} handleClose={handleClose} />
 
       <div
         data-aos="fade-right"
