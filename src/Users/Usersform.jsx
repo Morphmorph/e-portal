@@ -8,35 +8,10 @@ import 'aos/dist/aos.css'
 
 function Usersform({ onCancelClick, userTypeOptions }) {
     
-    const [gender, setGender] = useState(null);
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({}); 
     const [userData, setUserData] = useState({
-        userType: userTypeOptions[0].value,
-        student: {
-            dob: null,
-            age: '',
-            gender: null,
-            
-        },
-        parents: {
-            mother: {
-                dob: null,
-                age: '',
-                
-            },
-            father: {
-                dob: null,
-                age: '',
-                
-            },
-        },
-        advisers:{
-            dob: null,
-            age: '',
-            gender: null,
-            
-        },
-        step: 1,
+    userType: userTypeOptions[0].value,
+    student: {
         studentID: '',
         lastName: '',
         firstName: '',
@@ -44,10 +19,14 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         password: '',
         contactNumber: '',
         address: '',
-        sy: null,
         gradeLevel: null,
         section: null,
         adviser: null,
+        dob: null,
+        age: '',
+        gender: null,
+    },
+    advisers: {
         employeeID: '',
         alastName: '',
         afirstName: '',
@@ -55,14 +34,11 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         apassword: '',
         acontactnumber: '',
         aaddress: '',
-        mothersName: '',
-        fathersName: '',
-        mothersContact: '',
-        fathersContact: '',
-        mothersOccupation: '',
-        fathersOccupation: '',
-        mothersAddress: '',
-        fathersAddress: '',
+        dob: null,
+        age: '',
+        gender: null,
+    },
+    academicData: {
         lastSchoolAttended: '',
         schoolAddress: '',
         yearGraduated: null,
@@ -71,8 +47,26 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         prcNumber: '',
         expirationDate: null,
         yearsOfTeaching: '',
-    });
-
+    },
+    parents: {
+        mother: {
+            mothersName: '',
+            mothersContact: '',
+            mothersOccupation: '',
+            mothersAddress: '',
+            dob: null,
+            age: '',
+        },
+        father: {
+            fathersName: '',
+            fathersContact: '',
+            fathersOccupation: '',
+            fathersAddress: '',
+            dob: null,
+            age: '',
+        }
+    }
+});
 
     Aos.init({
         // Global settings:
@@ -141,61 +135,51 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         boxShadow: '5px -4px 1px rgb(173, 173, 172)',
     };
 
-    const handleNext = () => {
-        let requiredFields = [];
-        if (userData.userType === 'student') {
-            requiredFields = [
-                'studentID', 'lastName', 'firstName', 'middleName', 'password', 
-                'address', 'gradeLevel', 'section', 'adviser'
-            ];
-        } 
-        // else if (userData.userType === 'teacher') {
-        //     requiredFields = [
-        //         'employeeID', 'alastName', 'afirstName', 'amiddleName', 'aaddress', 
-        //         'acontactnumber', 'lastSchoolAttended', 'apassword', 'schoolAddress', 
-        //         'yearGraduated', 'degree', 'achievements', 'prcNumber', 'expirationDate', 
-        //         'yearsOfTeaching'
-        //     ];
-        // }
-    
-        const currentErrors = {};
-        requiredFields.forEach(field => {
-            if (!userData[field]) {
-                currentErrors[field] = true;
-            }
-        });
-    
-        // Validate additional fields based on user type
-        if (userData.userType === 'student') {
-            if (!userData.student.gender) {
-                currentErrors['gender'] = true;
-            }
-            if (!userData.student.dob) {
-                currentErrors['dob'] = true;
-            }
-        } 
-        // else if (userData.userType === 'teacher') {
-        //     if (!userData.advisers.gender) {
-        //         currentErrors['gender'] = true;
-        //     }
-        //     if (!userData.advisers.dob) {
-        //         currentErrors['dob'] = true;
-        //     }
-        // }
-    
-        setErrors(currentErrors);
-    
-        // Proceed to next step only if all required fields are filled
-        if (Object.keys(currentErrors).length > 0) {
-            if (userData.userType === 'student' && userData.step === 1) {
-                setUserData({ ...userData, step: 2 });
-            } else if (userData.userType === 'teacher' && userData.step === 1) {
-                setUserData({ ...userData, step: 3 });
+const handleNext = () => {
+    // Validate fields before proceeding
+    const errors = {};
+    const { userType, student, advisers, academicData } = userData;
+    if (userType === 'student') {
+        if (!student.studentID) errors['studentID'] = "LRN is required";
+        if (!student.lastName) errors['lastName'] = "Last Name is required";
+        if (!student.firstName) errors['firstName'] = "First Name is required";
+        if (!student.middleName) errors['middleName'] = "Middle Name is required";
+        if (!student.password) errors['password'] = "Password is required";
+        if (!student.gender) errors['student.gender'] = "Gender is required";
+        // if (!student.contactNumber) errors['contactNumber'] = "Contact number is required";
+        if (!student.address) errors['address'] = "Complete address is required";
+        if (!student.dob) errors['student.dob'] = "Date of Birth is required";
+        if (!student.gradeLevel) errors['gradeLevel'] = "Grade level is required";
+        if (!student.section) errors['section'] = "Section is required";
+        if (!student.adviser) errors['adviser'] = "Class adviser is required";
+    } else if (userType === 'teacher') {
+        if (!advisers.employeeID) errors['employeeID'] = "Employee ID is required";
+        if (!advisers.alastName) errors['alastName'] = "Last Name is required";
+        if (!advisers.afirstName) errors['afirstName'] = "First Name is required";
+        if (!advisers.amiddleName) errors['amiddleName'] = "Middle Name is required";
+        if (!advisers.apassword) errors['apassword'] = "Password is required";
+        if (!advisers.gender) errors['advisers.gender'] = "Gender is required";
+        if (!advisers.acontactnumber) errors['acontactnumber'] = "Contact number is required";
+        if (!advisers.aaddress) errors['aaddress'] = "Complete address is required";
+        if (!advisers.dob) errors['advisers.dob'] = "Date of Birth is required";
+        if (!advisers.gradeLevel) errors['gradeLevel'] = "Handled Grade level is required";
+        if (!advisers.section) errors['section'] = "Section is required";
+    }
+
+    // Check if there are any errors
+    if (Object.keys(errors).length > 0) {
+        setErrors(errors); // Update the errors state to display error messages
+    } else {
+        console.log('Inputted data:', userData);
+        if (step === 1) {
+            if (userData.userType === 'student') {
+                setStep(2); // Move to the next step for student (Parents Information)
+            } else if (userData.userType === 'teacher') {
+                setStep(2); // Move to the next step for teacher (Academic Information)
             }
         }
-    };
-    
-    
+    }
+};
 
     const handleBack = () => {
         setStep(1);
@@ -210,40 +194,65 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         setErrors({});
     }, [userData.userType]);
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e, category) => {
         const { name, value } = e.target;
         // Remove the error for the field being updated
         const updatedErrors = { ...errors };
         delete updatedErrors[name];
         setErrors(updatedErrors);
-        setUserData({ ...userData, [name]: value });
-    };
-
-    const handleDateChange = (category, member, date) => {
-        // Update the date of birth in the state
-        const updatedUserData = {
-            ...userData,
+        setUserData(prevState => ({
+            ...prevState,
             [category]: {
-                ...userData[category],
-                [member]: {
-                    ...userData[category][member],
-                    dob: date,
-                }
+                ...prevState[category],
+                [name]: value
             }
-        };
+        }));
+    };
     
-        // Calculate and update the age in the state
-        if (category === 'student') {
-            updatedUserData[category].age = calculateAge(date);
-        } else if (category === 'parents') {
-            updatedUserData[category][member].age = calculateAge(date);
-        } else if (category === 'advisers') {
-            updatedUserData[category].age = calculateAge(date);
+    const handleDropdownChange = (category, member, value) => {
+        // Update the value for the specified category and member
+        setUserData(prevState => ({
+            ...prevState,
+            [category]: {
+                ...prevState[category],
+                [member]: value
+            }
+        }));
+    };
+const handleDateChange = (category, member, date) => {
+    // Update the date of birth in the state
+    const updatedUserData = {
+        ...userData,
+        [category]: {
+            ...userData[category],
+            [member]: {
+                ...userData[category][member],
+                dob: date,
+            }
         }
-    
-        setUserData(updatedUserData);
     };
 
+    // Calculate and update the age in the state
+    let age = '';
+    if (category === 'student') {
+        age = calculateAge(date);
+    } else if (category === 'parents') {
+        age = calculateAge(date);
+    } else if (category === 'advisers') {
+        age = calculateAge(date);
+    }
+
+    updatedUserData[category].age = age;
+
+    // Clear error for age field
+    const updatedErrors = { ...errors };
+    delete updatedErrors[`${category}.${member}.age`];
+
+    setUserData(updatedUserData);
+    setErrors(updatedErrors);
+};
+
+    
     const calculateAge = (dob) => {
         if (!dob) return '';
         const birthDate = new Date(dob);
@@ -297,19 +306,18 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                     <>
                         <CustomTextField
                             label="LRN"
-                            type="numeric"
-                            value={userData.studentID}
-                            onChange={handleInputChange}
+                            value={userData.student.studentID}
+                            type='numeric'
+                            onChange={e => handleInputChange(e, 'student')} // Pass the category ('student') to handleInputChange
                             name="studentID"
                             required
                             error={errors['studentID']}
                             helperText={errors['studentID'] ? "This field is required" : ""}
-                            
                         />
                         <CustomTextField
                             label="Last Name"
-                            value={userData.lastName}
-                            onChange={handleInputChange}
+                            value={userData.student.lastName}
+                            onChange={e => handleInputChange(e, 'student')} // Pass the category ('student') to handleInputChange
                             name="lastName"
                             required
                             error={errors['lastName']}
@@ -317,8 +325,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         />
                         <CustomTextField
                             label="First Name"
-                            value={userData.firstName}
-                            onChange={handleInputChange}
+                            value={userData.student.firstName}
+                            onChange={e => handleInputChange(e, 'student')} 
                             name="firstName"
                             required
                             error={errors['firstName']}
@@ -326,8 +334,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         />
                         <CustomTextField
                             label="Middle Name"
-                            value={userData.middleName}
-                            onChange={handleInputChange}
+                            value={userData.student.middleName}
+                            onChange={e => handleInputChange(e, 'student')} 
                             name="middleName"
                             required
                             error={errors['middleName']}
@@ -335,8 +343,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         />
                         <CustomTextField
                             label="Password"
-                            value={userData.password}
-                            onChange={handleInputChange}
+                           value={userData.student.password}
+                            onChange={e => handleInputChange(e, 'student')} 
                             name="password"
                             required
                             error={errors['password']}
@@ -348,22 +356,22 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                             value={userData.student.gender}
                             onChange={(value) => setUserData({ ...userData, student: { ...userData.student, gender: value } })}
                             required
-                            error={errors['gender']}
-                            helperText={errors['gender'] ? "This field is required" : ""}
+                            error={errors['student.gender']}
+                            helperText={errors['student.gender'] ? "This field is required" : ""}
                         />
 
 
                         <CustomTextField
                             label="Contact number"
                             type="numeric"
-                            value={userData.contactNumber}
-                            onChange={handleInputChange}
+                            value={userData.student.contactNumber}
+                            onChange={e => handleInputChange(e, 'student')} 
                             name="contactNumber"
                         />
                          <CustomTextField
                             label="Complete address"
-                            value={userData.address}
-                            onChange={handleInputChange}
+                            value={userData.student.address}
+                            onChange={e => handleInputChange(e, 'student')} 
                             name="address"
                             required
                             error={errors['address']}
@@ -374,22 +382,24 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         value={userData.student.dob}
                         onChange={(date) => handleDateChange('student', 'dob', date)} // Pass 'student' and 'dob' as parameters
                         required
-                        error={errors['dob']}
-                        helperText={errors['dob'] ? "This field is required" : ""}
+                        error={errors['student.dob']}
+                        helperText={errors['student.dob'] ? "This field is required" : ""}
                      />
 
                      <CustomTextField
                         label="Age"
                         value={userData.student.age}
                         readOnly
+                        error={errors['student.age']}
+                        helperText={errors['student.age'] ? "This field is required" : ""}
                      />
 
                        
                         <CustomDropdown
                             label="Grade level"
                             options={gradelevel}
-                            value={userData.gradeLevel}
-                            onChange={(value) => setUserData({ ...userData, gradeLevel: value })}
+                            value={userData.student.gradeLevel}
+                            onChange={(value) => handleDropdownChange('student', 'gradeLevel', value)} // Pass category, member, and value to handleDropdownChange
                             required
                             error={errors['gradeLevel']}
                             helperText={errors['gradeLevel'] ? "This field is required" : ""}
@@ -398,8 +408,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         <CustomDropdown
                             label="Section"
                             options={section}
-                            value={userData.section}
-                            onChange={(value) => setUserData({ ...userData, section: value })}
+                            value={userData.student.section}
+                            onChange={(value) => handleDropdownChange('student', 'section', value)} // Pass category, member, and value to handleDropdownChange
                             required
                             error={errors['section']}
                             helperText={errors['section'] ? "This field is required" : ""}
@@ -407,8 +417,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         <CustomDropdown
                             label="Class adviser"
                             options={adviser}
-                            value={userData.adviser}
-                            onChange={(value) => setUserData({ ...userData, adviser: value })}
+                            value={userData.student.adviser}
+                           onChange={(value) => handleDropdownChange('student', 'adviser', value)}
                             required
                             error={errors['adviser']}
                             helperText={errors['adviser'] ? "This field is required" : ""}
@@ -420,40 +430,40 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         <CustomTextField
                             label="Employee ID"
                             type="numeric"
-                            value={userData.employeeID}
-                            onChange={handleInputChange}
+                            value={userData.advisers.employeeID}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="employeeID"
                             error={errors['employeeID']}
                             helperText={errors['employeeID'] ? "This field is required" : ""}
                         />
                         <CustomTextField
                             label="Last Name"
-                            value={userData.alastName}
-                            onChange={handleInputChange}
+                            value={userData.advisers.alastName}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="alastName"
                             error={errors['alastName']}
                             helperText={errors['alastName'] ? "This field is required" : ""}
                         />
                         <CustomTextField
                             label="First Name"
-                            value={userData.afirstName}
-                            onChange={handleInputChange}
+                             value={userData.advisers.afirstName}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="afirstName"
                             error={errors['afirstName']}
                             helperText={errors['afirstName'] ? "This field is required" : ""}
                         />
                         <CustomTextField
                             label="Middle Name"
-                            value={userData.amiddleName}
-                            onChange={handleInputChange}
+                            value={userData.advisers.amiddleName}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="amiddleName"
                             error={errors['amiddleName']}
                             helperText={errors['amiddleName'] ? "This field is required" : ""}
                         />
                         <CustomTextField
                             label="Password"
-                            value={userData.apassword}
-                            onChange={handleInputChange}
+                            value={userData.advisers.apassword}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="apassword"
                             error={errors['apassword']}
                             helperText={errors['apassword'] ? "This field is required" : ""}
@@ -464,23 +474,23 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                             value={userData.advisers.gender}
                             onChange={(value) => setUserData({ ...userData, advisers: { ...userData.advisers, gender: value } })}
                             required
-                            error={errors['gender']}
-                            helperText={errors['gender'] ? "This field is required" : ""}
+                            error={errors['advisers.gender']}
+                            helperText={errors['advisers.gender'] ? "This field is required" : ""}
                         />
 
                         <CustomTextField
                             label="Contact number"
                             type="numeric"
-                            value={userData.acontactnumber}
-                            onChange={handleInputChange}
+                             value={userData.advisers.acontactnumber}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="acontactnumber"
                             error={errors['acontactnumber']}
                             helperText={errors['acontactnumber'] ? "This field is required" : ""}
                         />
                           <CustomTextField
                             label="Complete address"
-                            value={userData.aaddress}
-                            onChange={handleInputChange}
+                             value={userData.advisers.aaddress}
+                            onChange={e => handleInputChange(e, 'advisers')} 
                             name="aaddress"
                             required
                             error={errors['aaddress']}
@@ -491,21 +501,23 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         value={userData.advisers.dob}
                         onChange={(date) => handleDateChange('advisers', 'dob', date)} // Pass 'student' and 'dob' as parameters
                         required
-                        error={errors['dob']}
-                        helperText={errors['dob'] ? "This field is required" : ""}
+                        error={errors['advisers.dob']}
+                        helperText={errors['advisers.dob'] ? "This field is required" : ""}
                      />
 
                      <CustomTextField
                         label="Age"
                         value={userData.advisers.age}
                         readOnly
+                        error={errors['advisers.age']}
+                        helperText={errors['advisers.age'] ? "This field is required" : ""}
                      />
 
                         <CustomDropdown
                             label="Handled Grade level"
                             options={gradelevel}
-                            value={userData.gradeLevel}
-                            onChange={(value) => setUserData({ ...userData, gradeLevel: value })}
+                            value={userData.advisers.gradeLevel}
+                           onChange={(value) => handleDropdownChange('advisers', 'gradeLevel', value)}
                             required
                             error={errors['gradeLevel']}
                             helperText={errors['gradeLevel'] ? "This field is required" : ""}
@@ -514,8 +526,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         <CustomDropdown
                             label="Section"
                             options={section}
-                            value={userData.section}
-                            onChange={(value) => setUserData({ ...userData, section: value })}
+                             value={userData.advisers.section}
+                           onChange={(value) => handleDropdownChange('advisers', 'section', value)}
                             required
                             error={errors['section']}
                             helperText={errors['section'] ? "This field is required" : ""}
@@ -534,9 +546,9 @@ function Usersform({ onCancelClick, userTypeOptions }) {
             )}
             
             {step === 2 && userData.userType === 'student' && (
-                <div data-aos='fade-left'>
-                    <div className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
-                        <h1 className='text-2xl md:text-3xl mx-5 font-semibold py-5 items-center justify-center' style={{color: 'white', textShadow: '2px 2px 2px rgba(0, 0, 0, 0.3)'}}>Academic Information</h1>
+                <div>
+                    <div  data-aos='fade-left' className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
+                        <h1 className='text-2xl md:text-3xl mx-5 font-semibold py-5 items-center justify-center' style={{color: 'white', textShadow: '2px 2px 2px rgba(0, 0, 0, 0.3)'}}>Parents Information</h1>
                     </div>
 
                     <div data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
@@ -629,13 +641,13 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                         </div>
                 </div>
             )}
-            {step === 3 && userData.userType === 'teacher' && (
+            {step === 2 && userData.userType === 'teacher' && (
                 <div>
-                    <div className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
-                        <h1 className='text-2xl md:text-3xl mx-5 font-semibold py-5 items-center justify-center' style={{color: 'white', textShadow: '2px 2px 2px rgba(0, 0, 0, 0.3)'}}>Parent/Guardian Information</h1>
+                    <div data-aos='fade-left' className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
+                        <h1 className='text-2xl md:text-3xl mx-5 font-semibold py-5 items-center justify-center' style={{color: 'white', textShadow: '2px 2px 2px rgba(0, 0, 0, 0.3)'}}>Academic Information</h1>
                     </div>
 
-                    <div className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
+                    <div  data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
                     <CustomTextField
                             label="Last School Attended"
                             value={userData.lastSchoolAttended}
