@@ -7,6 +7,7 @@ import Aos from 'aos';
 import 'aos/dist/aos.css'
 
 function Usersform({ onCancelClick, userTypeOptions }) {
+    
     const [gender, setGender] = useState(null);
     const [errors, setErrors] = useState({});
     const [userData, setUserData] = useState({
@@ -15,21 +16,25 @@ function Usersform({ onCancelClick, userTypeOptions }) {
             dob: null,
             age: '',
             gender: null,
+            
         },
         parents: {
             mother: {
                 dob: null,
-                age: ''
+                age: '',
+                
             },
             father: {
                 dob: null,
-                age: ''
+                age: '',
+                
             },
         },
         advisers:{
             dob: null,
             age: '',
             gender: null,
+            
         },
         step: 1,
         studentID: '',
@@ -472,67 +477,48 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                             error={errors['acontactnumber']}
                             helperText={errors['acontactnumber'] ? "This field is required" : ""}
                         />
-                         <CustomTextField
-                            label="Last school attended"
-                            value={userData.lastSchoolAttended}
+                          <CustomTextField
+                            label="Complete address"
+                            value={userData.aaddress}
                             onChange={handleInputChange}
-                            name="lastSchoolAttended"
-                            error={errors['lastSchoolAttended']}
-                            helperText={errors['lastSchoolAttended'] ? "This field is required" : ""}
-                        />
-                        <CustomTextField
-                            label="School address"
-                            value={userData.schoolAddress}
-                            onChange={handleInputChange}
-                            name="schoolAddress"
-                            error={errors['schoolAddress']}
-                            helperText={errors['schoolAddress'] ? "This field is required" : ""}
-                        />
-                       <CustomDatePicker
-                            label="Year graduated"
-                            value={userData.yearGraduated}
-                            onChange={(date) => handleInputChange({ target: { name: 'yearGraduated', value: date } })}
-                            name="yearGraduated"
+                            name="aaddress"
                             required
-                            error={errors['yearGraduated']}
-                            helperText={errors['yearGraduated'] ? "This field is required" : ""}
-                            yearOnly
+                            error={errors['aaddress']}
+                            helperText={errors['aaddress'] ? "This field is required" : ""}
                         />
-                        <CustomTextField
-                            label="Degree"
-                            value={userData.degree}
-                            onChange={handleInputChange}
-                            name="degree"
-                            error={errors['degree']}
-                            helperText={errors['degree'] ? "This field is required" : ""}
-                        />
-                        <CustomTextField
-                            label="PRC number"
-                            type="numeric"
-                            value={userData.prcNumber}
-                            onChange={handleInputChange}
-                            name="prcNumber"
-                            error={errors['prcNumber']}
-                            helperText={errors['prcNumber'] ? "This field is required" : ""}
+                     <CustomDatePicker
+                        label="Date of Birth"
+                        value={userData.advisers.dob}
+                        onChange={(date) => handleDateChange('advisers', 'dob', date)} // Pass 'student' and 'dob' as parameters
+                        required
+                        error={errors['dob']}
+                        helperText={errors['dob'] ? "This field is required" : ""}
+                     />
+
+                     <CustomTextField
+                        label="Age"
+                        value={userData.advisers.age}
+                        readOnly
+                     />
+
+                        <CustomDropdown
+                            label="Handled Grade level"
+                            options={gradelevel}
+                            value={userData.gradeLevel}
+                            onChange={(value) => setUserData({ ...userData, gradeLevel: value })}
+                            required
+                            error={errors['gradeLevel']}
+                            helperText={errors['gradeLevel'] ? "This field is required" : ""}
                         />
 
-                        <CustomDatePicker
-                            label="License expiration date"
-                            value={userData.expirationDate}
-                            onChange={(date) => handleInputChange({ target: { name: 'expirationDate', value: date } })}
-                            name="expirationDate"
+                        <CustomDropdown
+                            label="Section"
+                            options={section}
+                            value={userData.section}
+                            onChange={(value) => setUserData({ ...userData, section: value })}
                             required
-                            error={errors['expirationDate']}
-                            helperText={errors['expirationDate'] ? "This field is required" : ""}
-                        />
-                        <CustomTextField
-                            label="Years of teaching experience"
-                            type="numeric"
-                            value={userData.yearsOfTeaching}
-                            onChange={handleInputChange}
-                            name="yearsOfTeaching"
-                            error={errors['yearsOfTeaching']}
-                            helperText={errors['yearsOfTeaching'] ? "This field is required" : ""}
+                            error={errors['section']}
+                            helperText={errors['section'] ? "This field is required" : ""}
                         />
                         
                     </>
@@ -554,7 +540,103 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                     </div>
 
                     <div data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
+                    <CustomTextField
+                            label="Mothers Name"
+                            value={userData.mothersName}
+                            onChange={handleInputChange}
+                            name="mothersName"
+                        />
+                         <CustomDatePicker
+                        label="Date of Birth"
+                        value={userData.parents.mother.dob}
+                        onChange={(date) => handleDateChange('parents','mother', 'dob', date)} // Pass 'student' and 'dob' as parameters
+                        required
+                        error={errors['dob']}
+                        helperText={errors['dob'] ? "This field is required" : ""}
+                     />
+
+                     <CustomTextField
+                        label="Age"
+                        value={userData.parents.mother.age}
+                        readOnly
+                     />
                         <CustomTextField
+                            label="Mothers Contact number"
+                            type="numeric"
+                            value={userData.mothersContact}
+                            onChange={handleInputChange}
+                            name="mothersContact"
+                        />
+                         <CustomTextField
+                            label="Mothers Occupation"
+                            value={userData.mothersOccupation}
+                            onChange={handleInputChange}
+                            name="mothersOccupation"
+                        />
+                         <CustomTextField
+                            label="Mothers Address"
+                            value={userData.mothersAddress}
+                            onChange={handleInputChange}
+                            name="mothersAddress"
+                        />
+                        <CustomTextField
+                            label="Fathers Name"
+                            value={userData.fathersName}
+                            onChange={handleInputChange}
+                            name="fathersName"
+                        />
+                         <CustomDatePicker
+                        label="Date of Birth"
+                        value={userData.parents.father.dob}
+                        onChange={(date) => handleDateChange('parents','father', 'dob', date)} // Pass 'student' and 'dob' as parameters
+                        required
+                        error={errors['dob']}
+                        helperText={errors['dob'] ? "This field is required" : ""}
+                     />
+
+                     <CustomTextField
+                        label="Age"
+                        value={userData.parents.father.age}
+                        readOnly
+                     />
+                        <CustomTextField
+                            label="Fathers Contact number"
+                            type="numeric"
+                            value={userData.fathersContact}
+                            onChange={handleInputChange}
+                            name="fathersContact"
+                        />
+                        <CustomTextField
+                            label="Fathers Occupation"
+                            value={userData.fathersOccupation}
+                            onChange={handleInputChange}
+                            name="fathersOccupation"
+                        />
+                        <CustomTextField
+                            label="Fathers Address"
+                            value={userData.fathersAddress}
+                            onChange={handleInputChange}
+                            name="fathersAddress"
+                        />
+                    </div>
+                    <div data-aos='fade-right' className="flex justify-center mt-5">
+                            <button onClick={handleBack} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div mr-5">
+                                Back
+                            </button>
+                            <button onClick={handleSubmit} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div">
+                                Submit
+                            </button>
+                        </div>
+                </div>
+            )}
+            {step === 3 && userData.userType === 'teacher' && (
+                <div>
+                    <div className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
+                        <h1 className='text-2xl md:text-3xl mx-5 font-semibold py-5 items-center justify-center' style={{color: 'white', textShadow: '2px 2px 2px rgba(0, 0, 0, 0.3)'}}>Parent/Guardian Information</h1>
+                    </div>
+
+                    <div className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
+                    <CustomTextField
                             label="Last School Attended"
                             value={userData.lastSchoolAttended}
                             onChange={handleInputChange}
@@ -604,111 +686,8 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                             onChange={handleInputChange}
                             name="yearsOfTeaching"
                         />
-                    </div>
-                    <div data-aos='fade-right' className="flex justify-center mt-5">
-                            <button onClick={handleBack} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div mr-5">
-                                Back
-                            </button>
-                            <button onClick={handleSubmit} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div">
-                                Submit
-                            </button>
-                        </div>
-                </div>
-            )}
-            {step === 3 && userData.userType === 'teacher' && (
-                <div>
-                    <div className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
-                        <h1 className='text-2xl md:text-3xl mx-5 font-semibold py-5 items-center justify-center' style={{color: 'white', textShadow: '2px 2px 2px rgba(0, 0, 0, 0.3)'}}>Parent/Guardian Information</h1>
-                    </div>
-
-                    <div className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
-                        <CustomTextField
-                            label="Last Name"
-                            value={userData.alastName}
-                            onChange={handleInputChange}
-                            name="alastName"
-                        />
-                        <CustomTextField
-                            label="First Name"
-                            value={userData.afirstName}
-                            onChange={handleInputChange}
-                            name="afirstName"
-                        />
-                        <CustomTextField
-                            label="Middle Name"
-                            value={userData.amiddleName}
-                            onChange={handleInputChange}
-                            name="amiddleName"
-                        />
-                        <CustomTextField
-                            label="Password"
-                            value={userData.apassword}
-                            onChange={handleInputChange}
-                            name="apassword"
-                        />
-                        <CustomTextField
-                            label="Contact number"
-                            type="numeric"
-                            value={userData.acontactnumber}
-                            onChange={handleInputChange}
-                            name="acontactnumber"
-                        />
-                         <CustomTextField
-                            label="Complete address"
-                            value={userData.aaddress}
-                            onChange={handleInputChange}
-                            name="aaddress"
-                        />
-                        <CustomTextField
-                            label="Mothers Name"
-                            value={userData.mothersName}
-                            onChange={handleInputChange}
-                            name="mothersName"
-                        />
-                        <CustomTextField
-                            label="Fathers Name"
-                            value={userData.fathersName}
-                            onChange={handleInputChange}
-                            name="fathersName"
-                        />
-                        <CustomTextField
-                            label="Mothers Contact number"
-                            type="numeric"
-                            value={userData.mothersContact}
-                            onChange={handleInputChange}
-                            name="mothersContact"
-                        />
-                        <CustomTextField
-                            label="Fathers Contact number"
-                            type="numeric"
-                            value={userData.fathersContact}
-                            onChange={handleInputChange}
-                            name="fathersContact"
-                        />
-                        <CustomTextField
-                            label="Mothers Occupation"
-                            value={userData.mothersOccupation}
-                            onChange={handleInputChange}
-                            name="mothersOccupation"
-                        />
-                        <CustomTextField
-                            label="Fathers Occupation"
-                            value={userData.fathersOccupation}
-                            onChange={handleInputChange}
-                            name="fathersOccupation"
-                        />
-                        <CustomTextField
-                            label="Mothers Address"
-                            value={userData.mothersAddress}
-                            onChange={handleInputChange}
-                            name="mothersAddress"
-                        />
-                        <CustomTextField
-                            label="Fathers Address"
-                            value={userData.fathersAddress}
-                            onChange={handleInputChange}
-                            name="fathersAddress"
-                        />
+                        
+                       
                     </div>
                     <div className="flex justify-center mt-5">
                         <button onClick={handleBack} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div mr-5">
