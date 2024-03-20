@@ -105,10 +105,8 @@ export default function AddPaymentModal({ open, handleClose }) {
             {/* ID textfield */}
             <Grid item xs={12} sm={6} mt={3}>
               <TextField
-                disabled
-                id="id-disabled"
+                id="id"
                 label="ID"
-                defaultValue="123456789"
                 size="small"
                 fullWidth
               />
