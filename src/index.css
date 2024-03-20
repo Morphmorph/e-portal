@@ -53,6 +53,16 @@
     transition: transform 0.3s ease-in-out; /* You can adjust the transition duration and easing */
   }
 
+  .circle {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%; /* Make it a circle */
+    background-color: grey; /* Example background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   body {
     margin: 0;
     padding: 0;

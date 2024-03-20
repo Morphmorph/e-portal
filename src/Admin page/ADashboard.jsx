@@ -78,7 +78,7 @@ function ADashboard() {
 
   return (
     <div>
-      <AppBar position="static" sx={{ bgcolor: '#079440' }}>
+      <AppBar position="sticky" sx={{ bgcolor: '#079440' }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <img

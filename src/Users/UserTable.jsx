@@ -10,40 +10,37 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 
 const columns = [
+  { id: 'createdate', label: 'Date Created', minWidth: 170, align: 'center' },
+  { id: 'usertype', label: 'User Type', minWidth: 170, align: 'center'  },
   { id: 'id', label: 'ID', minWidth: 170 },
   { id: 'name', label: 'Name', minWidth: 170 },
-  {
-    id: 'email',
-    label: 'Email',
-    align: 'center',
-    minWidth: 170,
-   
-  },
   {
     id: 'details',
     label: 'Details',
     minWidth: 170,
     align: 'center',
-    render: (value) => (
-      <Button variant="contained" color="primary" >
-        View
-      </Button>
+    render: (value, row, showProfileView) => (
+      <Button variant="contained" color="primary" onClick={() => showProfileView(row)}>
+      View
+    </Button>
     ),
   },
+  
 ];
 
-function createData(id, name, email) {
-  return { id, name, email };
+function createData(createdate, usertype , id, name) {
+  return { createdate, usertype , id, name};
 }
 
 const rows = [
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
-  createData(1234567890, 'John Doe', 'johndoe@gmail.com'),
+  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
+  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
+  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
+  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
+  createData('03/15/2024', 'Teacher',1234567890, 'John Doe'),
 ];
 
-export default function UserTable() {
+export default function UserTable({showProfileView}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -83,7 +80,7 @@ export default function UserTable() {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align} style={{ borderLeft: '1px solid #ccc' }}>
-                          {column.render ? column.render(value) : value}
+                          {column.render ? column.render(value, row, showProfileView) : value}
                         </TableCell>
                       );
                     })}

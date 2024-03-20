@@ -22,9 +22,12 @@ const columns = [
     minWidth: 170,
     align: 'center',
     render: (value) => (
-      <span style={{ fontWeight: 'bold', padding: 10, color: value === 'Paid' ? '#079440' : '#F2B569', borderRadius: 5, }}>
+      <button className={`hover:bg-blue-500 ${value === 'Paid' ? 'bg-green-600' : 'bg-yellow-500'} text-white font-bold py-2 px-6 rounded item-div mr-0 sm:mr-5 h-10 w-full sm:w-28 mb-5 sm:mb-0`}>
+      <span style={{ fontWeight: 'bold', padding: 10, color: 'white', borderRadius: 5 }}>
         {value}
       </span>
+    </button>
+    
     ),
   },
 ];

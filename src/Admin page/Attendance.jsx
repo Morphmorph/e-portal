@@ -2,10 +2,10 @@ import React from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../component/Dropdown';
-import DatePickerViews from '../component/Datepicker';
 import AttendanceTable from './AttendanceTable';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
+import CustomDatePicker from '../component/CustomDatePicker';
 
 
 function Attendance({ onCancelClick }) {
@@ -87,7 +87,7 @@ function Attendance({ onCancelClick }) {
           }}
         />
          <div className='mb-2 mx-2 mt-2 sm:mt-0' style={{ width: '100%' }}>
-          <DatePickerViews />
+          <CustomDatePicker />
         </div>
       </div>
       <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center'>

@@ -1,12 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../component/Dropdown';
 import GradeTable from './GradeTable';
+import GradeViews from './Views/GradeViews';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
 
 function Grades({onCancelClick}) {
+  const [showGradeViews, setShowGradeViews] = useState(false);
+
+  const handleViewGrade = () => {
+    setShowGradeViews(true);
+  };
   Aos.init({
     // Global settings:
     disable: false, 
@@ -55,6 +61,10 @@ function Grades({onCancelClick}) {
 
   return (
     <div>
+      {showGradeViews ? (
+        <GradeViews onCancelClick={() => setShowGradeViews(false)} />
+      ) : (
+        <div>
          <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
          <CancelIcon
           sx={{
@@ -102,8 +112,10 @@ function Grades({onCancelClick}) {
             <span className='ml-0 text-center sm:ml-auto text-green-600 px-2 item-div'>View details</span>
           </div>
         <div data-aos='fade-right' >
-      <GradeTable/>
+        <GradeTable showGradeView={handleViewGrade} />
       </div>
+      </div>
+      )}
     </div>
   )
 }

@@ -12,29 +12,36 @@ import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import uccplogo from '../assets/uccplogo.webp';
 import schlogo from '../assets/schlogo.webp';
-import star from '../assets/star.webp';
-import attendance from '../assets/attendance.webp';
+import ledger from '../assets/ledger.webp';
+import folder from '../assets/folder.webp';
+import medal from '../assets/medal.webp';
 import TAttendance from './TAttendance';
-import TGrades from './TGrades';
+import TUsers from './TUsers';
+import TSubjectHandles from './TSubjectHandles';
+import THonorsList from './THonorsList';
 
 const settings = ['Profile', 'Account', 'Logout'];
 
 function TDashboard() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [showGrades, setShowGrades] = useState(false);
-  const [showAttendance, setShowAttendance] = useState(false);
+  const [showTusers, setShowTusers] = useState(false);
+  const [showHandleSubjects, setShowHandleSubjects] = useState(false);
+  const [showHonors, setShowHonors] = useState(false);
 
   const handleClick = (section) => {
-    setShowGrades(false);
-    setShowAttendance(false);
-  
+    setShowTusers(false);
+    setShowHandleSubjects(false);
+    setShowHonors(false);
 
     switch (section) {
-      case 'grades':
-        setShowGrades(true);
+      case 'Tuser':
+        setShowTusers(true);
         break;
-      case 'attendance':
-        setShowAttendance(true);
+      case 'handlesubjects':
+        setShowHandleSubjects(true);
+        break;
+      case 'honors':
+        setShowHonors(true);
         break;
       default:
         break;
@@ -42,8 +49,9 @@ function TDashboard() {
   };
 
   const handleCancelClick = () => {
-    setShowGrades(false);
-    setShowAttendance(false);
+    setShowTusers(false);
+    setShowHandleSubjects(false);
+    setShowHonors(false);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -55,7 +63,7 @@ function TDashboard() {
 
   return (
     <div>
-      <AppBar position="static" sx={{ bgcolor: '#079440' }}>
+      <AppBar position="sticky" sx={{ bgcolor: '#079440' }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <img
@@ -148,25 +156,36 @@ function TDashboard() {
       </AppBar>
       
       <Container maxWidth="xl" sx={{ paddingTop: '20px', marginBottom: '20px', cursor: 'pointer'}}>
-      {(showGrades && <TGrades onCancelClick={handleCancelClick}/>) ||
-      (showAttendance && <TAttendance onCancelClick={handleCancelClick}/>) ||
+      {(showTusers && <TUsers onCancelClick={handleCancelClick}/>) ||
+      (showHandleSubjects && <TSubjectHandles onCancelClick={handleCancelClick}/>) ||
+      (showHonors && <THonorsList onCancelClick={handleCancelClick}/>) ||
       (
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-violet-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('grades')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Grades</h1>
+            <div className="bg-slate-600 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('Tuser')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
+              <h1 className='text-2xl font-bold font-serif'>Section Advice</h1>
               <img
-              src={star}
+              src={folder}
               alt=""
               className="h-12 w-12 lg:h-20 lg:w-20 item-image"
             />
             </div>
           </Grid>
           <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-orange-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('attendance')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Attendance</h1>
+            <div className="bg-violet-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('handlesubjects')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
+              <h1 className='text-2xl font-bold font-serif'>Handled Subjects</h1>
               <img
-              src={attendance}
+              src={ledger}
+              alt=""
+              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
+            />
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <div className="bg-red-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('honors')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
+              <h1 className='text-2xl font-bold font-serif'>List of Honors</h1>
+              <img
+              src={medal}
               alt=""
               className="h-12 w-12 lg:h-20 lg:w-20 item-image"
             />

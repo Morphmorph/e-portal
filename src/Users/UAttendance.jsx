@@ -7,67 +7,61 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+
+const statusOptions = [
+  { value: 'present', label: 'Present', color: '#7ac57a' }, // Light green
+  { value: 'absent', label: 'Absent', color: '#ff9999' }, // Light red
+  { value: 'late', label: 'Late', color: '#ffa64d' }, // Light orange
+  { value: 'cutting', label: 'Cutting', color: '#ffcc66' }, // Light yellow
+  { value: 'excuse', label: 'Excuse', color: '#99ccff' }, // Light blue
+];
 
 const columns = [
+  { id: 'createdate', label: 'Date Created', minWidth: 170, align: 'center' },
   { id: 'id', label: 'ID', minWidth: 170 },
   { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'contact', label: 'Contact no.', minWidth: 170 },
-  { id: 'gradelevel', label: 'Grade level', minWidth: 170 },
-  { id: 'section', label: 'Section', minWidth: 170 },
-  { id: 'adviser', label: 'Adviser', minWidth: 170 },
   {
     id: 'status',
     label: 'Status',
     minWidth: 170,
     align: 'center',
-    render: (value) => (
-      <span style={{ fontWeight: 'bold', padding: 10, color: value === 'Present' ? '#079440' : '#F2B569', borderRadius: 5,}}>
-        {value}
-      </span>
-    ),
-  },
-  {
-    id: 'overall',
-    label: 'Overall',
-    minWidth: 170,
-    align: 'center',
-    render: (value) => (
-      <Button variant="contained" color="primary" >
-        View
-      </Button>
+    render: (value, handleStatusChange, index) => (
+      <Select
+        value={value}
+        onChange={(event) => handleStatusChange(event.target.value, index)}
+        fullWidth
+        style={{
+          backgroundColor: statusOptions.find(option => option.value === value)?.color || 'inherit'
+        }}
+      >
+        {statusOptions.map(option => (
+          <MenuItem key={option.value} value={option.value} style={{ backgroundColor: option.color }}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Select>
     ),
   },
 ];
 
-function createData(id, name, contact, gradelevel, section, adviser, status) {
-  return { id, name, contact, gradelevel, section, adviser, status };
+function createData(createdate, usertype, id, name) {
+  return { createdate, usertype, id, name, status: '' }; // Initial status is empty
 }
 
 const rows = [
-  createData(
-    1234567890,
-    'John Doe Dobido',
-    9876543210,
-    'Grade 1',
-    'Peace',
-    'Son Goku',
-    'Absent' 
-  ),
-  createData(
-    6231811933,
-    ' Doe Dobido-bido',
-    9663718826,
-    'Grade 1',
-    'Peace',
-    'Son Goku',
-    'Present' 
-  ),
+  createData('03/15/2024', 'Student', 1234567890, 'John Doe'),
+  createData('03/15/2024', 'Student', 1234567890, 'John Doe'),
+  createData('03/15/2024', 'Student', 1234567890, 'John Doe'),
+  createData('03/15/2024', 'Student', 1234567890, 'John Doe'),
+  createData('03/15/2024', 'Teacher', 1234567890, 'John Doe'),
 ];
 
-export default function AttendanceTable() {
+export default function UAttendance() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [attendanceRows, setAttendanceRows] = React.useState(rows);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -76,6 +70,12 @@ export default function AttendanceTable() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleStatusChange = (newValue, index) => {
+    const updatedRows = [...attendanceRows];
+    updatedRows[index].status = newValue;
+    setAttendanceRows(updatedRows);
   };
 
   return (
@@ -96,7 +96,7 @@ export default function AttendanceTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {attendanceRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
@@ -105,7 +105,7 @@ export default function AttendanceTable() {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align} style={{ borderLeft: '1px solid #ccc' }}>
-                          {column.render ? column.render(value) : value}
+                          {column.render ? column.render(value, handleStatusChange, index) : value}
                         </TableCell>
                       );
                     })}
@@ -118,7 +118,7 @@ export default function AttendanceTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={attendanceRows.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
