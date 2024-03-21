@@ -5,6 +5,7 @@ import CustomDropdown from '../component/CustomDropdown';
 import CustomDatePicker from '../component/CustomDatePicker';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
+import options from './options.json';
 
 function Usersform({ onCancelClick, userTypeOptions }) {
     
@@ -94,43 +95,22 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         anchorPlacement: 'top-bottom', 
     });
 
-    const userOptions = [
-        { value: 'student', label: 'Student' },
-        { value: 'teacher', label: 'Teacher' },
-    ];
+    const userOptions = options.userOptions;
+    const genderOptions = options.genderOptions;
+    const sy = options.sy;
+    const gradelevel = options.gradelevel;
+    const adviser = options.adviser;
+    const [sections, setSections] = useState([]);
 
-    const genderOptions = [
-        { value: 'male', label: 'Male' },
-        { value: 'female', label: 'Female' },
-        { value: 'other', label: 'Other' },
-    ];
-    const sy = [
-        { value: '1', label: '2023-2024' },
-        { value: '2', label: '2024-2025' },
-    ];
-    const gradelevel = [
-        { value: '1', label: 'Kinder' },
-        { value: '2', label: 'Grade 1' },
-        { value: '3', label: 'Grade 2' },
-        { value: '4', label: 'Grade 3' },
-        { value: '5', label: 'Grade 4' },
-        { value: '6', label: 'Grade 5' },
-        { value: '7', label: 'Grade 6' },
-    ];
-    const section = [
-        { value: '1', label: 'Love' },
-        { value: '2', label: 'Peace' },
-        { value: '3', label: 'Faith' },
-    ];
-    const adviser = [
-        { value: '1', label: 'Uzumaki Naruto' },
-        { value: '2', label: 'Monkey D. Luffy' },
-        { value: '3', label: 'Son Goku' },
-    ];
     const [userType, setUserType] = useState(userTypeOptions[0].value); 
     const [dob, setDob] = useState(null);
     const [step, setStep] = useState(1);
 
+    useEffect(() => {
+        if (userData.gradeLevel) {
+            setSections(options.sections[userData.gradeLevel]);
+        }
+    }, [userData.gradeLevel]);
 
     const Style = {
         backdropFilter: 'blur(16px) saturate(180%)',
@@ -389,7 +369,9 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                             label="Grade level"
                             options={gradelevel}
                             value={userData.gradeLevel}
-                            onChange={(value) => setUserData({ ...userData, gradeLevel: value })}
+                            onChange={(value) => {
+                            setUserData({ ...userData, gradeLevel: value, section: null });
+                            }}
                             required
                             error={errors['gradeLevel']}
                             helperText={errors['gradeLevel'] ? "This field is required" : ""}
@@ -397,7 +379,7 @@ function Usersform({ onCancelClick, userTypeOptions }) {
 
                         <CustomDropdown
                             label="Section"
-                            options={section}
+                            options={sections}
                             value={userData.section}
                             onChange={(value) => setUserData({ ...userData, section: value })}
                             required
@@ -505,7 +487,9 @@ function Usersform({ onCancelClick, userTypeOptions }) {
                             label="Handled Grade level"
                             options={gradelevel}
                             value={userData.gradeLevel}
-                            onChange={(value) => setUserData({ ...userData, gradeLevel: value })}
+                            onChange={(value) => {
+                            setUserData({ ...userData, gradeLevel: value, section: null });
+                            }}
                             required
                             error={errors['gradeLevel']}
                             helperText={errors['gradeLevel'] ? "This field is required" : ""}
@@ -513,7 +497,7 @@ function Usersform({ onCancelClick, userTypeOptions }) {
 
                         <CustomDropdown
                             label="Section"
-                            options={section}
+                            options={sections}
                             value={userData.section}
                             onChange={(value) => setUserData({ ...userData, section: value })}
                             required

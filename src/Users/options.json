@@ -1,0 +1,60 @@
+{
+    "userOptions":[
+        {"value":"student","label":"Student"},
+        {"value":"teacher","label":"Taecher"}
+    ],
+    "genderOptions":[
+        {"value":"male","label":"Male"},
+        {"value":"female","label":"Female"}
+    ],
+    "sy":[
+        {"value":"1","label":"2024-2025"},
+        {"value":"2","label":"2023-2024"}
+    ],
+    "gradelevel":[
+        {"value":"1","label":"Kinder"},
+        {"value":"2","label":"Grade 1"},
+        {"value":"3","label":"Grade 2"},
+        {"value":"4","label":"Grade 3"},
+        {"value":"5","label":"Grade 4"},
+        {"value":"6","label":"Grade 5"},
+        {"value":"7","label":"Grade 6"}
+    ],
+    "sections": {
+        "1": [
+            {"value":"1","label":"Courage"},
+            {"value":"2","label":"Heroism"}
+        ],
+        "2": [
+            {"value":"3","label":"Joy"},
+            {"value":"4","label":"Love"}
+        ],
+        "3": [
+            {"value":"5","label":"Patience"},
+            {"value":"6","label":"Peace"}
+        ],
+        "4": [
+            {"value":"7","label":"Goodness"},
+            {"value":"8","label":"Kindness"}
+        ],
+        "5": [
+            {"value":"9","label":"Faithfulness"}
+        ],
+        "6": [
+            {"value":"10","label":"Discipline"},
+            {"value":"11","label":"Hope"}
+        ],
+        "7": [
+            {"value":"10","label":"Diligence"}
+        ]
+    },
+    "adviser":[
+        {"value":"1","label":"Uzumaki Naruto"},
+        {"value":"2","label":"Son Goku"},
+        {"value":"3","label":"Monkey D. Luffy"},
+        {"value":"4","label":"John Wick"},
+        {"value":"5","label":"Peter Parker"},
+        {"value":"6","label":"Dominic Toretto"},
+        {"value":"7","label":"Bruce Wayne"}
+    ]
+}
