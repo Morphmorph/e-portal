@@ -4,8 +4,8 @@ import CustomTextField from '../component/CustomTextField';
 import CustomDropdown from '../component/CustomDropdown';
 import CustomDatePicker from '../component/CustomDatePicker';
 import Aos from 'aos';
-import 'aos/dist/aos.css'
-import options from './options.json';
+import 'aos/dist/aos.css';
+import data from './options.json'; // Import the JSON data
 
 function Usersform({ onCancelClick, userTypeOptions }) {
     
@@ -69,44 +69,56 @@ function Usersform({ onCancelClick, userTypeOptions }) {
     }
 });
 
+useEffect(() => {
+    const initAos = async () => {
+        await Aos.init({
+            // Global settings:
+            disable: false,
+            startEvent: 'DOMContentLoaded',
+            initClassName: 'aos-init',
+            animatedClassName: 'aos-animate',
+            useClassNames: false,
+            disableMutationObserver: false,
+            debounceDelay: 50,
+            throttleDelay: 99,
+            offset: 0,
+            delay: 100,
+            duration: 500,
+            easing: 'ease',
+            once: false,
+            mirror: false,
+            anchorPlacement: 'top-bottom',
+        });
+    };
 
-    Aos.init({
-        // Global settings:
-        disable: false, 
-        startEvent: 'DOMContentLoaded', 
-        initClassName: 'aos-init',
-        animatedClassName: 'aos-animate', 
-        useClassNames: false, 
-        disableMutationObserver: false, 
-        debounceDelay: 50, 
-        throttleDelay: 99, 
-        
-        offset: 0, 
-        delay: 100, 
-        duration: 500, 
-        easing: 'ease', 
-        once: false, 
-        mirror: false, 
-        anchorPlacement: 'top-bottom', 
-    });
+    initAos();
 
-    const userOptions = options.userOptions;
-    const genderOptions = options.genderOptions;
-    const sy = options.sy;
-    const gradelevel = options.gradelevel;
-    const adviser = options.adviser;
-    const [sections, setSections] = useState([]);
+    return () => {
+        // Cleanup function if needed
+    };
+}, []);
 
+    const userOptions = [
+        { value: 'student', label: 'Student' },
+        { value: 'teacher', label: 'Teacher' },
+    ];
+
+    const genderOptions = [
+        { value: 'male', label: 'Male' },
+        { value: 'female', label: 'Female' },
+        { value: 'other', label: 'Other' },
+    ];
+    const sy = [
+        { value: '1', label: '2023-2024' },
+        { value: '2', label: '2024-2025' },
+    ];
+    const gradeLevels = data.gradeLevels; // Updated to use JSON data
+    const sections = data.sections; // Updated to use JSON data
+    const advisers = data.advisers; // Updated to use JSON data
     const [userType, setUserType] = useState(userTypeOptions[0].value); 
     const [dob, setDob] = useState(null);
     const [step, setStep] = useState(1);
-
-    useEffect(() => {
-        if (userData.gradeLevel) {
-            setSections(options.sections[userData.gradeLevel]);
-        }
-    }, [userData.gradeLevel]);
-
+    
     const Style = {
         backdropFilter: 'blur(16px) saturate(180%)',
         WebkitBackdropFilter: 'blur(16px) saturate(180%)',
@@ -120,7 +132,7 @@ const handleNext = () => {
     // Validate fields before proceeding
     const errors = {};
     const { userType, student, advisers, } = userData;
-    const nameRegex = /^[a-zA-Z]+$/;
+    const nameRegex = /^[a-zA-Z\- ]*$/;
 
     if (userType === 'student') {
         if (!student.studentID) errors['studentID'] = "LRN is required";
@@ -235,7 +247,7 @@ const handleBack = () => {
             if (!academicData.degree) errors['degree'] = "This field is required";
             if (!academicData.prcNumber) errors['prcNumber'] = "This field is required";
             if (!academicData.expirationDate) errors['expirationDate'] = "This field is required";
-            if (!academicData.yearsOfTeaching) errors['expirationDate'] = "This field is required";
+            if (!academicData.yearsOfTeaching) errors['yearsOfTeaching'] = "This field is required";
         }
 
         if (Object.keys(errors).length > 0) {
@@ -259,21 +271,32 @@ const handleBack = () => {
 
     
     const handlePasswordChange = () => {
-        const lrn = userData.student.studentID || ''; // Get LRN value
-        const lastName = userData.student.lastName || ''; // Get last name value
-        const updatedPassword = lastName ? `${lrn}@${lastName}` : lrn; // Generate password
+        const { student, advisers } = userData;
+        const lrn = student.studentID || ''; // Get LRN value
+        const lastName = student.lastName || ''; // Get last name value
+        const studentPassword = lastName ? `${lrn}@${lastName}` : lrn; // Generate student password
+    
+        const employeeID = advisers.employeeID || ''; // Get employee ID
+        const alastName = advisers.alastName || ''; // Get last name of adviser
+        const adviserPassword = alastName ? `${employeeID}@${alastName}` : employeeID; // Generate adviser password
+    
         setUserData(prevState => ({
             ...prevState,
             student: {
                 ...prevState.student,
-                password: updatedPassword // Update password field directly
+                password: studentPassword // Update student password field directly
+            },
+            advisers: {
+                ...prevState.advisers,
+                apassword: adviserPassword // Update adviser password field directly
             }
         }));
     };
-
+    
     useEffect(() => {
         handlePasswordChange();
-    }, [userData.student.studentID, userData.student.lastName]);
+    }, [userData.student.studentID, userData.student.lastName, userData.advisers.employeeID, userData.advisers.alastName]);
+    
 
     const handleParentInputChange = (e, parentType) => {
         const { name, value } = e.target;
@@ -304,22 +327,41 @@ const handleBack = () => {
                 [name]: value
             }
         }));
-        
-        if (category === 'student' && (name === 'studentID' || name === 'lastName')) {
+    
+        // Check if the changed field is relevant to generating the password
+        if ((category === 'student' && (name === 'studentID' || name === 'lastName')) ||
+            (category === 'advisers' && (name === 'employeeID' || name === 'alastName'))) {
             handlePasswordChange(); // Call handlePasswordChange to update the password field
         }
     };
     
+    
     const handleDropdownChange = (category, member, value) => {
         // Update the value for the specified category and member
-        setUserData(prevState => ({
-            ...prevState,
-            [category]: {
-                ...prevState[category],
-                [member]: value
-            }
-        }));
+        if (member === 'gradeLevel') {
+            // If the selected member is gradeLevel, update the sections dropdown based on the selected grade level
+            setUserData(prevState => ({
+                ...prevState,
+                [category]: {
+                    ...prevState[category],
+                    [member]: value,
+                    // Reset the section and adviser values when grade level changes
+                    section: null,
+                    adviser: null
+                }
+            }));
+        } else {
+            // If the selected member is not gradeLevel, update the value directly
+            setUserData(prevState => ({
+                ...prevState,
+                [category]: {
+                    ...prevState[category],
+                    [member]: value
+                }
+            }));
+        }
     };
+    
 
     
     const handleDateChange = (category, member, date) => {
@@ -477,35 +519,35 @@ const handleBack = () => {
                     />
 
                        
-                        <CustomDropdown
-                            label="Grade level"
-                            options={gradelevel}
-                            value={userData.gradeLevel}
-                            onChange={(value) => {
-                            setUserData({ ...userData, gradeLevel: value, section: null });
-                            }}
-                            required
-                            error={errors['gradeLevel']}
-                            helperText={errors['gradeLevel'] ? "This field is required" : ""}
-                        />
+                    <CustomDropdown
+                        label="Grade level"
+                        options={gradeLevels}
+                        value={userData.student.gradeLevel}
+                        onChange={(value) => handleDropdownChange('student', 'gradeLevel', value)}
+                        required
+                        error={errors['gradeLevel']}
+                        helperText={errors['gradeLevel']}
+                    />
+
+                    <CustomDropdown
+                        label="Section"
+                        options={userData.student.gradeLevel ? sections[userData.student.gradeLevel] : []}
+                        value={userData.student.section}
+                        onChange={(value) => handleDropdownChange('student', 'section', value)}
+                        required
+                        error={errors['section']}
+                        helperText={errors['section']}
+                    />
+
 
                         <CustomDropdown
-                            label="Section"
-                            options={sections}
-                            value={userData.section}
-                            onChange={(value) => setUserData({ ...userData, section: value })}
-                            required
-                            error={errors['section']}
-                            helperText={errors['section'] ? "This field is required" : ""}
-                        />
-                        <CustomDropdown
                             label="Class adviser"
-                            options={adviser}
+                            options={advisers}
                             value={userData.student.adviser}
                            onChange={(value) => handleDropdownChange('student', 'adviser', value)}
                             required
                             error={errors['adviser']}
-                            helperText={errors['adviser'] ? "This field is required" : ""}
+                            helperText={errors['adviser']}
                         />
                         
                     </>
@@ -599,11 +641,10 @@ const handleBack = () => {
 
                         <CustomDropdown
                             label="Handled Grade level"
-                            options={gradelevel}
-                            value={userData.gradeLevel}
-                            onChange={(value) => {
-                            setUserData({ ...userData, gradeLevel: value, section: null });
-                            }}
+                            options={gradeLevels}
+                            value={userData.advisers.gradeLevel}
+                           onChange={(value) => handleDropdownChange('advisers', 'gradeLevel', value)}
+                           
                             required
                             error={errors['gradeLevel']}
                             helperText={errors['gradeLevel'] ? "This field is required" : ""}
@@ -611,9 +652,9 @@ const handleBack = () => {
 
                         <CustomDropdown
                             label="Section"
-                            options={sections}
-                            value={userData.section}
-                            onChange={(value) => setUserData({ ...userData, section: value })}
+                            options={userData.advisers.gradeLevel ? sections[userData.advisers.gradeLevel] : []}
+                             value={userData.advisers.section}
+                           onChange={(value) => handleDropdownChange('advisers', 'section', value)}
                             required
                             error={errors['section']}
                             helperText={errors['section'] ? "This field is required" : ""}
