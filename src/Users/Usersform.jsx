@@ -7,11 +7,14 @@ import Aos from 'aos';
 import 'aos/dist/aos.css';
 import data from './options.json'; // Import the JSON data
 
-function Usersform({ onCancelClick, userTypeOptions }) {
-    
+function Usersform({ onCancelClick,  onSaveUserData }) {
+     const userTypeOptions = [
+        { value: 'student', label: 'Student' },
+        { value: 'teacher', label: 'Teacher' },
+    ];
     const [errors, setErrors] = useState({}); 
-    const [userData, setUserData] = useState({
-    userType: userTypeOptions[0].value,
+    const [userData, setUserData] = useState({ 
+    userType: userTypeOptions.length > 0 ? userTypeOptions[0].value : '',
     student: {
         studentID: '',
         lastName: '',
@@ -26,6 +29,24 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         dob: null,
         age: '',
         gender: null,
+        parents: {
+            mother: {
+                mothersName: '',
+                mothersContact: '',
+                mothersOccupation: '',
+                mothersAddress: '',
+                dob: null,
+                age: '',
+            },
+            father: {
+                fathersName: '',
+                fathersContact: '',
+                fathersOccupation: '',
+                fathersAddress: '',
+                dob: null,
+                age: '',
+            }
+        }
     },
     advisers: {
         employeeID: '',
@@ -38,36 +59,86 @@ function Usersform({ onCancelClick, userTypeOptions }) {
         dob: null,
         age: '',
         gender: null,
-    },
-    academicData: {
-        lastSchoolAttended: '',
-        schoolAddress: '',
-        yearGraduated: null,
-        degree: '',
-        achievements: '',
-        prcNumber: '',
-        expirationDate: null,
-        yearsOfTeaching: '',
-    },
-    parents: {
-        mother: {
-            mothersName: '',
-            mothersContact: '',
-            mothersOccupation: '',
-            mothersAddress: '',
-            dob: null,
-            age: '',
+
+        academicData: {
+            lastSchoolAttended: '',
+            schoolAddress: '',
+            yearGraduated: null,
+            degree: '',
+            achievements: '',
+            prcNumber: '',
+            expirationDate: null,
+            yearsOfTeaching: '',
         },
-        father: {
-            fathersName: '',
-            fathersContact: '',
-            fathersOccupation: '',
-            fathersAddress: '',
-            dob: null,
-            age: '',
-        }
-    }
+        
+    },
+    
 });
+const [submittedUsers, setSubmittedUsers] = useState([]);
+const initialUserData = {
+    userType: 'student',
+    student: {
+        studentID: '',
+        lastName: '',
+        firstName: '',
+        middleName: '',
+        password: '',
+        contactNumber: '',
+        address: '',
+        gradeLevel: null,
+        section: null,
+        adviser: null,
+        dob: null,
+        age: '',
+        gender: null,
+        parents: {
+            mother: {
+                mothersName: '',
+                mothersContact: '',
+                mothersOccupation: '',
+                mothersAddress: '',
+                dob: null,
+                age: '',
+            },
+            father: {
+                fathersName: '',
+                fathersContact: '',
+                fathersOccupation: '',
+                fathersAddress: '',
+                dob: null,
+                age: '',
+            }
+        }
+    },
+    advisers: {
+        employeeID: '',
+        alastName: '',
+        afirstName: '',
+        amiddleName: '',
+        apassword: '',
+        acontactnumber: '',
+        aaddress: '',
+        dob: null,
+        age: '',
+        gender: null,
+        gradeLevel: null,
+        section: null,
+
+        academicData: {
+            lastSchoolAttended: '',
+            schoolAddress: '',
+            yearGraduated: null,
+            degree: '',
+            achievements: '',
+            prcNumber: '',
+            expirationDate: null,
+            yearsOfTeaching: '',
+        },
+        
+    },
+};
+
+const [showForm, setShowForm] = useState(true); // State variable to manage form visibility
 
 useEffect(() => {
     const initAos = async () => {
@@ -98,25 +169,23 @@ useEffect(() => {
     };
 }, []);
 
-    const userOptions = [
-        { value: 'student', label: 'Student' },
-        { value: 'teacher', label: 'Teacher' },
-    ];
+    // const userOptions = [
+    //     { value: 'student', label: 'Student' },
+    //     { value: 'teacher', label: 'Teacher' },
+    // ];
 
     const genderOptions = [
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
         { value: 'other', label: 'Other' },
     ];
-    const sy = [
-        { value: '1', label: '2023-2024' },
-        { value: '2', label: '2024-2025' },
-    ];
+    // const sy = [
+    //     { value: '1', label: '2023-2024' },
+    //     { value: '2', label: '2024-2025' },
+    // ];
     const gradeLevels = data.gradeLevels; // Updated to use JSON data
     const sections = data.sections; // Updated to use JSON data
     const advisers = data.advisers; // Updated to use JSON data
-    const [userType, setUserType] = useState(userTypeOptions[0].value); 
-    const [dob, setDob] = useState(null);
     const [step, setStep] = useState(1);
     
     const Style = {
@@ -127,15 +196,14 @@ useEffect(() => {
         border: '1px solid rgba(255, 255, 255, 0.125)',
         boxShadow: '5px -4px 1px rgb(173, 173, 172)',
     };
-
-const handleNext = () => {
-    // Validate fields before proceeding
+const validateStudentData = () => {
     const errors = {};
-    const { userType, student, advisers, } = userData;
+    const { student } = userData;
     const nameRegex = /^[a-zA-Z\- ]*$/;
 
-    if (userType === 'student') {
-        if (!student.studentID) errors['studentID'] = "LRN is required";
+    // step 1
+    if (step === 1){
+    if (!student.studentID) errors['studentID'] = "LRN is required";
         if (!student.lastName) {
             errors['lastName'] = "Last name is required";
         } else if (!nameRegex.test(student.lastName)) {
@@ -162,26 +230,86 @@ const handleNext = () => {
         if (!student.gradeLevel) errors['gradeLevel'] = "Grade level is required";
         if (!student.section) errors['section'] = "Section is required";
         if (!student.adviser) errors['adviser'] = "Class adviser is required";
-       
-    } else if (userType === 'teacher') {
-        if (!advisers.employeeID) errors['employeeID'] = "Employee ID is required";
-        if (!advisers.alastName) errors['alastName'] = "Last Name is required";
-        if (!advisers.afirstName) errors['afirstName'] = "First Name is required";
-        if (!advisers.amiddleName) errors['amiddleName'] = "Middle Name is required";
-        if (!advisers.apassword) errors['apassword'] = "Password is required";
-        if (!advisers.gender) errors['advisers.gender'] = "Gender is required";
-        if (!advisers.acontactnumber) errors['acontactnumber'] = "Contact number is required";
-        if (!advisers.aaddress) errors['aaddress'] = "Complete address is required";
-        if (!advisers.dob) errors['advisers.dob'] = "Date of Birth is required";
-        if (!advisers.gradeLevel) errors['gradeLevel'] = "Handled Grade level is required";
-        if (!advisers.section) errors['section'] = "Section is required";
     }
 
-    // Check if there are any errors
+        if (step ===2 ){
+        // step 2
+        //Separate the error of this parents info field
+        //Only activate this error handling, if the user is in step 2
+        const { mother } = student.parents;
+        if (!mother.mothersName) {
+            errors['mothersName'] = "Mother's name is required";
+        } else if (!nameRegex.test(mother.mothersName)) {
+            errors['mothersName'] = "Mother's name should contain only letters";
+        }
+        // if (!mother.dob) errors['mother.dob'] = "Date of Birth is required";
+        if (!mother.mothersContact) errors['mothersContact'] = "Contact number is required";
+        if (!mother.mothersOccupation) errors['mothersOccupation'] = "Mother's occupation is required";
+        if (!mother.mothersAddress) errors['mothersAddress'] = "Complete address is required";
+
+        const { father } = student.parents;
+        if (!father.fathersName) {
+            errors['fathersName'] = "Father's name is required";
+        } else if (!nameRegex.test(father.fathersName)) {
+            errors['fathersName'] = "Father's name should contain only letters";
+        }
+        // if (!father.dob) errors['father.dob'] = "Date of Birth is required";
+        if (!father.fathersContact) errors['fathersContact'] = "Contact number is required";
+        if (!father.fathersOccupation) errors['fathersOccupation'] = "Father's occupation is required";
+        if (!father.fathersAddress) errors['fathersAddress'] = "Complete address is required";
+    }
+    return errors;
+};
+const validateTeacherData = () => {
+    const errors = {};
+    const { advisers } = userData;
+
+    // step 1
+    if (step ===1) {
+    if (!advisers.employeeID) errors['employeeID'] = "Employee ID is required";
+    if (!advisers.alastName) errors['alastName'] = "Last Name is required";
+    if (!advisers.afirstName) errors['afirstName'] = "First Name is required";
+    if (!advisers.amiddleName) errors['amiddleName'] = "Middle Name is required";
+    if (!advisers.apassword) errors['apassword'] = "Password is required";
+    if (!advisers.gender) errors['advisers.gender'] = "Gender is required";
+    if (!advisers.acontactnumber) errors['acontactnumber'] = "Contact number is required";
+    if (!advisers.aaddress) errors['aaddress'] = "Complete address is required";
+    if (!advisers.dob) errors['advisers.dob'] = "Date of Birth is required";
+    if (!advisers.gradeLevel) errors['gradeLevel'] = "Handled Grade level is required";
+    if (!advisers.section) errors['section'] = "Section is required";
+    }
+
+    if (step ===2){
+    // step 2
+    //Separate the error of this academic info field
+    //Only activate this error handling, if the user is in step 2
+    const academicData = advisers.academicData;
+    if (!academicData.lastSchoolAttended) errors['lastSchoolAttended'] = "This field is required";
+    if (!academicData.schoolAddress) errors['schoolAddress'] = "This field is required";
+    if (!academicData.yearGraduated) errors['yearGraduated'] = "This field is required";
+    if (!academicData.degree) errors['degree'] = "This field is required";
+    if (!academicData.prcNumber) errors['prcNumber'] = "This field is required";
+    if (!academicData.expirationDate) errors['expirationDate'] = "This field is required";
+    if (!academicData.yearsOfTeaching) errors['yearsOfTeaching'] = "This field is required";
+    }
+    return errors;
+};
+
+const handleNext = () => {
+    const { userType } = userData;
+    let errors = {};
+
+    if (userType === 'student') {
+        errors = validateStudentData(step);
+    } else if (userType === 'teacher') {
+        errors = validateTeacherData(step);
+    }
+
     if (Object.keys(errors).length > 0) {
-        setErrors(errors); // Update the errors state to display error messages
+        console.log('Validation errors detected:', errors);
+        setErrors(errors);
     } else {
-        console.log('Inputted data:', userData);
+        // Move to the next step
         if (step === 1) {
             if (userData.userType === 'student') {
                 setStep(2); // Move to the next step for student (Parents Information)
@@ -191,6 +319,7 @@ const handleNext = () => {
         }
     }
 };
+
 
 const handleBack = () => {
     setStep(1);
@@ -213,56 +342,59 @@ const handleBack = () => {
     });
 };
 
+const handleSubmit = () => {
+    let errors = {};
 
-    
-    const handleSubmit = () => {
-        const errors = {};
-        const { userType, academicData, parents } = userData;
-        const nameRegex = /^[a-zA-Z]+$/;
-    
-        if (userType === 'student') {
-            if (!parents.mother.mothersName) {
-                errors['mothersName'] = "Mother's name is required";
-            } else if (!nameRegex.test(parents.mother.mothersName)) {
-                errors['mothersName'] = "Mother's name should contain only letters";
-            }
-            if (!parents.mother.dob) errors['mother.dob'] = "Date of Birth is required";
-            if (!parents.mother.mothersContact) errors['mothersContact'] = "Contact number is required";
-            if (!parents.mother.mothersOccupation) errors['mothersOccupation'] = "Mother's occupation is required";
-            if (!parents.mother.mothersAddress) errors['mothersAddress'] = "Complete address is required";
-            if (!parents.father.fathersName) {
-                errors['fathersName'] = "Father's name is required";
-            } else if (!nameRegex.test(parents.father.fathersName)) {
-                errors['fathersName'] = "Father's name should contain only letters";
-            }
-            if (!parents.father.dob) errors['father.dob'] = "Date of Birth is required";
-            if (!parents.father.fathersContact) errors['fathersContact'] = "Contact number is required";
-            if (!parents.father.fathersOccupation) errors['fathersOccupation'] = "Father's occupation is required";
-            if (!parents.father.fathersAddress) errors['fathersAddress'] = "Complete address is required";
-        }
-        else if (userType === 'teacher') {
-            if (!academicData.lastSchoolAttended) errors['lastSchoolAttended'] = "This field is required";
-            if (!academicData.schoolAddress) errors['schoolAddress'] = "This field is required";
-            if (!academicData.yearGraduated) errors['yearGraduated'] = "This field is required";
-            if (!academicData.degree) errors['degree'] = "This field is required";
-            if (!academicData.prcNumber) errors['prcNumber'] = "This field is required";
-            if (!academicData.expirationDate) errors['expirationDate'] = "This field is required";
-            if (!academicData.yearsOfTeaching) errors['yearsOfTeaching'] = "This field is required";
+    if (userData.userType === 'student') {
+        // Validation and submission logic for student
+        errors = validateStudentData(step === 2);
+
+    } else if (userData.userType === 'teacher') {
+        // Validation and submission logic for teacher
+        errors = validateTeacherData(step === 2);
+    }
+
+    // Check if there are any validation errors
+    if (Object.keys(errors).length > 0) {
+        // Update the errors state if there are errors
+        setErrors(errors);
+    } else {
+        // Proceed with form submission if there are no errors
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+        let userWithCreateDate = {};
+        
+        if (userData.userType === 'student') {
+            userWithCreateDate = {
+                ...userData,
+                createdate: formattedDate,
+                id: userData.student.studentID,
+                name: `${userData.student.firstName} ${userData.student.middleName} ${userData.student.lastName} `,
+                userType: userData.userType
+            };
+        } else if (userData.userType === 'teacher') {
+            userWithCreateDate = {
+                ...userData,
+                createdate: formattedDate,
+                id: userData.advisers.employeeID,
+                name: `${userData.advisers.afirstName} ${userData.advisers.amiddleName} ${userData.advisers.alastName}`,
+                userType: userData.userType
+            };
         }
 
-        if (Object.keys(errors).length > 0) {
-            setErrors(errors); // Update the errors state to display error messages
-        } else {
-            console.log('Inputted data:', userData);
-            if (step === 1) {
-                if (userData.userType === 'student') {
-                    setStep(2); // Move to the next step for student (Parents Information)
-                } else if (userData.userType === 'teacher') {
-                    setStep(2); // Move to the next step for teacher (Academic Information)
-                }
-            }
-        }
-    };
+        // Update submittedUsers state with the new user data
+        setSubmittedUsers([...submittedUsers, userWithCreateDate]);
+        
+        // Reset form data and hide form after submission
+        setUserData(initialUserData);
+        setShowForm(false);
+
+        // Callback function to save user data
+        onSaveUserData(userData.userType, userWithCreateDate);
+    }
+};
+
+
 
     useEffect(() => {
         setErrors({});
@@ -295,6 +427,7 @@ const handleBack = () => {
     
     useEffect(() => {
         handlePasswordChange();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData.student.studentID, userData.student.lastName, userData.advisers.employeeID, userData.advisers.alastName]);
     
 
@@ -303,31 +436,49 @@ const handleBack = () => {
         const updatedErrors = { ...errors };
         delete updatedErrors[name];
         setErrors(updatedErrors);
-        setUserData(prevState => ({
-            ...prevState,
-            parents: {
-                ...prevState.parents,
-                [parentType]: {
-                    ...prevState.parents[parentType],
-                    [name]: value
+        setUserData(prevUserData => ({
+            ...prevUserData,
+            student: {
+                ...prevUserData.student,
+                parents: {
+                    ...prevUserData.student.parents,
+                    [parentType]: {
+                        ...prevUserData.student.parents[parentType],
+                        [name]: value
+                    }
                 }
             }
         }));
     };
-    const handleInputChange = (e, category) => {
+    
+    const handleInputChange = (e, category, subcategory = null) => {
         const { name, value } = e.target;
         // Remove the error for the field being updated
         const updatedErrors = { ...errors };
         delete updatedErrors[name];
         setErrors(updatedErrors);
-        setUserData(prevState => ({
-            ...prevState,
-            [category]: {
-                ...prevState[category],
-                [name]: value
-            }
-        }));
     
+        if (subcategory) {
+            setUserData(prevState => ({
+                ...prevState,
+                [category]: {
+                    ...prevState[category],
+                    [subcategory]: {
+                        ...prevState[category][subcategory],
+                        [name]: value
+                    }
+                }
+            }));
+        } else {
+            setUserData(prevState => ({
+                ...prevState,
+                [category]: {
+                    ...prevState[category],
+                    [name]: value
+                }
+            }));
+        }
+       
         // Check if the changed field is relevant to generating the password
         if ((category === 'student' && (name === 'studentID' || name === 'lastName')) ||
             (category === 'advisers' && (name === 'employeeID' || name === 'alastName'))) {
@@ -361,33 +512,65 @@ const handleBack = () => {
             }));
         }
     };
+    const handleParentDateChange = (parentType, fieldName, date) => {
+        const updatedUserData = {
+            ...userData,
+            student: {
+                ...userData.student,
+                parents: {
+                    ...userData.student.parents,
+                    [parentType]: {
+                        ...userData.student.parents[parentType],
+                        [fieldName]: date
+                    }
+                }
+            }
+        };
     
-
+        // Calculate and update the age
+        updatedUserData.student.parents[parentType].age = calculateAge(date);
+        
+        setUserData(updatedUserData);
+    };
+    
     
     const handleDateChange = (category, member, date) => {
         const updatedUserData = {
-          ...userData,
-          [category]: {
-            ...userData[category],
-            [member]: date
-          }
+            ...userData,
+            [category]: {
+                ...userData[category],
+                [member]: date,
+                academicData: {
+                    ...userData[category].academicData,
+                    [member]: date,
+                  },
+            }
         };
-        // Calculate and update the age
-        updatedUserData[category].age = calculateAge(date);
-        setUserData(updatedUserData);
-      };
     
-      const calculateAge = (dob) => {
-        if (!dob) return '';
-        const birthDate = new Date(dob);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-          age--; // Adjust age if the birthday hasn't occurred yet
+        // Calculate and update the age for advisers
+        if (category === 'advisers' && member === 'dob') {
+            updatedUserData.advisers.age = calculateAge(date);
         }
-        return age;
-      };
+        if (category === 'student' && member === 'dob') {
+            updatedUserData.student.age = calculateAge(date);
+        }
+        setUserData(updatedUserData);
+    };
+    
+
+const calculateAge = (dob) => {
+    if (!dob) return '';
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--; // Adjust age if the birthday hasn't occurred yet
+    }
+    return age;
+};
+
+      
     return (
         <div>
             <div data-aos='fade-left' className='flex justify-start items-center pb-5' style={{ top: '10px', right: '10px' }}>
@@ -622,22 +805,22 @@ const handleBack = () => {
                             error={errors['aaddress']}
                             helperText={errors['aaddress'] ? "This field is required" : ""}
                         />
-                     <CustomDatePicker
-                        label="Date of Birth"
-                        value={userData.advisers.dob}
-                        onChange={(date) => handleDateChange('advisers', 'dob', date)} // Pass 'student' and 'dob' as parameters
-                        required
-                        error={errors['advisers.dob']}
-                        helperText={errors['advisers.dob'] ? "This field is required" : ""}
-                     />
+                        <CustomDatePicker
+                            label="Date of Birth"
+                            value={userData.advisers.dob}
+                            onChange={(date) => handleDateChange('advisers', 'dob', date)}
+                            required
+                            error={errors['advisers.dob']}
+                            helperText={errors['advisers.dob'] ? "This field is required" : ""}
+                        />
 
-                     <CustomTextField
-                        label="Age"
-                        value={userData.advisers.age}
-                        readOnly
-                        error={errors['advisers.age']}
-                        helperText={errors['advisers.age'] ? "This field is required" : ""}
-                     />
+                        <CustomTextField
+                            label="Age"
+                            value={userData.advisers.age}
+                            readOnly
+                            error={errors['advisers.age']}
+                            helperText={errors['advisers.age'] ? "This field is required" : ""}
+                        />
 
                         <CustomDropdown
                             label="Handled Grade level"
@@ -681,30 +864,32 @@ const handleBack = () => {
                     <div data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
                     <CustomTextField
                         label="Mother's Name"
-                        value={userData.parents.mother.mothersName}
+                        value={userData.student.parents.mother.mothersName}
                         onChange={e => handleParentInputChange(e, 'mother')} 
                         name="mothersName"
                         error={errors['mothersName']}
                         helperText={errors['mothersName']}
                     />
                        
-                      <CustomDatePicker
-                        label="Date of Birth"
-                        value={userData.parents.mother.dob}
-                        onChange={(date) => handleDateChange('parents','mother', 'dob', date)}
-                        required
-                        error={errors['mother.dob']}
-                        helperText={errors['mother.dob']}
-                    />
-                    <CustomTextField
-                        label="Age"
-                        value={userData.parents.mother.age}
-                        readOnly
-                    />
+                       <CustomDatePicker
+                            label="Mother's Date of Birth"
+                            value={userData.student.parents.mother.dob}
+                            onChange={(date) => handleParentDateChange('mother', 'dob', date)}
+                            required
+                            error={errors['mother.dob']}
+                            helperText={errors['mother.dob']}
+                        />
+
+                        <CustomTextField
+                            label="Mother's Age"
+                            value={userData.student.parents.mother.age}
+                            readOnly
+                        />
                 
                         <CustomTextField
                             label="Mother's Contact number"
-                            value={userData.parents.mother.mothersContact}
+                            type='numeric'
+                            value={userData.student.parents.mother.mothersContact}
                             onChange={e => handleParentInputChange(e, 'mother')} 
                             name="mothersContact"
                             error={errors['mothersContact']}
@@ -713,7 +898,7 @@ const handleBack = () => {
                         
                         <CustomTextField
                             label="Mother's Occupation"
-                            value={userData.parents.mother.mothersOccupation}
+                            value={userData.student.parents.mother.mothersOccupation}
                             onChange={e => handleParentInputChange(e, 'mother')} 
                             name="mothersOccupation"
                             error={errors['mothersOccupation']}
@@ -722,7 +907,7 @@ const handleBack = () => {
                     
                         <CustomTextField
                             label="Mother's Address"
-                            value={userData.parents.mother.mothersAddress}
+                            value={userData.student.parents.mother.mothersAddress}
                             onChange={e => handleParentInputChange(e, 'mother')} 
                             name="mothersAddress"
                             error={errors['mothersAddress']}
@@ -730,30 +915,31 @@ const handleBack = () => {
                         />
                         <CustomTextField
                             label="Father's Name"
-                            value={userData.parents.father.fathersName}
+                            value={userData.student.parents.father.fathersName}
                             onChange={e => handleParentInputChange(e, 'father')} 
                             name="fathersName"
                             error={errors['fathersName']}
                             helperText={errors['fathersName']}
                         />
                        
-                      <CustomDatePicker
-                        label="Date of Birth"
-                        value={userData.parents.father.dob}
-                        onChange={(date) => handleDateChange('parents','father', 'dob', date)}
-                        required
-                        error={errors['father.dob']}
-                        helperText={errors['father.dob']}
-                    />
-                    <CustomTextField
-                        label="Age"
-                        value={userData.parents.father.age}
-                        readOnly
-                    />
+                        <CustomDatePicker
+                            label="Date of Birth"
+                            value={userData.student.parents.father.dob}
+                            onChange={(date) => handleParentDateChange('father', 'dob' ,date)}
+                            required
+                            error={errors['father.dob']}
+                            helperText={errors['father.dob']}
+                        />
+                        <CustomTextField
+                            label="Age"
+                            value={userData.student.parents.father.age}
+                            readOnly
+                        />
                 
                         <CustomTextField
                             label="Father's Contact number"
-                            value={userData.parents.father.fathersContact}
+                            type='numeric'
+                            value={userData.student.parents.father.fathersContact}
                             onChange={e => handleParentInputChange(e, 'father')} 
                             name="fathersContact"
                             error={errors['fathersContact']}
@@ -762,7 +948,7 @@ const handleBack = () => {
                         
                         <CustomTextField
                             label="Father's Occupation"
-                            value={userData.parents.father.fathersOccupation}
+                            value={userData.student.parents.father.fathersOccupation}
                             onChange={e => handleParentInputChange(e, 'father')} 
                             name="fathersOccupation"
                             error={errors['fathersOccupation']}
@@ -771,7 +957,7 @@ const handleBack = () => {
                     
                         <CustomTextField
                             label="Father's Address"
-                            value={userData.parents.father.fathersAddress}
+                            value={userData.student.parents.father.fathersAddress}
                             onChange={e => handleParentInputChange(e, 'father')} 
                             name="fathersAddress"
                             error={errors['fathersAddress']}
@@ -796,19 +982,19 @@ const handleBack = () => {
 
                     <div  data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
                     
-                        <CustomTextField
-                            label="Last School Attended"
-                            value={userData.academicData.lastSchoolAttended}
-                            onChange={e => handleInputChange(e, 'academicData')} 
-                            name="lastSchoolAttended"
-                            required
-                            error={errors['lastSchoolAttended']}
-                            helperText={errors['lastSchoolAttended']}
-                        />
+                    <CustomTextField
+                        label="Last School Attended"
+                        value={userData.advisers.academicData.lastSchoolAttended}
+                        onChange={e => handleInputChange(e, 'advisers', 'academicData')} 
+                        name="lastSchoolAttended"
+                        required
+                        error={errors['lastSchoolAttended']}
+                        helperText={errors['lastSchoolAttended']}
+                    />
                         <CustomTextField
                             label="School Address"
-                            value={userData.academicData.schoolAddress}
-                            onChange={e => handleInputChange(e, 'academicData')} 
+                            value={userData.advisers.academicData.schoolAddress}
+                            onChange={e => handleInputChange(e, 'advisers', 'academicData')} 
                             name="schoolAddress"
                             required
                             error={errors['schoolAddress']}
@@ -816,8 +1002,8 @@ const handleBack = () => {
                         />
                         <CustomDatePicker
                             label="Year Graduated"
-                            value={userData.academicData.yearGraduated}
-                            onChange={(date) => handleDateChange('academicData','yearGraduated', date)}
+                            value={userData.advisers.academicData.yearGraduated}
+                            onChange={(date) => handleDateChange('advisers', 'yearGraduated', date)}
                             required
                             yearOnly
                             error={errors['yearGraduated']}
@@ -826,8 +1012,8 @@ const handleBack = () => {
                         
                         <CustomTextField
                             label="Degree"
-                            value={userData.academicData.degree}
-                            onChange={e => handleInputChange(e, 'academicData')} 
+                            value={userData.advisers.academicData.degree}
+                            onChange={e => handleInputChange(e, 'advisers', 'academicData')} 
                             name="degree"
                             required
                             error={errors['degree']}
@@ -844,25 +1030,25 @@ const handleBack = () => {
                         <CustomTextField
                             label="PRC Number"
                             type="numeric"
-                            value={userData.academicData.prcNumber}
-                            onChange={e => handleInputChange(e, 'academicData')} 
+                            value={userData.advisers.academicData.prcNumber}
+                            onChange={e => handleInputChange(e, 'advisers', 'academicData')} 
                             name="prcNumber"
                             error={errors['prcNumber']}
                             helperText={errors['prcNumber']}
                         />
                         <CustomDatePicker
                             label="Expiration Date"
-                            value={userData.academicData.expirationDate}
-                            onChange={(date) => handleDateChange('academicData','expirationDate', date)}
+                            value={userData.advisers.academicData.expirationDate}
+                            onChange={(date) => handleDateChange('advisers', 'expirationDate', date)}
                             error={errors['expirationDate']}
                             helperText={errors['expirationDate']}
                         />
                         <CustomTextField
                             label="Years of Teaching"
                             type="numeric"
-                            value={userData.academicData.yearsOfTeaching}
+                            value={userData.advisers.academicData.yearsOfTeaching}
                             required
-                            onChange={e => handleInputChange(e, 'academicData')} 
+                            onChange={e => handleInputChange(e, 'advisers', 'academicData')} 
                             name="yearsOfTeaching"
                             error={errors['yearsOfTeaching']}
                             helperText={errors['yearsOfTeaching']}

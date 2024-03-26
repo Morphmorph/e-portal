@@ -1,4 +1,5 @@
-import * as React from 'react';
+// UserTable.js
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,9 +11,9 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 
 const columns = [
-  { id: 'createdate', label: 'Date Created', minWidth: 170, align: 'center' },
-  { id: 'usertype', label: 'User Type', minWidth: 170, align: 'center'  },
-  { id: 'id', label: 'ID', minWidth: 170 },
+  { id: 'createdate', label: 'Date created', minWidth: 170, align: 'center' },
+  { id: 'userType', label: 'User type', minWidth: 170, align: 'center' },
+  { id: 'id', label: 'ID #', minWidth: 170 },
   { id: 'name', label: 'Name', minWidth: 170 },
   {
     id: 'details',
@@ -21,40 +22,26 @@ const columns = [
     align: 'center',
     render: (value, row, showProfileView) => (
       <Button variant="contained" color="primary" onClick={() => showProfileView(row)}>
-      View
-    </Button>
+        View
+      </Button>
     ),
   },
-  
 ];
 
-function createData(createdate, usertype , id, name) {
-  return { createdate, usertype , id, name};
-}
-
-const rows = [
-  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
-  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
-  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
-  createData('03/15/2024', 'Student',1234567890, 'John Doe'),
-  createData('03/15/2024', 'Teacher',1234567890, 'John Doe'),
-];
-
-export default function UserTable({showProfileView}) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+export default function UserTable({ showProfileView, users }) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
+  
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2}}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -63,7 +50,7 @@ export default function UserTable({showProfileView}) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, color: '#079440', fontWeight: 'bold',}}
+                  style={{ minWidth: column.minWidth, color: '#079440', fontWeight: 'bold' }}
                 >
                   {column.label}
                 </TableCell>
@@ -71,34 +58,51 @@ export default function UserTable({showProfileView}) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
-                return (
+            {users.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  No users found.
+                </TableCell>
+              </TableRow>
+            ) : (
+              users
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align} style={{ borderLeft: '1px solid #ccc' }}>
-                          {column.render ? column.render(value, row, showProfileView) : value}
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ borderLeft: '1px solid #ccc' }}
+                        >
+                          {column.render ? 
+                            column.render(value, row, showProfileView) : 
+                            (value && (column.id === 'name' || column.id === 'userType')) ? 
+                            value.toUpperCase() : 
+                            value
+                          }
                         </TableCell>
                       );
                     })}
                   </TableRow>
-                );
-              })}
+                ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {users.length > 0 && (
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
     </Paper>
   );
 }

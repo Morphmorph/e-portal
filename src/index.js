@@ -1,20 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-
 import reportWebVitals from './reportWebVitals';
-import Login from './Landing page/Login';
-import ADashboard from './Admin page/ADashboard';
-import TDashboard from './Teacher page/TDashboard';
-import Dashboard from './Landing page/Dashboard';
-import SDashboard from './Student page/SDashboard';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
-    <ADashboard/>
-  </React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
