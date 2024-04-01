@@ -64,6 +64,24 @@ export default function AddPaymentModal({ open, handleClose }) {
     setStatus(event.target.value);
   };
 
+  const handleAdd = () => {
+    const newPayment = {
+      id: document.getElementById("id").value,
+      name: document.getElementById("name-payment-modal").value,
+      contact: document.getElementById("contact-payment-modal").value,
+      gradelevel: gradeLevel,
+      section: section,
+      adviser: adviser,
+      status: status,
+    };
+
+    const payments = JSON.parse(localStorage.getItem("payments")) || [];
+    payments.push(newPayment);
+    localStorage.setItem("payments", JSON.stringify(payments));
+
+    handleClose();
+  };
+
   return (
     <Modal
       open={open}
@@ -104,12 +122,7 @@ export default function AddPaymentModal({ open, handleClose }) {
           <Grid container spacing={2}>
             {/* ID textfield */}
             <Grid item xs={12} sm={6} mt={3}>
-              <TextField
-                id="id"
-                label="ID"
-                size="small"
-                fullWidth
-              />
+              <TextField id="id" label="ID" size="small" fullWidth />
             </Grid>
 
             {/* Name textfield */}
@@ -264,6 +277,7 @@ export default function AddPaymentModal({ open, handleClose }) {
               variant="contained"
               style={{ background: "#F2B569" }}
               startIcon={<Avatar src={add} sx={{ width: 20, height: 20 }} />}
+              onClick={handleAdd}
             >
               Add
             </Button>
