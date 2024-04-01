@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
 import TextField from "@mui/material/TextField";
 import Dropdown from "../component/Dropdown";
@@ -51,13 +51,24 @@ function Ledger({ onCancelClick }) {
     { value: "2", label: "Pending" },
   ];
 
-  {
-    /* For modal */
-  }
+  // For modal
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [payments, setPayments] = useState([]);
+
+  useEffect(() => {
+    const storedPayments = JSON.parse(localStorage.getItem("payments")) || [];
+    setPayments(storedPayments);
+  }, []);
+
+  const handlePaymentAdded = (newPayment) => {
+    const updatedPayments = [...payments, newPayment];
+    setPayments(updatedPayments);
+    localStorage.setItem("payments", JSON.stringify(updatedPayments));
+  };
 
   return (
     <div>
@@ -124,7 +135,11 @@ function Ledger({ onCancelClick }) {
       </div>
 
       {/* Modal component */}
-      <AddPaymentModal open={open} handleClose={handleClose} />
+      <AddPaymentModal
+        open={open}
+        handleClose={handleClose}
+        handlePaymentAdded={handlePaymentAdded}
+      />
 
       <div
         data-aos="fade-left"
@@ -141,7 +156,7 @@ function Ledger({ onCancelClick }) {
         style={{ borderBottomWidth: 1, borderColor: "#F2B569" }}
       ></div>
       <div data-aos="fade-right">
-        <LedgerTable />
+        <LedgerTable payments={payments} />
       </div>
     </div>
   );

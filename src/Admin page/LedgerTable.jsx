@@ -7,7 +7,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Button from "@mui/material/Button";
 
 const columns = [
   { id: "id", label: "ID", minWidth: 170 },
@@ -26,7 +25,12 @@ const columns = [
         style={{
           fontWeight: "bold",
           padding: 10,
-          color: value === "Paid" ? "#079440" : "#F2B569",
+          color:
+            value === "Paid"
+              ? "#079440"
+              : value === "Overdue"
+              ? "#FF0000"
+              : "#F2B569",
           borderRadius: 5,
         }}
       >
@@ -36,11 +40,7 @@ const columns = [
   },
 ];
 
-function createData(id, name, contact, gradelevel, section, adviser, status) {
-  return { id, name, contact, gradelevel, section, adviser, status };
-}
-
-export default function LedgerTable() {
+export default function LedgerTable({ payments }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
@@ -81,7 +81,7 @@ export default function LedgerTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {payments
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (

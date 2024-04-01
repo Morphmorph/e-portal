@@ -35,7 +35,11 @@ const useResponsiveStyle = () => {
   };
 };
 
-export default function AddPaymentModal({ open, handleClose }) {
+export default function AddPaymentModal({
+  open,
+  handleClose,
+  handlePaymentAdded,
+}) {
   const style = useResponsiveStyle();
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
@@ -79,6 +83,7 @@ export default function AddPaymentModal({ open, handleClose }) {
     payments.push(newPayment);
     localStorage.setItem("payments", JSON.stringify(payments));
 
+    handlePaymentAdded(newPayment);
     handleClose();
   };
 
