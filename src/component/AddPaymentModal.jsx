@@ -55,15 +55,12 @@ export default function AddPaymentModal({
   const handleChangeGradeLevel = (event) => {
     setGradeLevel(event.target.value);
   };
-
   const handleChangeSection = (event) => {
     setSection(event.target.value);
   };
-
   const handleChangeAdviser = (event) => {
     setAdviser(event.target.value);
   };
-
   const handleChangeStatus = (event) => {
     setStatus(event.target.value);
   };
@@ -85,6 +82,12 @@ export default function AddPaymentModal({
 
     handlePaymentAdded(newPayment);
     handleClose();
+
+    // Reset state values after adding payment
+    setGradeLevel("");
+    setSection("");
+    setAdviser("");
+    setStatus("");
   };
 
   return (
