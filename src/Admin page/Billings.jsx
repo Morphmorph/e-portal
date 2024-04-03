@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
 import add from "../assets/add.webp";
 import BillingsTable from "./BillingsTable";
@@ -27,13 +27,25 @@ function Billings({ onCancelClick }) {
     anchorPlacement: "top-bottom",
   });
 
-  {
-    /* For modal */
-  }
+  // For modal
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  // For local storage
+  const [billings, setBillings] = useState([]);
+
+  useEffect(() => {
+    const storedBillings = JSON.parse(localStorage.getItem("billings")) || [];
+    setBillings(storedBillings);
+  }, []);
+
+  const handleBillingAdded = (newBilling) => {
+    const updatedBillings = [...billings, newBilling];
+    setBillings(updatedBillings);
+    localStorage.setItem("billings", JSON.stringify(updatedBillings));
+  };
 
   return (
     <div>
@@ -94,14 +106,18 @@ function Billings({ onCancelClick }) {
       </div>
 
       {/* Modal component */}
-      <NewBillingModal open={open} handleClose={handleClose} />
+      <NewBillingModal
+        open={open}
+        handleClose={handleClose}
+        handleBillingAdded={handleBillingAdded}
+      />
 
       <div
         data-aos="fade-right"
         style={{ borderBottomWidth: 1, borderColor: "#F2B569" }}
       ></div>
       <div data-aos="fade-right">
-        <BillingsTable />
+        <BillingsTable billings={billings} />
       </div>
     </div>
   );

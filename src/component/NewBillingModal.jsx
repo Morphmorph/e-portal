@@ -21,7 +21,25 @@ const style = {
   borderRadius: 2,
 };
 
-export default function NewBillingModal({ open, handleClose }) {
+export default function NewBillingModal({
+  open,
+  handleClose,
+  handleBillingAdded,
+}) {
+  const handleAdd = () => {
+    const newBilling = {
+      description: document.getElementById("description-billing-modal").value,
+      amount: document.getElementById("amount-billing-modal").value,
+    };
+
+    const billings = JSON.parse(localStorage.getItem("billings")) || [];
+    billings.push(newBilling);
+    localStorage.setItem("billings", JSON.stringify(billings));
+
+    handleBillingAdded(newBilling);
+    handleClose();
+  };
+
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
       // Handle click only if the backdrop itself is clicked
@@ -70,7 +88,7 @@ export default function NewBillingModal({ open, handleClose }) {
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
             <TextField
               label="Description"
-              id="descrition-billing-modal"
+              id="description-billing-modal"
               size="small"
               style={{ marginRight: "2vw" }}
             />
@@ -84,6 +102,7 @@ export default function NewBillingModal({ open, handleClose }) {
               variant="contained"
               style={{ background: "#F2B569" }}
               startIcon={<Avatar src={add} sx={{ width: 20, height: 20 }} />}
+              onClick={handleAdd}
             >
               Add
             </Button>
