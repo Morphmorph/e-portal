@@ -36,6 +36,34 @@
             {"value":"10","label":"Diligence"}
         ]
     },
+    "subjects": {
+        "1": [
+            {"value":"1","label":"English"},
+            {"value":"2","label":"Filipino"}
+        ],
+        "2": [
+            {"value":"3","label":"Mathematics"},
+            {"value":"4","label":"Science"}
+        ],
+        "3": [
+            {"value":"5","label":"MAPEH"},
+            {"value":"6","label":"APP"}
+        ],
+        "4": [
+            {"value":"7","label":"Computer programming 1"},
+            {"value":"8","label":"Foreign language"}
+        ],
+        "5": [
+            {"value":"9","label":"Computer programming 2"}
+        ],
+        "6": [
+            {"value":"10","label":"Elective 1"},
+            {"value":"11","label":"Elective 2"}
+        ],
+        "7": [
+            {"value":"10","label":"Capstone"}
+        ]
+    },
     "advisers":[
         {"value":"1","label":"Uzumaki Naruto"},
         {"value":"2","label":"Son Goku"},

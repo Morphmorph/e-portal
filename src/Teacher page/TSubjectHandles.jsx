@@ -5,15 +5,21 @@ import Aos from 'aos';
 import 'aos/dist/aos.css'
 import Dropdown from '../component/Dropdown';
 import AddSubjectHandleModal from '../component/AddSubjectHandleModal';
+import TSubjectHandleTable from './TSubjectHandleTable';
 
 
-function TSubjectHandles({onCancelClick }) {
+function TSubjectHandles({onCancelClick, }) {
 
   const [open, setOpen] = useState(false);
+  const [tableRows, setTableRows] = useState([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+const addSubjectToTable = (subjectData) => {
+    setTableRows([...tableRows, subjectData]);
+    handleClose(); // Close the modal after adding the subject
+  };
   Aos.init({
     // Global settings:
     disable: false, 
@@ -34,15 +40,7 @@ function TSubjectHandles({onCancelClick }) {
     anchorPlacement: 'top-bottom', 
   });
 
-  const gradelevel = [
-    { value: '1', label: 'Kinder' },
-    { value: '2', label: 'Grade 1' },
-    { value: '3', label: 'Grade 2' },
-    { value: '4', label: 'Grade 3' },
-    { value: '5', label: 'Grade 4' },
-    { value: '6', label: 'Grade 5' },
-    { value: '7', label: 'Grade 6' },
-  ];
+
   const Style = {
     backdropFilter: 'blur(16px) saturate(180%)',
     WebkitBackdropFilter: 'blur(16px) saturate(180%)',
@@ -89,10 +87,10 @@ function TSubjectHandles({onCancelClick }) {
            
         </div>
         <div data-aos='fade-up'>
-        <AddSubjectHandleModal open={open} handleClose={handleClose} />
+        <AddSubjectHandleModal open={open} handleClose={handleClose} addSubjectToTable={addSubjectToTable}/>
         </div>
         <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-       
+       <TSubjectHandleTable rows={tableRows}/>
     </div>
   )
 }

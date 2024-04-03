@@ -1,5 +1,4 @@
-// UserTable.js
-import React, { useState } from 'react';
+import React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,7 +19,7 @@ const columns = [
     label: 'Details',
     minWidth: 170,
     align: 'center',
-    render: (value, row, showProfileView) => (
+    render: (row, showProfileView) => (
       <Button variant="contained" color="primary" onClick={() => showProfileView(row)}>
         View
       </Button>
@@ -28,18 +27,22 @@ const columns = [
   },
 ];
 
-export default function UserTable({ showProfileView, users }) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+const UserTable = ({ showProfileView, users, selectedUserType }) => {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  
+
+  // Simplified filtering logic
+  const filteredUsers = selectedUserType ? users.filter(user => user.userType === selectedUserType) : users;
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -58,14 +61,14 @@ export default function UserTable({ showProfileView, users }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length} align="center">
                   No users found.
                 </TableCell>
               </TableRow>
             ) : (
-              users
+              filteredUsers
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={index}>
@@ -78,31 +81,34 @@ export default function UserTable({ showProfileView, users }) {
                           style={{ borderLeft: '1px solid #ccc' }}
                         >
                           {column.render ? 
-                            column.render(value, row, showProfileView) : 
-                            (value && (column.id === 'name' || column.id === 'userType')) ? 
-                            value.toUpperCase() : 
-                            value
-                          }
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {users.length > 0 && (
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      )}
-    </Paper>
-  );
-}
+                            column.render(row, showProfileView
+                              ) : (
+                                (value && (column.id === 'name' || column.id === 'userType')) ? 
+                                  value.toUpperCase() : 
+                                  value
+                              )}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {filteredUsers.length > 0 && (
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={filteredUsers.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          )}
+        </Paper>
+      );
+    };
+    
+    export default UserTable;

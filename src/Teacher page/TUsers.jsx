@@ -17,17 +17,29 @@ function TUsers({ onCancelClick }) {
   const [showProfileView, setShowProfileView] = useState(false);
   const [showAttendance, setShowAttendance] = useState(false); 
   const [showGrades, setShowGrades] = useState(false);
+  const [submittedUsers, setSubmittedUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserType, setSelectedUserType] = useState(null);
 
   const handleViewGrades = () => {
     setShowGrades(true);
   };
-  const handleViewProfile = () => {
+const handleSaveUserData = (userType, userData) => {
+    setSubmittedUsers([...submittedUsers, { ...userData, userType }]);
+    setShowForm(false); // Close the form after saving user data
+  };
+
+  const handleViewProfile = (user) => {
+    setSelectedUser(user);
     setShowProfileView(true);
   };
   const handleCheckAttendanceClick = () => {
     setShowAttendance(true);
   };
 
+  const handleUserTypeChange = (value) => {
+    setSelectedUserType(value);
+  };
   Aos.init({
     // Global settings:
     disable: false, 
@@ -47,6 +59,7 @@ function TUsers({ onCancelClick }) {
     mirror: false, 
     anchorPlacement: 'top-bottom', 
   });
+  
   const statusOptions = [
     { value: 'present', label: 'Present' },
     { value: 'absent', label: 'Absent' },
@@ -67,13 +80,13 @@ function TUsers({ onCancelClick }) {
   return (
     <div>
       {showProfileView ? (
-        <SProfile onCancelClick={() => setShowProfileView(false)} />
+        <SProfile onCancelClick={() => setShowProfileView(false)} userData={selectedUser}/>
       ) : (
       showGrades ? (
         <TGrades onCancelClick={() => setShowGrades(false)}/>
       ) : (
       showForm ? (
-        <Usersform onCancelClick={handleFormClose} userTypeOptions={[{ value: 'student', label: 'Student' }]} />
+        <Usersform onCancelClick={handleFormClose} onSaveUserData={handleSaveUserData} userTypeOptions={[{ value: 'student', label: 'Student'}]}/>
       ) : (
         showAttendance ? (
         <TAttendance onCancelClick={() => setShowAttendance(false)} />
@@ -131,7 +144,8 @@ function TUsers({ onCancelClick }) {
       </div>
       <div data-aos='fade-right'>
       <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
-      <UserTable data-aos='fade-left' showProfileView={handleViewProfile}/>
+
+      <UserTable showProfileView={handleViewProfile} users={submittedUsers.filter((user) => selectedUserType ? user.userType === selectedUserType : true)} />
       </div>
    </div>
       ))))}

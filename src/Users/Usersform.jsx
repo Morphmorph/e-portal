@@ -7,11 +7,8 @@ import Aos from 'aos';
 import 'aos/dist/aos.css';
 import data from './options.json'; // Import the JSON data
 
-function Usersform({ onCancelClick,  onSaveUserData }) {
-     const userTypeOptions = [
-        { value: 'student', label: 'Student' },
-        { value: 'teacher', label: 'Teacher' },
-    ];
+function Usersform({ onCancelClick,  onSaveUserData, userTypeOptions  }) {
+
     const [errors, setErrors] = useState({}); 
     const [userData, setUserData] = useState({ 
     userType: userTypeOptions.length > 0 ? userTypeOptions[0].value : '',
@@ -72,8 +69,8 @@ function Usersform({ onCancelClick,  onSaveUserData }) {
         },
         
     },
-    
-});
+}, [userTypeOptions]);
+
 const [submittedUsers, setSubmittedUsers] = useState([]);
 const initialUserData = {
     userType: 'student',

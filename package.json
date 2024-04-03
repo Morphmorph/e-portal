@@ -1,5 +1,5 @@
 {
-  "homepage": "https://Morphmorph.github.io/e-portal",
+  "homepage": "https://Morphmorph.github.io/",
   "name": "e-portal",
   "version": "0.1.0",
   "private": true,
@@ -16,6 +16,7 @@
     "@testing-library/user-event": "^13.5.0",
     "age-calculator": "^1.0.0",
     "aos": "^2.3.4",
+    "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.8",
     "material-ui-core": "^5.0.1",

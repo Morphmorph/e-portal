@@ -17,6 +17,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import add from "../assets/add.webp";
+import data from ".././Users/options.json"; // assuming the JSON file is in the same directory
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -38,38 +39,103 @@ const useResponsiveStyle = () => {
   };
 };
 
-export default function AddSubjectHandleModal({ open, handleClose }) {
+export default function AddSubjectHandleModal({ open, handleClose, addSubjectToTable }) {
   const style = useResponsiveStyle();
-  const handleBackdropClick = (event) => {
-    if (event.target === event.currentTarget) {
-      handleClose();
-    }
-  };
-
   const [gradeLevel, setGradeLevel] = React.useState("");
   const [section, setSection] = React.useState("");
-  const [subject, setSUbject] = React.useState("");
+  const [subject, setSubject] = React.useState("");
   const [timeIn, setTimeIn] = React.useState(null);
   const [timeOut, setTimeOut] = React.useState(null);
+  const [gradeError, setGradeError] = React.useState(false);
+  const [sectionError, setSectionError] = React.useState(false);
+  const [subjectError, setSubjectError] = React.useState(false);
+  const [timeInError, setTimeInError] = React.useState(false);
+  const [timeOutError, setTimeOutError] = React.useState(false);
 
+  // Load data from JSON file
+  const { gradeLevels, sections, subjects } = data;
+
+  // Function to get sections based on selected grade level
+  const getSectionsByGradeLevel = (gradeLevel) => {
+    return sections[gradeLevel] || [];
+  };
+  const getSubjectsByGradeLevel = (gradeLevel) => {
+    return subjects[gradeLevel] || [];
+  };
   const handleChangeGradeLevel = (event) => {
-    setGradeLevel(event.target.value);
+    const selectedGradeLevel = event.target.value;
+    setGradeLevel(selectedGradeLevel);
+    // Reset section when grade level changes
+    setSection("");
+    setSectionError(false); // Reset section error
+    setGradeError(false); // Clear grade error when a selection is made
   };
 
   const handleChangeSection = (event) => {
-    setSection(event.target.value);
+    const selectedSection = event.target.value;
+    setSection(selectedSection);
+    setSectionError(false); // Clear section error when a selection is made
   };
 
   const handleChangeSubject = (event) => {
-    setSUbject(event.target.value);
+    const selectedSubject = event.target.value;
+    setSubject(selectedSubject);
+    setSubjectError(false); // Clear subject error when a selection is made
   };
 
   const handleTimeInChange = (newTime) => {
     setTimeIn(newTime);
+    setTimeInError(false); // Clear time in error when a selection is made
   };
 
   const handleTimeOutChange = (newTime) => {
     setTimeOut(newTime);
+    setTimeOutError(false); // Clear time out error when a selection is made
+  };
+
+  const handleAddButtonClick = () => {
+    let isError = false;
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+    
+    // Check if any required field is empty
+    if (!gradeLevel || !section || !subject || !timeIn || !timeOut) {
+      // Set error state for the respective fields
+      setGradeError(!gradeLevel);
+      setSectionError(!section);
+      setSubjectError(!subject);
+      setTimeInError(!timeIn);
+      setTimeOutError(!timeOut);
+  
+      isError = true;
+    }
+  
+    // Convert timeIn and timeOut values to Date objects
+    const parsedTimeIn = new Date(timeIn);
+    const parsedTimeOut = new Date(timeOut);
+
+    // If there is no error, add the subject to the table
+    if (!isError) {
+      addSubjectToTable({
+        createdate: formattedDate, // Assuming you want to use current date
+        subjectname: subject,
+        gradelvl: gradeLevel,
+        section: section,
+        timeIn: parsedTimeIn,
+        timeOut: parsedTimeOut
+      });
+    // Reset all fields to their initial state
+      setGradeLevel("");
+      setSection("");
+      setSubject("");
+      setTimeIn(null);
+      setTimeOut(null);
+      setGradeError(false);
+      setSectionError(false);
+      setSubjectError(false);
+      setTimeInError(false);
+      setTimeOutError(false);
+    }
   };
 
   return (
@@ -79,7 +145,7 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
       aria-describedby="modal-modal-description"
       closeAfterTransition
     >
-      <div onClick={handleBackdropClick}>
+      <div>
         <Box sx={style}>
           <IconButton
             aria-label="close"
@@ -124,7 +190,7 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
 
             {/* Grade level select field */}
             <Grid item xs={12} sm={6} mt={3}>
-              <FormControl variant="outlined" size="small" fullWidth>
+              <FormControl variant="outlined" size="small" fullWidth error={gradeError}>
                 <InputLabel id="grade-level-label">Grade Level</InputLabel>
                 <Select
                   labelId="grade-level-label"
@@ -132,24 +198,14 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
                   value={gradeLevel}
                   onChange={handleChangeGradeLevel}
                   label="Grade Level"
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        maxHeight: 200,
-                        overflow: "auto",
-                      },
-                    },
-                  }}
                 >
-                  <MenuItem value={"Kinder 1"}>Kinder 1</MenuItem>
-                  <MenuItem value={"Kinder 2"}>Kinder 2</MenuItem>
-                  <MenuItem value={"Grade 1"}>Grade 1</MenuItem>
-                  <MenuItem value={"Grade 2"}>Grade 2</MenuItem>
-                  <MenuItem value={"Grade 3"}>Grade 3</MenuItem>
-                  <MenuItem value={"Grade 4"}>Grade 4</MenuItem>
-                  <MenuItem value={"Grade 5"}>Grade 5</MenuItem>
-                  <MenuItem value={"Grade 6"}>Grade 6</MenuItem>
+                  {gradeLevels.map((grade) => (
+                    <MenuItem key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </MenuItem>
+                  ))}
                 </Select>
+                {gradeError && <Typography variant="caption" color="error">This field is required</Typography>}
               </FormControl>
             </Grid>
           </Grid>
@@ -158,7 +214,7 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
           <Grid container spacing={2}>
             {/* Section select field */}
             <Grid item xs={12} sm={6} mt={3}>
-              <FormControl variant="outlined" size="small" fullWidth>
+              <FormControl variant="outlined" size="small" fullWidth error={sectionError}>
                 <InputLabel id="section-label">Section</InputLabel>
                 <Select
                   labelId="section-label"
@@ -166,25 +222,21 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
                   value={section}
                   onChange={handleChangeSection}
                   label="Section"
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        maxHeight: 200,
-                        overflow: "auto",
-                      },
-                    },
-                  }}
+                  
                 >
-                  <MenuItem value={"Love"}>Love</MenuItem>
-                  <MenuItem value={"Peace"}>Peace</MenuItem>
-                  <MenuItem value={"Faith"}>Faith</MenuItem>
+                  {getSectionsByGradeLevel(gradeLevel).map((section) => (
+                    <MenuItem key={section.value} value={section.value}>
+                      {section.label}
+                    </MenuItem>
+                  ))}
                 </Select>
+                {sectionError && <Typography variant="caption" color="error">This field is required</Typography>}
               </FormControl>
             </Grid>
 
             {/* Subjects select field */}
             <Grid item xs={12} sm={6} mt={3}>
-              <FormControl variant="outlined" size="small" fullWidth>
+              <FormControl variant="outlined" size="small" fullWidth error={subjectError}>
                 <InputLabel id="subject-label">Subject</InputLabel>
                 <Select
                   labelId="subject-label"
@@ -192,43 +244,64 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
                   value={subject}
                   onChange={handleChangeSubject}
                   label="Subject"
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        maxHeight: 200,
-                        overflow: "auto",
-                      },
-                    },
-                  }}
                 >
-                  <MenuItem value={"Evelyn Stone"}>Mathematics</MenuItem>
-                  <MenuItem value={"Alexander Cross"}>English</MenuItem>
-                  <MenuItem value={"Gabrielle Chen"}>Science</MenuItem>
-                  <MenuItem value={"Vincent Larson"}>Filipino</MenuItem>
-                  <MenuItem value={"Daniel Roberts"}>MAPEH</MenuItem>
+                  {getSubjectsByGradeLevel(gradeLevel).map((subject) => (
+                    <MenuItem key={subject.value} value={subject.value}>
+                      {subject.label}
+                    </MenuItem>
+                  ))}
                 </Select>
+                {subjectError && <Typography variant="caption" color="error">This field is required</Typography>}
               </FormControl>
             </Grid>
           </Grid>
 
-         {/* Time In and Time Out Pickers */}
-         <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {/* Time In and Time Out Pickers */}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Grid container spacing={2} mt={3}>
               <Grid item xs={12} sm={6}>
-                <TimePicker
-                  label="Time In"
-                  value={timeIn}
-                  onChange={handleTimeInChange}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
-                />
+              <TimePicker
+                label="Time start"
+                value={timeIn}
+                onChange={handleTimeInChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    InputProps={{
+                      style: {
+                        borderColor: timeInError ? 'red' : '', // Change border color to red if there's an error
+                      },  
+                    }}
+                    error={timeInError}
+                    helperText={timeInError ? "Please select a time" : null}
+                  />
+                )}
+              />
+              {timeInError && <Typography variant="caption" color="error">This field is required</Typography>}
+
               </Grid>
+             
               <Grid item xs={12} sm={6}>
-                <TimePicker
-                  label="Time Out"
-                  value={timeOut}
-                  onChange={handleTimeOutChange}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
-                />
+              <TimePicker
+                label="Time end"
+                value={timeOut}
+                onChange={handleTimeOutChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    InputProps={{
+                      style: {
+                        borderColor: timeInError ? 'red' : '', // Change border color to red if there's an error
+                      },
+                    }}
+                    error={timeOutError}
+                    helperText={timeOutError ? "Please select a time" : null}
+                  />
+                )}
+              />
+              {timeOutError && <Typography variant="caption" color="error">This field is required</Typography>}
               </Grid>
             </Grid>
           </LocalizationProvider>
@@ -239,6 +312,7 @@ export default function AddSubjectHandleModal({ open, handleClose }) {
               variant="contained"
               style={{ background: "#F2B569" }}
               startIcon={<Avatar src={add} sx={{ width: 20, height: 20 }} />}
+              onClick={handleAddButtonClick}
             >
               Add
             </Button>
