@@ -12,6 +12,7 @@ import data from './options.json'; // Import the JSON data
 
         const [errors, setErrors] = useState({}); 
         const [userType, setUserType] = useState('student');
+
         const [userData, setUserData] = useState({
             student: {
                 studentID: '',
@@ -371,32 +372,49 @@ import data from './options.json'; // Import the JSON data
     }
     return age;
     };
-
     const handleSubmit = () => {
         let validationErrors = {};
+        let serializedData = {};
+    
         if (userType === 'student') {
             validationErrors = validateStudentData();
+            serializedData = {
+                userType: userType, // Include userType field
+                student: {
+                    ...userData.student,
+                    parents: userData.parents,
+                    academicData: userData.academicData
+                }
+            };
         } else if (userType === 'teacher') {
             validationErrors = validateTeacherData();
+            serializedData = {
+                userType: userType, // Include userType field
+                teacher: {
+                    ...userData.teacher,
+                    academicData: userData.academicData
+                }
+            };
         }
-
+    
         if (Object.keys(validationErrors).length === 0) {
-            const userDataWithUserType = { ...userData, userType: userType };
-
-    // Make the API request to create a new user
-    axios.post('http://127.0.0.1:8081/create/user/', userDataWithUserType)
-        .then(response => {
-            // Handle success
-            console.log('User created successfully:', response.data);
-            // Add any additional logic here, such as showing a success message or redirecting
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error creating user:', error);
-            // Add any additional error handling logic here, such as showing an error message
-        });
-    }
+            const endpoint = userType === 'student' ? 'students' : 'teachers'; // Updated endpoint
+            axios.post(`http://127.0.0.1:8081/userform/${endpoint}/`, serializedData)
+                .then(response => {
+                    console.log('Response:', response.data);
+                    // Handle success, e.g., show a success message
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle error, e.g., show an error message
+                });
+            console.log('Submitted data:', serializedData);
+        } else {
+            setErrors(validationErrors);
+        }
     };
+    
+    
 
     return (
         <div>
