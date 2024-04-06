@@ -2,7 +2,7 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-function CustomTextField({ label, type, onChange, required, error, helperText, ...rest }) {
+function CustomTextField({ value, label, type, onChange, required, error, helperText, ...rest }) {
   const handleInputChange = (event) => {
     if (type === 'numeric') {
       // Remove non-numeric characters from input value
@@ -17,6 +17,7 @@ function CustomTextField({ label, type, onChange, required, error, helperText, .
   return (
     <TextField
       label={label}
+      value={value || ''}
       variant="outlined"
       fullWidth
       type={type}

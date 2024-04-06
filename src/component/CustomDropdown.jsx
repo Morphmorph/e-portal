@@ -20,7 +20,7 @@ function CustomDropdown({ label, options, value, onChange, required, error, help
         <FormControl fullWidth required={required} error={error && !selected}>
             <InputLabel>{label}</InputLabel>
             <Select
-                value={value}
+                value={value || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 label={label}
