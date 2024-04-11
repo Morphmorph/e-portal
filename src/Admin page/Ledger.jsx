@@ -42,9 +42,10 @@ function Ledger({ onCancelClick }) {
     { value: "7", label: "Grade 6" },
   ];
   const sections = [
-    { value: "1", label: "Love" },
-    { value: "2", label: "Peace" },
-    { value: "3", label: "Faith" },
+    { value: "", label: "All" },
+    { value: "Love", label: "Love" },
+    { value: "Peace", label: "Peace" },
+    { value: "Faith", label: "Faith" },
   ];
   const status = [
     { value: "", label: "All" },
@@ -73,6 +74,17 @@ function Ledger({ onCancelClick }) {
     setPayments(updatedPayments);
     setFilteredPayments(updatedPayments);
     localStorage.setItem("payments", JSON.stringify(updatedPayments));
+  };
+
+  const handleSectionChange = (selectedSection) => {
+    if (selectedSection === "") {
+      setFilteredPayments(payments);
+    } else {
+      const filtered = payments.filter(
+        (payment) => payment.section === selectedSection
+      );
+      setFilteredPayments(filtered);
+    }
   };
 
   const handleStatusChange = (selectedStatus) => {
@@ -164,7 +176,11 @@ function Ledger({ onCancelClick }) {
       >
         <Dropdown options={sy} label="School Year" />
         <Dropdown options={gradelevel} label="Grade level" />
-        <Dropdown options={sections} label="Section" />
+        <Dropdown
+          options={sections}
+          label="Section"
+          onChange={handleSectionChange}
+        />
         <Dropdown
           options={status}
           label="Status"
