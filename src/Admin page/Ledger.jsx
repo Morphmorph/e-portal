@@ -47,8 +47,10 @@ function Ledger({ onCancelClick }) {
     { value: "3", label: "Faith" },
   ];
   const status = [
-    { value: "1", label: "Paid" },
-    { value: "2", label: "Pending" },
+    { value: "", label: "All" },
+    { value: "Paid", label: "Paid" },
+    { value: "Pending", label: "Pending" },
+    { value: "Overdue", label: "Overdue" },
   ];
 
   // For modal
@@ -58,16 +60,30 @@ function Ledger({ onCancelClick }) {
   const handleClose = () => setOpen(false);
 
   const [payments, setPayments] = useState([]);
+  const [filteredPayments, setFilteredPayments] = useState([]);
 
   useEffect(() => {
     const storedPayments = JSON.parse(localStorage.getItem("payments")) || [];
     setPayments(storedPayments);
+    setFilteredPayments(storedPayments);
   }, []);
 
   const handlePaymentAdded = (newPayment) => {
     const updatedPayments = [...payments, newPayment];
     setPayments(updatedPayments);
+    setFilteredPayments(updatedPayments);
     localStorage.setItem("payments", JSON.stringify(updatedPayments));
+  };
+
+  const handleStatusChange = (selectedStatus) => {
+    if (selectedStatus === "") {
+      setFilteredPayments(payments);
+    } else {
+      const filtered = payments.filter(
+        (payment) => payment.status === selectedStatus
+      );
+      setFilteredPayments(filtered);
+    }
   };
 
   return (
@@ -149,14 +165,18 @@ function Ledger({ onCancelClick }) {
         <Dropdown options={sy} label="School Year" />
         <Dropdown options={gradelevel} label="Grade level" />
         <Dropdown options={sections} label="Section" />
-        <Dropdown options={status} label="Status" />
+        <Dropdown
+          options={status}
+          label="Status"
+          onChange={handleStatusChange}
+        />
       </div>
       <div
         data-aos="fade-right"
         style={{ borderBottomWidth: 1, borderColor: "#F2B569" }}
       ></div>
       <div data-aos="fade-right">
-        <LedgerTable payments={payments} />
+        <LedgerTable payments={filteredPayments} />
       </div>
     </div>
   );

@@ -1,24 +1,25 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
-function Dropdown({ options, label }) {
-  const [value, setValue] = useState('');
+function Dropdown({ options, label, onChange }) {
+  const [value, setValue] = useState("");
 
   const handleChange = (event) => {
     setValue(event.target.value);
+    if (onChange) onChange(event.target.value);
   };
 
   return (
     <Box
       sx={{
-        width: '100%',
-        maxWidth: { md: '500px' },
+        width: "100%",
+        maxWidth: { md: "500px" },
         mx: 2,
-        marginBottom: '10px',
+        marginBottom: "10px",
       }}
     >
       <FormControl fullWidth>
