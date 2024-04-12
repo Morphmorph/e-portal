@@ -56,21 +56,23 @@ function Ledger({ onCancelClick }) {
     { value: "Overdue", label: "Overdue" },
   ];
 
-  // For modal
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // State for modal
+  const [payments, setPayments] = useState([]); // State for local storage
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [filteredPayments, setFilteredPayments] = useState([]); // State for dropdown filter
 
+  // Modal
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [payments, setPayments] = useState([]);
-  const [filteredPayments, setFilteredPayments] = useState([]);
-
+  // Local storage
   useEffect(() => {
     const storedPayments = JSON.parse(localStorage.getItem("payments")) || [];
     setPayments(storedPayments);
     setFilteredPayments(storedPayments);
   }, []);
 
+  // Function to handle payment addition
   const handlePaymentAdded = (newPayment) => {
     const updatedPayments = [...payments, newPayment];
     setPayments(updatedPayments);
@@ -78,6 +80,20 @@ function Ledger({ onCancelClick }) {
     localStorage.setItem("payments", JSON.stringify(updatedPayments));
   };
 
+  const handleSearchChange = (event) => {
+    const { value } = event.target;
+    setSearchQuery(value);
+    if (value.trim() === "") {
+      setFilteredPayments(payments);
+    } else {
+      const filtered = payments.filter((payment) =>
+        payment.id.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredPayments(filtered);
+    }
+  };
+
+  // Function to handle grade level change (filter)
   const handleGradeLvlChange = (selectedGradeLvl) => {
     if (selectedGradeLvl === "") {
       setFilteredPayments(payments);
@@ -89,6 +105,7 @@ function Ledger({ onCancelClick }) {
     }
   };
 
+  // Function to handle section change (filter)
   const handleSectionChange = (selectedSection) => {
     if (selectedSection === "") {
       setFilteredPayments(payments);
@@ -100,6 +117,7 @@ function Ledger({ onCancelClick }) {
     }
   };
 
+  // Function to handle status change (filter)
   const handleStatusChange = (selectedStatus) => {
     if (selectedStatus === "") {
       setFilteredPayments(payments);
@@ -152,6 +170,8 @@ function Ledger({ onCancelClick }) {
           id="outlined-basic"
           variant="outlined"
           label="Search"
+          value={searchQuery}
+          onChange={handleSearchChange}
           sx={{
             width: "100%",
             maxWidth: { md: "500px" },
