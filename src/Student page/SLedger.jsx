@@ -6,7 +6,6 @@ import SLedgerTable from "./SLedgerTable";
 import add from "../assets/add.webp";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import AddPaymentModal from "../component/AddPaymentModal";
 
 export default function SLedger({ onCancelClick }) {
   Aos.init({
@@ -50,14 +49,6 @@ export default function SLedger({ onCancelClick }) {
     { value: "1", label: "Paid" },
     { value: "2", label: "Pending" },
   ];
-
-  {
-    /* For modal */
-  }
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   return (
     <div>
@@ -107,24 +98,7 @@ export default function SLedger({ onCancelClick }) {
             marginBottom: "10px",
           }}
         />
-        <div
-          className="flex items-center justify-center rounded-lg px-5 py-2 w-full lg:w-64"
-          style={{
-            backgroundColor: "#F2B569",
-            cursor: "pointer",
-            marginBottom: "10px",
-          }}
-          onClick={handleOpen}
-        >
-          <img src={add} alt="" className="h-10 w-10" />
-          <h1 className="text-xl font-serif px-1" style={{ color: "#079440" }}>
-            Add New Payment
-          </h1>
-        </div>
       </div>
-
-      {/* Modal component */}
-      <AddPaymentModal open={open} handleClose={handleClose} />
 
       <div
         data-aos="fade-left"

@@ -80,6 +80,7 @@ function Ledger({ onCancelClick }) {
     localStorage.setItem("payments", JSON.stringify(updatedPayments));
   };
 
+  // Function to handle search change (filter)
   const handleSearchChange = (event) => {
     const { value } = event.target;
     setSearchQuery(value);
