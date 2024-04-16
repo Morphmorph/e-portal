@@ -5,6 +5,7 @@ import BillingsTable from "./BillingsTable";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import NewBillingModal from "../component/NewBillingModal";
+import SuccessModal from "../component/SuccessModal";
 
 function Billings({ onCancelClick }) {
   Aos.init({
@@ -27,14 +28,11 @@ function Billings({ onCancelClick }) {
     anchorPlacement: "top-bottom",
   });
 
-  // For modal
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  // For local storage
-  const [billings, setBillings] = useState([]);
+  const [open, setOpen] = useState(false); // For modal
+  const handleOpen = () => setOpen(true); // For modal
+  const handleClose = () => setOpen(false); // For modal
+  const [successModalOpen, setSuccessModalOpen] = useState(false); // State for success modal
+  const [billings, setBillings] = useState([]); // For local storage
 
   useEffect(() => {
     const storedBillings = JSON.parse(localStorage.getItem("billings")) || [];
@@ -110,6 +108,12 @@ function Billings({ onCancelClick }) {
         open={open}
         handleClose={handleClose}
         handleBillingAdded={handleBillingAdded}
+        handleSuccessModalOpen={() => setSuccessModalOpen(true)}
+      />
+
+      <SuccessModal
+        open={successModalOpen}
+        handleClose={() => setSuccessModalOpen(false)}
       />
 
       <div

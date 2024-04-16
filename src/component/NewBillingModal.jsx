@@ -25,6 +25,7 @@ export default function NewBillingModal({
   open,
   handleClose,
   handleBillingAdded,
+  handleSuccessModalOpen,
 }) {
   const handleAdd = () => {
     const newBilling = {
@@ -38,6 +39,8 @@ export default function NewBillingModal({
 
     handleBillingAdded(newBilling);
     handleClose();
+
+    handleSuccessModalOpen();
   };
 
   const handleBackdropClick = (event) => {
