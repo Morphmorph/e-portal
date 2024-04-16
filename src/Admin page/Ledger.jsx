@@ -7,6 +7,7 @@ import add from "../assets/add.webp";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import AddPaymentModal from "../component/AddPaymentModal";
+import SuccessModal from "../component/SuccessModal";
 
 function Ledger({ onCancelClick }) {
   Aos.init({
@@ -60,10 +61,9 @@ function Ledger({ onCancelClick }) {
   const [payments, setPayments] = useState([]); // State for local storage
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const [filteredPayments, setFilteredPayments] = useState([]); // State for dropdown filter
-
-  // Modal
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true); // Modal
+  const handleClose = () => setOpen(false); // Modal
+  const [successModalOpen, setSuccessModalOpen] = useState(false); // State for success modal
 
   // Local storage
   useEffect(() => {
@@ -201,6 +201,12 @@ function Ledger({ onCancelClick }) {
         open={open}
         handleClose={handleClose}
         handlePaymentAdded={handlePaymentAdded}
+        handleSuccessModalOpen={() => setSuccessModalOpen(true)}
+      />
+
+      <SuccessModal
+        open={successModalOpen}
+        handleClose={() => setSuccessModalOpen(false)}
       />
 
       <div

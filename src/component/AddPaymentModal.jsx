@@ -39,6 +39,7 @@ export default function AddPaymentModal({
   open,
   handleClose,
   handlePaymentAdded,
+  handleSuccessModalOpen,
 }) {
   const style = useResponsiveStyle();
   const handleBackdropClick = (event) => {
@@ -88,6 +89,8 @@ export default function AddPaymentModal({
     setSection("");
     setAdviser("");
     setStatus("");
+
+    handleSuccessModalOpen();
   };
 
   return (
@@ -283,7 +286,10 @@ export default function AddPaymentModal({
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
             <Button
               variant="contained"
-              style={{ background: "#F2B569" }}
+              style={{
+                background: "#F2B569",
+                width: "110px",
+              }}
               startIcon={<Avatar src={add} sx={{ width: 20, height: 20 }} />}
               onClick={handleAdd}
             >
