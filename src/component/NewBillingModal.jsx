@@ -8,6 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import add from "../assets/add.webp";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
   position: "absolute",
@@ -27,27 +28,33 @@ export default function NewBillingModal({
   handleBillingAdded,
   handleSuccessModalOpen,
 }) {
-  const handleAdd = () => {
-    const newBilling = {
-      description: document.getElementById("description-billing-modal").value,
-      amount: document.getElementById("amount-billing-modal").value,
-    };
-
-    const billings = JSON.parse(localStorage.getItem("billings")) || [];
-    billings.push(newBilling);
-    localStorage.setItem("billings", JSON.stringify(billings));
-
-    handleBillingAdded(newBilling);
-    handleClose();
-
-    handleSuccessModalOpen();
-  };
-
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
       // Handle click only if the backdrop itself is clicked
       handleClose();
     }
+  };
+
+  const [loading, setLoading] = React.useState(false); // State for loading indicator
+
+  const handleAdd = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      const newBilling = {
+        description: document.getElementById("description-billing-modal").value,
+        amount: document.getElementById("amount-billing-modal").value,
+      };
+
+      const billings = JSON.parse(localStorage.getItem("billings")) || [];
+      billings.push(newBilling);
+      localStorage.setItem("billings", JSON.stringify(billings));
+
+      handleBillingAdded(newBilling);
+      handleClose();
+      handleSuccessModalOpen();
+      setLoading(false);
+    }, 2000); // Set delay for 2 seconds
   };
 
   return (
@@ -104,10 +111,17 @@ export default function NewBillingModal({
             <Button
               variant="contained"
               style={{ background: "#F2B569" }}
-              startIcon={<Avatar src={add} sx={{ width: 20, height: 20 }} />}
+              startIcon={
+                loading ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <Avatar src={add} sx={{ width: 20, height: 20 }} />
+                )
+              }
               onClick={handleAdd}
+              disabled={loading}
             >
-              Add
+              {loading ? "Loading..." : "Add"}
             </Button>
           </Box>
         </Box>

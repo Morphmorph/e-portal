@@ -43,7 +43,7 @@ export default function AddPaymentModal({
   handleSuccessModalOpen,
 }) {
   const style = useResponsiveStyle();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false); // State for loading indicator
 
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
@@ -91,7 +91,7 @@ export default function AddPaymentModal({
       handleClose();
       handleSuccessModalOpen();
       setLoading(false);
-    }, 2000);
+    }, 2000); // Set delay for 2 seconds
 
     // Reset state values after adding payment
     setGradeLevel("");
@@ -295,7 +295,6 @@ export default function AddPaymentModal({
               variant="contained"
               style={{
                 background: "#F2B569",
-                width: "140px",
               }}
               startIcon={
                 loading ? (
