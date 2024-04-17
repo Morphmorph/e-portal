@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import useTheme from "@mui/material/styles/useTheme";
 import add from "../assets/add.webp";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -42,6 +43,8 @@ export default function AddPaymentModal({
   handleSuccessModalOpen,
 }) {
   const style = useResponsiveStyle();
+  const [loading, setLoading] = React.useState(false);
+
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
       handleClose();
@@ -67,30 +70,34 @@ export default function AddPaymentModal({
   };
 
   const handleAdd = () => {
-    const newPayment = {
-      id: document.getElementById("id").value,
-      name: document.getElementById("name-payment-modal").value,
-      contact: document.getElementById("contact-payment-modal").value,
-      gradelevel: gradeLevel,
-      section: section,
-      adviser: adviser,
-      status: status,
-    };
+    setLoading(true);
 
-    const payments = JSON.parse(localStorage.getItem("payments")) || [];
-    payments.push(newPayment);
-    localStorage.setItem("payments", JSON.stringify(payments));
+    setTimeout(() => {
+      const newPayment = {
+        id: document.getElementById("id").value,
+        name: document.getElementById("name-payment-modal").value,
+        contact: document.getElementById("contact-payment-modal").value,
+        gradelevel: gradeLevel,
+        section: section,
+        adviser: adviser,
+        status: status,
+      };
 
-    handlePaymentAdded(newPayment);
-    handleClose();
+      const payments = JSON.parse(localStorage.getItem("payments")) || [];
+      payments.push(newPayment);
+      localStorage.setItem("payments", JSON.stringify(payments));
+
+      handlePaymentAdded(newPayment);
+      handleClose();
+      handleSuccessModalOpen();
+      setLoading(false);
+    }, 2000);
 
     // Reset state values after adding payment
     setGradeLevel("");
     setSection("");
     setAdviser("");
     setStatus("");
-
-    handleSuccessModalOpen();
   };
 
   return (
@@ -288,12 +295,19 @@ export default function AddPaymentModal({
               variant="contained"
               style={{
                 background: "#F2B569",
-                width: "110px",
+                width: "140px",
               }}
-              startIcon={<Avatar src={add} sx={{ width: 20, height: 20 }} />}
+              startIcon={
+                loading ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <Avatar src={add} sx={{ width: 20, height: 20 }} />
+                )
+              }
               onClick={handleAdd}
+              disabled={loading}
             >
-              Add
+              {loading ? "Loading..." : "Add"}
             </Button>
           </Box>
         </Box>
