@@ -61,9 +61,10 @@ function Ledger({ onCancelClick }) {
   const [payments, setPayments] = useState([]); // State for local storage
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const [filteredPayments, setFilteredPayments] = useState([]); // State for dropdown filter
+  const [successModalOpen, setSuccessModalOpen] = useState(false); // State for success modal
+
   const handleOpen = () => setOpen(true); // Modal
   const handleClose = () => setOpen(false); // Modal
-  const [successModalOpen, setSuccessModalOpen] = useState(false); // State for success modal
 
   // Local storage
   useEffect(() => {
