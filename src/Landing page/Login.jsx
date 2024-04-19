@@ -5,6 +5,7 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import CancelIcon from "@mui/icons-material/Cancel";
 import UserDoesNotExistModal from "../component/UserDoesNotExistModal";
+import ForgotPassModal from "../component/ForgotPassModal";
 
 function Login({ onCancelClick }) {
   Aos.init({
@@ -29,9 +30,13 @@ function Login({ onCancelClick }) {
   });
 
   const [open, setOpen] = React.useState(false);
+  const [openForgotPass, setOpenForgotPass] = React.useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleOpenForgotPass = () => setOpenForgotPass(true);
+  const handleCloseForgotPass = () => setOpenForgotPass(false);
 
   return (
     <div className="flex items-center justify-center px-5 pt-10 md:pt-10">
@@ -83,7 +88,11 @@ function Login({ onCancelClick }) {
             <TextField id="password" label="Password" variant="filled" />
           </Box>
 
-          <div className="text-center text-blue-700 pb-2">
+          <div
+            className="text-center text-blue-700 pb-2"
+            onClick={handleOpenForgotPass}
+            style={{ cursor: "pointer" }}
+          >
             <p>Forgot password?</p>
           </div>
           <div
@@ -96,6 +105,11 @@ function Login({ onCancelClick }) {
         </div>
 
         {/* Modal */}
+        <ForgotPassModal
+          open={openForgotPass}
+          handleClose={handleCloseForgotPass}
+        />
+
         <UserDoesNotExistModal open={open} handleClose={handleClose} />
       </div>
     </div>
