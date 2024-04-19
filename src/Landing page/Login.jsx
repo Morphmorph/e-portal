@@ -6,6 +6,7 @@ import "aos/dist/aos.css";
 import CancelIcon from "@mui/icons-material/Cancel";
 import UserDoesNotExistModal from "../component/UserDoesNotExistModal";
 import ForgotPassModal from "../component/ForgotPassModal";
+import SentResetLinkModal from "../component/SentResetLinkModal";
 
 function Login({ onCancelClick }) {
   Aos.init({
@@ -31,9 +32,11 @@ function Login({ onCancelClick }) {
 
   const [open, setOpen] = React.useState(false);
   const [openForgotPass, setOpenForgotPass] = React.useState(false);
+  const [openSentResetLink, setOpenSentResetLink] = React.useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenSentResetLink = () => setOpenSentResetLink(true);
 
   const handleOpenForgotPass = () => setOpenForgotPass(true);
   const handleCloseForgotPass = () => setOpenForgotPass(false);
@@ -108,6 +111,12 @@ function Login({ onCancelClick }) {
         <ForgotPassModal
           open={openForgotPass}
           handleClose={handleCloseForgotPass}
+          handleOpenSentResetLink={handleOpenSentResetLink}
+        />
+
+        <SentResetLinkModal
+          open={openSentResetLink}
+          handleClose={() => setOpenSentResetLink(false)}
         />
 
         <UserDoesNotExistModal open={open} handleClose={handleClose} />

@@ -2,11 +2,10 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import useTheme from "@mui/material/styles/useTheme";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -28,13 +27,8 @@ const useResponsiveStyle = () => {
   };
 };
 
-export default function ForgotPassModal({
-  open,
-  handleClose,
-  handleOpenSentResetLink,
-}) {
+export default function SentResetLinkModal({ open, handleClose }) {
   const style = useResponsiveStyle();
-
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
       handleClose();
@@ -69,41 +63,36 @@ export default function ForgotPassModal({
             <CloseIcon style={{ fontSize: 18 }} />
           </IconButton>
 
-          <Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <MailOutlineIcon sx={{ fontSize: "50px", color: "#079440" }} />
+
             <Typography
               id="modal-modal-title"
               variant="h6"
               component="h2"
-              style={{ color: "#079440", fontWeight: "bold", marginTop: "3vh" }}
+              style={{
+                color: "#079440",
+                fontWeight: "bold",
+                marginTop: "3vh",
+              }}
             >
-              Forgot your password?
+              Check your email
             </Typography>
 
             <Typography variant="subtitle2" style={{ marginTop: "2vh" }}>
-              We'll email you a link to reset your password.
+              We've sent instructions on how to reset your password to
             </Typography>
-          </Box>
 
-          <Box style={{ marginTop: "5vh" }}>
-            {/* Email textfield */}
-            <TextField id="email" label="Email" size="small" fullWidth />
-          </Box>
-
-          <Box sx={{ marginTop: "4vh" }}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => {
-                handleOpenSentResetLink();
-                handleClose();
-              }}
-              style={{
-                background: "#F2B569",
-                textTransform: "none",
-              }}
-            >
-              Send me a password reset link
-            </Button>
+            <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
+              sample@mail.com
+            </Typography>
           </Box>
         </Box>
       </div>
