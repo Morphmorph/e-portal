@@ -30,6 +30,7 @@ function Login({ onCancelClick }) {
     anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
   });
 
+  /* Recently added */
   const [open, setOpen] = React.useState(false);
   const [openForgotPass, setOpenForgotPass] = React.useState(false);
   const [openSentResetLink, setOpenSentResetLink] = React.useState(false);
@@ -40,6 +41,7 @@ function Login({ onCancelClick }) {
 
   const handleOpenForgotPass = () => setOpenForgotPass(true);
   const handleCloseForgotPass = () => setOpenForgotPass(false);
+  /* Recently added */
 
   return (
     <div className="flex items-center justify-center px-5 pt-10 md:pt-10">
@@ -93,21 +95,21 @@ function Login({ onCancelClick }) {
 
           <div
             className="text-center text-blue-700 pb-2"
-            onClick={handleOpenForgotPass}
+            onClick={handleOpenForgotPass} // Recently added
             style={{ cursor: "pointer" }}
           >
             <p>Forgot password?</p>
           </div>
           <div
             className="text-center rounded-sm w-full p-2"
-            onClick={handleOpen}
+            onClick={handleOpen} // Recently added
             style={{ backgroundColor: "#079440", cursor: "pointer" }}
           >
             <p className="text-white">Sign in</p>
           </div>
         </div>
 
-        {/* Modal */}
+        {/* Recently added */}
         <ForgotPassModal
           open={openForgotPass}
           handleClose={handleCloseForgotPass}
@@ -120,6 +122,7 @@ function Login({ onCancelClick }) {
         />
 
         <UserDoesNotExistModal open={open} handleClose={handleClose} />
+        {/* Recently added */}
       </div>
     </div>
   );
