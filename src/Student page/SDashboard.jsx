@@ -21,6 +21,7 @@ import SGrades from "./SGrades";
 import SAttendance from "./SAttendance";
 import SBillings from "./SBillings";
 import SLedger from "./SLedger";
+import WelcomeModal from "../component/WelcomeModal"; // Recently added
 
 const settings = ["Profile", "Account", "Logout"];
 
@@ -30,6 +31,19 @@ export default function SDashboard() {
   const [showAttendance, setShowAttendance] = useState(false);
   const [showBillings, setShowBillings] = useState(false);
   const [showLedger, setShowLedger] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // Recently added
+
+  /* Recently added */
+
+  useEffect(() => {
+    setShowWelcomeModal(true);
+  }, []);
+
+  const handleCloseWelcomeModal = () => {
+    setShowWelcomeModal(false);
+  };
+
+  /* Recently added */
 
   const handleClick = (section) => {
     setShowGrades(false);
@@ -245,6 +259,15 @@ export default function SDashboard() {
             </Grid>
           )}
       </Container>
+
+      {/* Recently added */}
+      <WelcomeModal
+        open={showWelcomeModal}
+        handleClose={handleCloseWelcomeModal}
+        title="Welcome to Student Dashboard!"
+        content="Keep tabs on your grades, attendance, billing details, and ledger all in one convenient place."
+      />
+      {/* Recently added */}
     </div>
   );
 }
