@@ -1,14 +1,131 @@
 import React, { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
-import TextField from "@mui/material/TextField";
+import TextField from '@mui/material/TextField';
 import Dropdown from '../component/Dropdown';
-import adduser from '../assets/adduser.webp';
+import addIcon from '../assets/add.webp';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
 function TAttendance({ onCancelClick }) {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    lrn: '',
+    name: '',
+    month: '',
+    present: '',
+    absent: '',
+  });
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [language, setLanguage] = useState('English');
+  const [tableHeight, setTableHeight] = useState(0);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file instanceof Blob) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        const parsedData = XLSX.utils.sheet_to_json(ws, { header: 1 }).map(row => ({
+          lrn: row[0],
+          name: row[1],
+          month: row[2],
+          present: row[3],
+          absent: row[4],
+        }));
+
+        const updatedData = parsedData.map(row => {
+                const presentValue = parseInt(row.present);
+                if (presentValue < 20) {
+                  return { ...row, absent: 20 - presentValue };
+                } else if (presentValue === 20) {
+                  return { ...row, absent: 0, attendanceStatus: ''};
+                } else {
+                  return row;
+                }
+              });
+        setAttendanceData(updatedData);
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      console.error('Invalid file object');
+    }
+  };
+
+  const handlePresentChange = (e) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value <= 20) {
+      setFormData({
+        ...formData,
+        present: value,
+        absent: 20 - value,
+      });
+    }
+  };
+
+  const handleMonthChange = (e, index) => {
+    const { value } = e.target;
+    const updatedData = attendanceData.map((data, i) => {
+      if (i === index) {
+        return { ...data, month: value };
+      }
+      return data;
+    });
+    setAttendanceData(updatedData);
+  };
+
+  const handleSubmit = () => {
+    setShowModal(false);
+    window.alert('Information successfully added');
+    setAttendanceData([...attendanceData, formData]);
+    setFormData({
+      lrn: '',
+      name: '',
+      month: '',
+      present: '',
+      absent: '',
+    });
+  };
+
+  const handleDeleteRow = (index) => {
+    const newData = attendanceData.filter((_, i) => i !== index);
+    setAttendanceData(newData);
+  };
+
+  const handleEditRow = (index) => {
+    const editedStudent = { ...attendanceData[index] };
+    setFormData(editedStudent);
+    const newData = attendanceData.filter((_, i) => i !== index);
+    setAttendanceData(newData);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    window.alert('Information not added');
+  };
+
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
   };
 
   const sy = [
@@ -29,12 +146,55 @@ function TAttendance({ onCancelClick }) {
     { value: '2', label: 'Peace' },
     { value: '3', label: 'Faith' },
   ];
-  const absent = [
-    { value: '1', label: 'All' },
-  ];
-  const present = [
-    { value: '1', label: 'All' },
-  ];
+
+  const handleDownload = () => {
+    const doc = new jsPDF();
+
+    const header = 'Attendance Report';
+    const today = new Date();
+    const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+
+    const tableData = [];
+    attendanceData.forEach(data => {
+      const monthAbbr = convertToMonthAbbr(data.month);
+      tableData.push([data.lrn, data.name, monthAbbr, data.present, data.absent]);
+    });
+
+    const columns = ['LRN', 'Student Name', 'Month', 'Total Present', 'Total Absent'];
+
+    doc.setFontSize(18);
+    doc.text(header, 14, 20);
+
+    doc.setFontSize(12);
+    doc.text(date, 14, 30);
+
+    doc.autoTable({
+      startY: 40,
+      head: [columns],
+      body: tableData,
+    });
+
+    doc.save('attendance_report.pdf');
+  };
+
+  const convertToMonthAbbr = (monthName) => {
+    const monthAbbrMap = {
+      'January': 'Jan',
+      'February': 'Feb',
+      'March': 'Mar',
+      'April': 'Apr',
+      'May': 'May',
+      'June': 'Jun',
+      'July': 'Jul',
+      'August': 'Aug',
+      'September': 'Sep',
+      'October': 'Oct',
+      'November': 'Nov',
+      'December': 'Dec'
+    };
+
+    return monthAbbrMap[monthName] || 'Jan';
+  };
 
   return (
     <div>
@@ -48,74 +208,172 @@ function TAttendance({ onCancelClick }) {
             fontSize: 30,
             transition: 'color 0.3s, transform 0.3s',
             '&:hover': {
-              color: 'red', // Change the color on hover
-              transform: 'scale(1.1)', // Apply a scale effect on hover
+              color: 'red',
+              transform: 'scale(1.1)',
             },
-             cursor: 'pointer'
+            cursor: 'pointer',
           }}
           onClick={onCancelClick}
         />
       </div>
-      <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-8 md:mt-5 items-center ' style={{top: '0px', right: '30px'}}>
-        <div className='justify-start items-start sm:justify-center sm:items-center'>
-          <h1 className='text-2xl font-serif font-italian pl-2' style={{color: '#079440', fontSize: '50px'}}>ATTENDANCE</h1>
-        </div>
-        <div className="flex items-center">
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            label={<span style={{ fontWeight: 'bold' }}>Search ID Number</span>}
-            sx={{
-              position: 'absolute',
-              top: '160px',
-              right: '20px',
-              maxWidth: { md: '500px' },
-              minWidth: '400px',
-            }}
-          />
-        </div>
-      </div>
-      <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-20 md:mt-100 items-center ' style={{top: '20px', right: '20px'}}>
+        <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-8 md:mt-5 items-center ' style={{ top: '0px', right: '30px' }}>
+          <div className='justify-start items-start sm:justify-center sm:items-center'>
+            <h1 className='text-2xl font-serif italic pl-2' style={{ color: '#004d1a', fontSize: '50px' }}>ATTENDANCE</h1>
+          </div>
+          <div style={{
+            border: '2px solid black',
+            padding: '5px',
+            borderRadius: '5px',
+            position: 'absolute',
+            top: '175px',
+            right: '650px',
+            backgroundColor: '#ffffff',
+            textAlign: 'center'
+          }}>
+          </div>
+
+          <div className="flex items-center">
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label={<span style={{ fontWeight: 'bold' }}>Search ID Number</span>}
+              sx={{
+                position: 'absolute',
+                top: '160px',
+                right: '20px',
+                minWidth: '400px',
+              }}
+            />
+          </div>
+          </div>
+          <div className="flex justify-center mt-8">
+                <div style={{ position: 'absolute', top: '230px', right: '-60px' }}>
+                  <input type="file" onChange={handleFileUpload} />
+                </div>
+              </div>
+
+      <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-20 md:mt-100 items-center ' style={{ top: '20px', right: '20px' }}>
         <Dropdown options={sy} label={<span style={{ fontWeight: 'bold' }}>School Year</span>} sx={{ outline: '4px solid black' }} />
         <Dropdown options={gradelevel} label={<span style={{ fontWeight: 'bold' }}>Grade level</span>} sx={{ outline: '4px solid black' }} />
         <Dropdown options={sections} label={<span style={{ fontWeight: 'bold' }}>Section</span>} sx={{ outline: '4px solid black' }} />
-        <Dropdown options={present} label={<span style={{ fontWeight: 'bold', }}>Present</span>} sx={{ outline: '4px solid black' }} />
-        <Dropdown options={absent} label={<span style={{ fontWeight: 'bold' }}>Absent</span>} sx={{ outline: '4px solid black' }} />
       </div>
-      <div style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-      <table className='w-full mt-8 ' style={{borderCollapse: 'bold'}}>
+
+      <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
+      <table className='w-full mt-8 ' style={{ borderCollapse: 'bold' }}>
         <thead>
           <tr>
             <th className='px-4 py-2 border font-bold'>LRN</th>
             <th className='px-4 py-2 border font-bold'>Student Name</th>
-            <th className='px-4 py-2 border font-bold'>Status</th>
+            <th className='px-4 py-2 border font-bold'>Month</th>
             <th className='px-4 py-2 border font-bold'>Total Present</th>
             <th className='px-4 py-2 border font-bold'>Total Absent</th>
           </tr>
         </thead>
         <tbody className='text-center'>
-          <tr className='flex-1 items-center justify-center'>
-            <td className='border px-4 py-2'></td>
-            <td className='border px-4 py-2'>John Doe</td>
-            <td className='border px-4 py-2'>Present</td>
-            <td className='border px-4 py-2'>
-              <div className='flex items-center justify-center h-8 w-full rounded-md'>
-                <span className='text-blue-500'>10</span>
-              </div>
-            </td>
-            <td className='border px-4 py-2'>
-              <div className='flex items-center justify-center h-8 w-full rounded-md'>
-                <span className='text-red-500'>10</span>
-              </div>
-            </td>
-          </tr>
+          {attendanceData.map((data, index) => (
+            <tr key={index} className='flex-1 items-center justify-center'>
+              <td className='border px-4 py-2'>{data.lrn}</td>
+              <td className='border px-4 py-2'>{data.name}</td>
+              <td className='border px-4 py-2'>
+                <select value={data.month} onChange={(e) => handleMonthChange(e, index)}>
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August">August</option>
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                </select>
+              </td>
+              <td className='border px-4 py-2'>{data.present}</td>
+              <td className='border px-4 py-2'>{data.absent}</td>
+              <td className=''>
+                <FontAwesomeIcon icon={faEdit} onClick={() => handleEditRow(index)} style={{ cursor: 'pointer', color: 'blue', marginRight: '5px' }} />
+                <FontAwesomeIcon icon={faTrash} onClick={() => handleDeleteRow(index)} style={{ cursor: 'pointer', color: 'red' }} />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center ' style={{ top: '10px', right: '10px'}}>
         <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '170px', right: '450px' }}>
-          <img src={adduser} alt="" className="h-12 w-100 lg:h-5 lg:w-5" />
-          <h1 className='text-l font-serif px-1' style={{ color: '#079440' }}>Monthly Report</h1>
+          <img src={addIcon} alt="" className="h-12 w-100 lg:h-5 lg:w-5" />
+          <button onClick={handleDownload} className='text-l font-serif px-1' style={{ color: '#079440' }}>Attendance Card</button>
         </div>
+      </div>
+      <div style={{
+        border: '2px solid black',
+        padding: '5px',
+        borderRadius: '5px',
+        position: 'absolute',
+        top: '170px',
+        right: '630px',
+        backgroundColor: '#ffffff',
+        textAlign: 'center'
+      }}>
+        <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.5)', zIndex: 999 }}>
+          <div className="container" style={{ position: 'relative', zIndex: 1000 }}>
+            <div className="modal" style={{ width: '500px', height: '300px', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'linear-gradient(to bottom, #d9ffb3, #ffffb3)', borderRadius: '30px' }}>
+              <span className="close" onClick={handleCloseModal} style={{ position: 'absolute', top: '0px', right: '13px', cursor: 'pointer', color: 'red', fontSize: '30px' }}>
+                <span style={{ color: 'red', transition: 'color 0.3s' }}>×</span>
+              </span>
+              <div className="modal-content" style={{ padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                <TextField
+                  onClick={(e) => e.stopPropagation()}
+                  id="lrn"
+                  label={<b>LRN</b>}
+                  variant="outlined"
+                  value={formData.lrn}
+                  onChange={handleInputChange}
+                  name="lrn"
+                  sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
+                />
+                <TextField
+                  onClick={(e) => e.stopPropagation()}
+                  id="name"
+                  label={<b>Student Name</b>}
+                  variant="outlined"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  name="name"
+                  sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
+                />
+                <TextField
+                  id="present"
+                  label={<b>Total Present</b>}
+                  variant="outlined"
+                  value={formData.present}
+                  onChange={handlePresentChange}
+                  name="present"
+                  type="number"
+                  onClick={(e) => e.stopPropagation()}
+                  sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
+                />
+                <button style={{ width: '100%', fontWeight: 'bold', marginTop: '10px', color: '#003300' }} onClick={handleSubmit}>Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <div
+        className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center'
+        style={{ top: `${tableHeight + 20}px`, right: '10px' }}>
+        <img
+          src={addIcon}
+          alt=""
+          className="h-10 w-10"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setShowModal(true)}
+        />
       </div>
     </div>
   );

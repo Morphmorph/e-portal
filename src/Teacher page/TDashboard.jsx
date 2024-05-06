@@ -12,29 +12,49 @@ import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import uccplogo from '../assets/uccplogo.webp';
 import schlogo from '../assets/schlogo.webp';
+import users from '../assets/users.webp';
 import star from '../assets/star.webp';
 import attendance from '../assets/attendance.webp';
-import TAttendance from './TAttendance';
-import TGrades from './TGrades';
+import billings from '../assets/billings.webp';
+import ledger from '../assets/ledger.webp';
+import Users from './TUsers';
+import Grades from './TGrades';
+import Attendance from './TAttendance';
+import Billings from './TBillings';
+import Ledger from './TLedger';
 
 const settings = ['Profile', 'Account', 'Logout'];
 
 function TDashboard() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [showUser, setShowUser] = useState(false);
   const [showGrades, setShowGrades] = useState(false);
   const [showAttendance, setShowAttendance] = useState(false);
+  const [showBillings, setShowBillings] = useState(false);
+  const [showLedger, setShowLedger] = useState(false);
 
   const handleClick = (section) => {
+    setShowUser(false);
     setShowGrades(false);
     setShowAttendance(false);
-  
+    setShowBillings(false);
+    setShowLedger(false);
 
     switch (section) {
+      case 'users':
+        setShowUser(true);
+        break;
       case 'grades':
         setShowGrades(true);
         break;
       case 'attendance':
         setShowAttendance(true);
+        break;
+      case 'billings':
+        setShowBillings(true);
+        break;
+      case 'ledger':
+        setShowLedger(true);
         break;
       default:
         break;
@@ -42,8 +62,11 @@ function TDashboard() {
   };
 
   const handleCancelClick = () => {
+    setShowUser(false);
     setShowGrades(false);
     setShowAttendance(false);
+    setShowBillings(false);
+    setShowLedger(false);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -146,12 +169,25 @@ function TDashboard() {
           </Toolbar>
         </Container>
       </AppBar>
-      
+
       <Container maxWidth="xl" sx={{ paddingTop: '20px', marginBottom: '20px', cursor: 'pointer'}}>
-      {(showGrades && <TGrades onCancelClick={handleCancelClick}/>) ||
-      (showAttendance && <TAttendance onCancelClick={handleCancelClick}/>) ||
+      {(showUser && <Users onCancelClick={handleCancelClick} />) ||
+      (showGrades && <Grades onCancelClick={handleCancelClick}/>) ||
+      (showAttendance && <Attendance onCancelClick={handleCancelClick}/>) ||
+      (showBillings && <Billings onCancelClick={handleCancelClick}/>) ||
+      (showLedger && <Ledger onCancelClick={handleCancelClick}/>) ||
       (
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <div className="bg-slate-600 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('users')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
+              <h1 className='text-2xl font-bold font-serif'>List of Students</h1>
+              <img
+              src={users}
+              alt=""
+              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
+            />
+            </div>
+          </Grid>
           <Grid item xs={12} sm={6} md={4} lg={4}>
             <div className="bg-violet-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('grades')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
               <h1 className='text-2xl font-bold font-serif'>Grades</h1>
@@ -172,10 +208,29 @@ function TDashboard() {
             />
             </div>
           </Grid>
-          
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <div className="bg-red-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('billings')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
+              <h1 className='text-2xl font-bold font-serif'>Billings</h1>
+              <img
+              src={billings}
+              alt=""
+              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
+            />
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <div className="bg-pink-400 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('ledger')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
+              <h1 className='text-2xl font-bold font-serif'>Ledger</h1>
+              <img
+              src={ledger}
+              alt=""
+              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
+            />
+            </div>
+          </Grid>
         </Grid>)}
       </Container>
-      
+
     </div>
   );
 }
