@@ -3,6 +3,10 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../component/Dropdown';
 import adduser from '../assets/adduser.webp';
+import calendarIcon from '../assets/calendar.webp';
+import fileIcon from '../assets/file.webp';
+import excelIcon from '../assets/excel.webp';
+import plusIcon from '../assets/plus.webp';
 import Box from '@mui/material/Box';
 import add from '../assets/add.webp';
 import DatePicker from 'react-datepicker';
@@ -27,6 +31,7 @@ function TUsers({ onCancelClick }) {
   const [classAdviser, setClassAdviser] = useState(<b>Johnny Bravo</b>);
   const [studentList, setStudentList] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
+  const [tableHeight, setTableHeight] = useState(0);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -115,7 +120,7 @@ function TUsers({ onCancelClick }) {
     { value: '2', label: 'All Male' },
   ];
 
-  const downloadPDF = () => {
+  const handleDownload = () => {
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -172,62 +177,84 @@ function TUsers({ onCancelClick }) {
           onClick={onCancelClick}
         />
       </div>
-      <div className='items-center ' style={{ top: '0px', right: '30px', marginTop: '10px' }}>
-        <div className='justify-start items-start sm:justify-center sm:items-center'>
-          <div>
-            <h1 className='text-2xl font-serif italic pl-2' style={{ color: '#004d1a', fontSize: '50px', marginBottom: '20px' }}>LIST OF STUDENTS</h1>
-            <h2 className='text-2xl font-serif italic pl-2' style={{ color: '#004d1a', fontSize: '50px' }}>GRADE 1</h2>
-          </div>
-          <div style={{ border: '2px solid #004d1a', padding: '2px', borderRadius: '10px', background: 'linear-gradient(to bottom, #d9ffb3, #ffffb3)', marginBottom: '10px', marginTop: '60px' }}>
-            <div style={{ color: '#004d1a', fontSize: '20px', fontStyle: 'italic', marginBottom: '10px', marginTop: '10px', paddingLeft: '20px' }}><b>Class Adviser:</b> {classAdviser}</div>
-          </div>
-        </div>
-
-        <div className="flex items-center">
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            label={<span style={{ fontWeight: 'bold' }}>Search</span>}
-            sx={{
-              position: 'absolute',
-              top: '160px',
-              right: '20px',
-              minWidth: '400px',
-            }}
-          />
-        </div>
-      </div>
-       <div className="flex justify-center mt-8">
-             <div style={{ position: 'absolute', top: '230px', right: '-60px' }}>
-               <input type="file" onChange={handleFileUpload} />
-             </div>
-          </div>
+      <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-8 md:mt-5 items-center ' style={{ top: '0px', right: '30px' }}>
+                <div className="justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0">
+                          <h1
+                            className="text-4xl font-serif font-semibold px-4"
+                            style={{
+                              color: "#21421e",
+                              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+                            }}
+                          >
+                            LIST OF STUDENTS
+                          </h1>
+                       <div style={{
+                           border: '2px solid #ccc',
+                           borderRadius: '10px',
+                           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                           backgroundColor: '#fff',
+                           textAlign: 'center',
+                           padding: '10px',
+                           width: '230px',
+                           position: 'absolute',
+                           zIndex: '900',
+                           top: '146px',
+                           right: 'calc(100% - -60px - 1100px)'
+                       }}>
+                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                               <div style={{ textAlign: 'center' }}>
+                                   <DatePicker
+                                       selected={startDate}
+                                       onChange={date => setStartDate(date)}
+                                       dateFormat="dd/MM/yyyy"
+                                       calendarClassName="custom-calendar"
+                                       popperPlacement="left"
+                                   />
+                               </div>
+                               <img src={calendarIcon} alt="Calendar Icon" style={{ width: '24px', height: '24px', marginLeft: '0px' }} />
+                           </div>
+                       </div>
+                     </div>
+                <div className="flex items-center">
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    label={<span style={{ fontWeight: 'bold', color: 'black' }}>Search </span>}
+                    sx={{
+                      position: 'absolute',
+                      top: '140px',
+                      right: '70px',
+                      minWidth: '400px',
+                    }}
+                  />
+                </div>
+              </div>
       <div className='flex flex-col sm:flex-row justify-center sm:justify-end mt-20 md:mt-100 items-center ' style={{ top: '10px', right: '20px' }}>
       </div>
-      <div className='' style={{ marginBottom: '0px', marginTop: '-100px' }}>
-        <Dropdown options={gender} label={<span style={{ fontWeight: 'bold' }}>Gender</span>} sx={{ outline: '4px solid black' }} />
+      <div className='' style={{ marginBottom: '0px', marginTop: '0px' }}>
+        <Dropdown options={gender} label={<span style={{ fontWeight: 'bold', color: 'black' }}>Gender</span>} sx={{ outline: '4px solid black' }} />
       </div>
-      <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
+      <div style={{ borderBottomWidth: 3, borderColor: '#F2B569' }}></div>
       <table id="student-table" className='w-full mt-8 ' style={{ borderCollapse: 'bold' }}>
         <thead>
           <tr>
-            <th className='px-4 py-2 border font-bold'>Student Name</th>
-            <th className='px-4 py-2 border font-bold'>LRN</th>
-            <th className='px-4 py-2 border font-bold'>Age</th>
-            <th className='px-4 py-2 border font-bold'>Home Address</th>
-            <th className='px-4 py-2 border font-bold'>Contact Number</th>
-            <th className='px-4 py-2 border font-bold'>Gender</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Student Name</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>LRN</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Age</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Home Address</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Contact Number</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Gender</th>
           </tr>
         </thead>
         <tbody className='text-center'>
           {studentList.map((student, index) => (
             <tr key={index} className='flex-1 items-center justify-center'>
-              <td className='border px-4 py-2'>{student.Name}</td>
-              <td className='border px-4 py-2'>{student.LRN}</td>
-              <td className='border px-4 py-2'>{student.Age}</td>
-              <td className='border px-4 py-2'>{student.Address}</td>
-              <td className='border px-4 py-2'>{student.Contact}</td>
-              <td className='border px-4 py-2'>{student.Gender}</td>
+              <td className='border-4 px-4 py-2'>{student.Name}</td>
+              <td className='border-4 px-4 py-2'>{student.LRN}</td>
+              <td className='border-4 px-4 py-2'>{student.Age}</td>
+              <td className='border-4 px-4 py-2'>{student.Address}</td>
+              <td className='border-4 px-4 py-2'>{student.Contact}</td>
+              <td className='border-4 px-4 py-2'>{student.Gender}</td>
               <td className=''>
                 <FontAwesomeIcon icon={faEdit} onClick={() => handleEditRow(index)} style={{ cursor: 'pointer', color: 'blue', marginRight: '5px' }} />
                 <FontAwesomeIcon icon={faTrash} onClick={() => handleDeleteRow(index)} style={{ cursor: 'pointer', color: 'red' }} />
@@ -236,24 +263,25 @@ function TUsers({ onCancelClick }) {
           ))}
         </tbody>
       </table>
-      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center ' style={{ top: '10px', right: '10px' }}>
-        <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '170px', right: '450px' }}>
-          <img src={adduser} alt="" className="h-12 w-100 lg:h-5 lg:w-5" />
-          <button onClick={downloadPDF} className='text-l font-serif px-1' style={{ color: '#079440' }}>Student List</button>
-        </div>
-      </div>
-      <div style={{
-        border: '2px solid black',
-        padding: '5px',
-        borderRadius: '5px',
-        position: 'absolute',
-        top: '170px',
-        right: '600px',
-        backgroundColor: '#ffffff',
-        textAlign: 'center'
-      }}>
-        <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
-      </div>
+             <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
+               <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#fdfd96', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '70px' }}>
+                 <img src={fileIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" onClick={handleDownload} style={{ boxShadow: '0px 5px 5px rgba(255,0,0)' }} />
+               </div>
+               <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
+               <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#fdfd96', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '130px' }}>
+                    <label htmlFor="file-upload">
+                    <img src={excelIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" style={{ boxShadow: '0px 5px 5px rgba(34,139,34)' }} />
+               </label>
+                    <input
+                    id="file-upload"
+                    type="file"
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
+                   />
+                 </div>
+               </div>
+              </div>
+
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.5)', zIndex: 999 }}>
           <div className="container" style={{ position: 'relative', zIndex: 1000 }}>
@@ -340,11 +368,17 @@ function TUsers({ onCancelClick }) {
           </div>
         </div>
       )}
-      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px' }}>
-        <img src={add} alt="" className="h-10 w-10" style={{ cursor: 'pointer', marginBottom: '10px', position: 'spatial', top: '670px', right: '30px' }} onClick={() => setShowModal(true)} />
-      </div>
-      <div></div>
-    </div>
+      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center'
+           style={{ top: `${tableHeight + 20}px`, right: '10px' }}>
+           <img
+                src={plusIcon}
+                alt=""
+                className="h-10 w-10"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setShowModal(true)}
+              />
+            </div>
+         </div>
   );
 }
 

@@ -89,7 +89,7 @@ function ADashboard() {
             <img
               src={schlogo}
               alt=""
-              className="h-16 w-16 lg:h-24 lg:w-24 transition-all duration-300"
+              className="h-12 w-12 lg:h-20 lg:w-20 transition-all duration-300"
             />
             <Typography
               variant="h6"

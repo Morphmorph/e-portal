@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../component/Dropdown';
-import adduser from '../assets/adduser.webp';
+import fileIcon from '../assets/file.webp';
+import calendarIcon from '../assets/calendar.webp';
+import excelIcon from '../assets/excel.webp';
+import plusIcon from '../assets/plus.webp';
 import Box from '@mui/material/Box';
 import add from '../assets/add.webp';
 import DatePicker from 'react-datepicker';
@@ -16,12 +19,9 @@ import * as XLSX from 'xlsx';
 function TBillings({ onCancelClick }) {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    lrn: '',
-    name: '',
     description: '',
     deadline: new Date().toISOString().split('T')[0],
     remarks: '',
-    paid: new Date().toISOString().split('T')[0],
   });
   const [billingsData, setBillingsData] = useState([]);
   const [tableHeight, setTableHeight] = useState(0);
@@ -46,12 +46,9 @@ function TBillings({ onCancelClick }) {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
         const parsedData = data.map(row => ({
-          lrn: row[0],
-          name: row[1],
-          description: row[2],
-          deadline: row[3],
-          remarks: row[4],
-          paid: row[5],
+          description: row[0],
+          deadline: row[1],
+          remarks: row[2],
         }));
         setBillingsData(parsedData);
         localStorage.setItem('billingsData', JSON.stringify(parsedData));
@@ -78,12 +75,9 @@ function TBillings({ onCancelClick }) {
     setShowModal(false);
     window.alert('bills SUCCESSFULLY computed');
     setFormData({
-      lrn: '',
-      name: '',
       description: '',
       deadline: new Date().toISOString().split('T')[0],
       remarks: '',
-      paid: new Date().toISOString().split('T')[0],
     });
   };
 
@@ -116,16 +110,13 @@ function TBillings({ onCancelClick }) {
     doc.text(`Date: ${currentDate}`, 10, 20);
 
     const tableData = billingsData.map((billing) => [
-      billing.lrn,
-      billing.name,
       billing.description,
       billing.deadline,
       billing.remarks,
-      billing.paid,
     ]);
     doc.autoTable({
       startY: 30,
-      head: [['LRN', 'Student Name', 'Payment Description', 'Payment Deadline', 'Remarks', 'Date Paid']],
+      head: [['Payment Description', 'Payment Deadline', 'Total Payment']],
       body: tableData,
     });
 
@@ -145,12 +136,6 @@ function TBillings({ onCancelClick }) {
     { value: '5', label: 'Grade 4' },
     { value: '6', label: 'Grade 5' },
     { value: '7', label: 'Grade 6' },
-  ];
-  const section = [
-    { value: '1', label: 'love' },
-    { value: '2', label: 'hope' },
-    { value: '3', label: 'peace' },
-    { value: '4', label: 'rose' },
   ];
 
   return (
@@ -174,54 +159,76 @@ function TBillings({ onCancelClick }) {
         />
       </div>
       <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-8 md:mt-5 items-center ' style={{ top: '0px', right: '30px' }}>
-        <div className='justify-start items-start sm:justify-center sm:items-center'>
-          <h1 className='text-2xl font-serif italic pl-2' style={{ color: '#004d1a', fontSize: '50px' }}>BILLINGS</h1>
-        </div>
-        <div className="flex items-center">
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            label={<span style={{ fontWeight: 'bold' }}>Search</span>}
-            sx={{
-              position: 'absolute',
-              top: '160px',
-              right: '20px',
-              minWidth: '400px',
-            }}
-          />
-        </div>
-      </div>
-      <div className="flex justify-center mt-8">
-        <div style={{ position: 'absolute', top: '230px', right: '-60px' }}>
-          <input type="file" onChange={handleFileUpload} />
-        </div>
-      </div>
+                <div className="justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0">
+                          <h1
+                            className="text-4xl font-serif font-semibold px-4"
+                            style={{
+                              color: "#21421e",
+                              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+                            }}
+                          >
+                            BILLINGS
+                          </h1>
+                       <div style={{
+                           border: '2px solid #ccc',
+                           borderRadius: '10px',
+                           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                           backgroundColor: '#fff',
+                           textAlign: 'center',
+                           padding: '10px',
+                           width: '230px',
+                           position: 'absolute',
+                           zIndex: '900',
+                           top: '146px',
+                           right: 'calc(100% - -60px - 1100px)'
+                       }}>
+                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                               <div style={{ textAlign: 'center' }}>
+                                   <DatePicker
+                                       selected={startDate}
+                                       onChange={date => setStartDate(date)}
+                                       dateFormat="dd/MM/yyyy"
+                                       calendarClassName="custom-calendar"
+                                       popperPlacement="left"
+                                   />
+                               </div>
+                               <img src={calendarIcon} alt="Calendar Icon" style={{ width: '24px', height: '24px', marginLeft: '0px' }} />
+                           </div>
+                       </div>
+                     </div>
+                <div className="flex items-center">
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    label={<span style={{ fontWeight: 'bold', color: 'black' }}>Search </span>}
+                    sx={{
+                      position: 'absolute',
+                      top: '140px',
+                      right: '70px',
+                      minWidth: '400px',
+                    }}
+                  />
+                </div>
+              </div>
       <div className='flex flex-col sm:flex-row justify-center sm:justify-start mt-20 md:mt-50' style={{ top: '20px', right: '20px' }}>
-        <Dropdown options={sy} label={<span style={{ fontWeight: 'bold' }}>School Year</span>} sx={{ outline: '4px solid black' }} />
-        <Dropdown options={gradelevel} label={<span style={{ fontWeight: 'bold' }}>Grade level</span>} sx={{ outline: '4px solid black' }} />
-        <Dropdown options={section} label={<span style={{ fontWeight: 'bold' }}>Section</span>} sx={{ outline: '4px solid black' }} />
-      </div>
-      <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
+        <Dropdown options={sy} label={<span style={{ fontWeight: 'bold',color: 'black' }}>School Year</span>} sx={{ outline: '4px solid black' }} />
+        <Dropdown options={gradelevel} label={<span style={{ fontWeight: 'bold',color: 'black' }}>Grade level</span>} sx={{ outline: '4px solid black' }} />
+       </div>
+      <div style={{ borderBottomWidth: 3, borderColor: '#F2B569' }}></div>
       <table className='w-full mt-8 ' style={{ borderCollapse: 'collapse' }}>
         <thead>
           <tr>
-            <th className='px-4 py-2 border font-bold'>LRN</th>
-            <th className='px-4 py-2 border font-bold'>Student Name</th>
-            <th className='px-4 py-2 border font-bold'>Payment Description</th>
-            <th className='px-4 py-2 border font-bold'>Payment Deadline</th>
-            <th className='px-4 py-2 border font-bold'>Remarks</th>
-            <th className='px-4 py-2 border font-bold'>Date Paid</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Payment Description</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Payment Deadline</th>
+            <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Total Payment</th>
           </tr>
         </thead>
         <tbody className='text-center'>
           {billingsData.map((billing, index) => (
             <tr key={index}>
-              <td className='border px-4 py-2'>{billing.lrn}</td>
-              <td className='border px-4 py-2'>{billing.name}</td>
-              <td className='border px-4 py-2'>{billing.description}</td>
-              <td className='border px-4 py-2'>{billing.deadline}</td>
-              <td className='border px-4 py-2'>{billing.remarks}</td>
-              <td className='border px-4 py-2'>{billing.paid}</td>
+              <td className='border-4 px-4 py-2'>{billing.description}</td>
+              <td className='border-4 px-4 py-2'>{billing.deadline}</td>
+              <td className='border-4 px-4 py-2'>{billing.remarks}</td>
               <td className=''>
                 <FontAwesomeIcon icon={faEdit} onClick={() => handleEditRow(index)} style={{ cursor: 'pointer', color: 'blue', marginRight: '5px' }} />
                 <FontAwesomeIcon icon={faTrash} onClick={() => handleDeleteRow(index)} style={{ cursor: 'pointer', color: 'red' }} />
@@ -231,58 +238,33 @@ function TBillings({ onCancelClick }) {
         </tbody>
       </table>
 
-      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center ' style={{ top: '10px', right: '10px' }}>
-        <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center ' style={{ top: '10px', right: '10px' }}>
-          <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '170px', right: '450px' }}>
-            <img src={adduser} alt="" className="h-12 w-100 lg:h-5 lg:w-5" />
-            <button onClick={handleDownload} className='text-l font-serif px-1' style={{ color: '#079440' }}>Billing Card</button>
-          </div>
-        </div>
-        <div style={{
-          border: '2px solid black',
-          padding: '5px',
-          borderRadius: '5px',
-          position: 'absolute',
-          top: '170px',
-          right: '630px',
-          backgroundColor: '#ffffff',
-          textAlign: 'center'
-        }}>
-          <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
-        </div>
+      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
+       <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ background: 'linear-gradient(80deg, #fdfd96, #cf1020 ', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '70px' }}>
+         <img src={fileIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" onClick={handleDownload} style={{ boxShadow: '0px 5px 5px rgba(255,0,0)' }} />
+      </div>
+      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
+      <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ background: 'linear-gradient(80deg, #fdfd96, #228b22', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '130px' }}>
+             <label htmlFor="file-upload">
+      <img src={excelIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" style={{ boxShadow: '0px 5px 5px rgba(34,139,34)' }} />
+
+      </label>
+           <input
+           id="file-upload"
+           type="file"
+           onChange={handleFileUpload}
+           style={{ display: 'none' }}
+          />
+         </div>
+       </div>
       </div>
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.5)', zIndex: 999 }}>
           <div className="container" style={{ position: 'relative', zIndex: 1000 }}>
-            <div className="modal" style={{ width: '500px', height: '490px', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'linear-gradient(to bottom, #d9ffb3, #ffffb3)', borderRadius: '30px' }}>
+            <div className="modal" style={{ width: '500px', height: '300px', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'linear-gradient(to bottom, #d9ffb3, #ffffb3)', borderRadius: '30px' }}>
               <span className="close" onClick={handleCloseModal} style={{ position: 'absolute', top: '0px', right: '13px', cursor: 'pointer', color: 'red', fontSize: '30px' }}>
                 <span style={{ color: 'red', transition: 'color 0.3s' }}>×</span>
               </span>
               <div className="modal-content" style={{ padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                  <TextField
-                    onClick={(e) => e.stopPropagation()}
-                    id="lrn"
-                    label={<b>LRN</b>}
-                    variant="outlined"
-                    value={formData.lrn}
-                    onChange={handleInputChange}
-                    name="lrn"
-                    sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
-                  />
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                  <TextField
-                    onClick={(e) => e.stopPropagation()}
-                    id="name"
-                    label={<b>Name</b>}
-                    variant="outlined"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    name="name"
-                    sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
-                  />
-                </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                   <TextField
                     onClick={(e) => e.stopPropagation()}
@@ -314,27 +296,12 @@ function TBillings({ onCancelClick }) {
                   <TextField
                     onClick={(e) => e.stopPropagation()}
                     id="remarks"
-                    label={<b>Remarks</b>}
+                    label={<b>Total Payment</b>}
                     variant="outlined"
                     value={formData.remarks}
                     onChange={handleInputChange}
                     name="remarks"
                     sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
-                  />
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px', color: 'black' }}>
-                  <TextField
-                    onClick={(e) => e.stopPropagation()}
-                    id="paid"
-                    label={<b>Date Paid</b>}
-                    variant="outlined"
-                    value={formData.paid}
-                    onChange={handleInputChange}
-                    name="paid"
-                    sx={{ fontWeight: 'bold', width: '100%', color: 'black' }}
-                    InputProps={{
-                      readOnly: true,
-                    }}
                   />
                 </Box>
                 <button style={{ width: '100%', fontWeight: 'bold', marginTop: '10px', color: '#003300' }} onClick={handleSubmit}>Submit</button>
@@ -343,18 +310,17 @@ function TBillings({ onCancelClick }) {
           </div>
         </div>
       )}
-      <div
-        className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center'
-        style={{ top: `${tableHeight + 20}px`, right: '10px' }}>
-        <img
-          src={addIcon}
-          alt=""
-          className="h-10 w-10"
-          style={{ cursor: 'pointer' }}
-          onClick={() => setShowModal(true)}
-        />
-      </div>
-    </div>
+      <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center'
+           style={{ top: `${tableHeight + 20}px`, right: '10px' }}>
+            <img
+                  src={plusIcon}
+                  alt=""
+                  className="h-10 w-10"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setShowModal(true)}
+               />
+          </div>
+       </div>
   );
 }
 

@@ -16,12 +16,10 @@ import users from '../assets/users.webp';
 import star from '../assets/star.webp';
 import attendance from '../assets/attendance.webp';
 import billings from '../assets/billings.webp';
-import ledger from '../assets/ledger.webp';
 import Users from './TUsers';
 import Grades from './TGrades';
 import Attendance from './TAttendance';
 import Billings from './TBillings';
-import Ledger from './TLedger';
 
 const settings = ['Profile', 'Account', 'Logout'];
 
@@ -31,14 +29,12 @@ function TDashboard() {
   const [showGrades, setShowGrades] = useState(false);
   const [showAttendance, setShowAttendance] = useState(false);
   const [showBillings, setShowBillings] = useState(false);
-  const [showLedger, setShowLedger] = useState(false);
 
   const handleClick = (section) => {
     setShowUser(false);
     setShowGrades(false);
     setShowAttendance(false);
     setShowBillings(false);
-    setShowLedger(false);
 
     switch (section) {
       case 'users':
@@ -53,9 +49,6 @@ function TDashboard() {
       case 'billings':
         setShowBillings(true);
         break;
-      case 'ledger':
-        setShowLedger(true);
-        break;
       default:
         break;
     }
@@ -66,7 +59,6 @@ function TDashboard() {
     setShowGrades(false);
     setShowAttendance(false);
     setShowBillings(false);
-    setShowLedger(false);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -84,13 +76,14 @@ function TDashboard() {
             <img
               src={uccplogo}
               alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 transition-all duration-300"
+              className="h-12 w-12 lg:h-20 lg:w-20 transition-all duration-300 mr-4 my-2" // Added my-2 for vertical margin
             />
             <img
               src={schlogo}
               alt=""
-              className="h-16 w-16 lg:h-24 lg:w-24 transition-all duration-300"
+              className="h-12 w-12 lg:h-20 lg:w-20 transition-all duration-300 my-2" // Added my-2 for vertical margin
             />
+
             <Typography
               variant="h6"
               noWrap
@@ -100,11 +93,12 @@ function TDashboard() {
                 ml: 2,
                 display: { md: 'flex', xs: 'none' },
                 fontFamily: 'monospace',
-                fontWeight: 700,
+                fontWeight: 800,
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
-                fontSize: { md: '20px' },
+                fontSize: { md: '30px' },
+                textShadow: '0 0 5px rgba(0, 0, 0, 2)',
               }}
             >
               CAGAYAN DE ORO CHRISTIAN SCHOOL - UCCP
@@ -175,7 +169,6 @@ function TDashboard() {
       (showGrades && <Grades onCancelClick={handleCancelClick}/>) ||
       (showAttendance && <Attendance onCancelClick={handleCancelClick}/>) ||
       (showBillings && <Billings onCancelClick={handleCancelClick}/>) ||
-      (showLedger && <Ledger onCancelClick={handleCancelClick}/>) ||
       (
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -213,16 +206,6 @@ function TDashboard() {
               <h1 className='text-2xl font-bold font-serif'>Billings</h1>
               <img
               src={billings}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-pink-400 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('ledger')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Ledger</h1>
-              <img
-              src={ledger}
               alt=""
               className="h-12 w-12 lg:h-20 lg:w-20 item-image"
             />
