@@ -332,13 +332,13 @@ function TGrades({ onCancelClick }) {
 
       </table>
       <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
-        <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#fdfd96', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '70px' }}>
-          <img src={fileIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" onClick={handleDownload} style={{ boxShadow: '0px 5px 5px rgba(255,0,0)' }} />
-        </div>
-        <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
-        <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ backgroundColor: '#fdfd96', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '130px' }}>
-             <label htmlFor="file-upload">
-             <img src={excelIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" style={{ boxShadow: '0px 5px 5px rgba(34,139,34)' }} />
+             <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ background: 'linear-gradient(80deg, #fdfd96, #cf1020  ', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '90px' }}>
+               <img src={fileIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" onClick={handleDownload} style={{ boxShadow: '0px 5px 5px rgba(255,0,0)' }} />
+            </div>
+            <div className='flex flex-col md:flex-row justify-center lg:justify-end mt-8 md:mt-5 items-center' style={{ top: '10px', right: '10px'}}>
+            <div className='flex items-center justify-center rounded-lg px-2 py-2 lg:w-auto' style={{ background: 'linear-gradient(80deg, #fdfd96, #228b22', cursor: 'pointer', marginBottom: '10px', position: 'absolute', top: '205px', right: '150px' }}>
+                   <label htmlFor="file-upload">
+            <img src={excelIcon} alt="" className="h-12 w-100 lg:h-8 lg:w-8" style={{ boxShadow: '0px 5px 5px rgba(34,139,34)' }} />
         </label>
              <input
              id="file-upload"
