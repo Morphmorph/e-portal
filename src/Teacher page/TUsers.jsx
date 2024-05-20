@@ -143,7 +143,7 @@ function TUsers({ onCancelClick }) {
     const textY = topMargin + 10;
 
     doc.text(`Date: ${startDate.toLocaleDateString()}`, textX, textY);
-    doc.text(`Class Adviser: Johnny Bravo`, textX, textY + 10);
+    doc.text(`Class Adviser: Mr. Johnny Bravo`, textX, textY + 10);
 
     const startY = textY + 20;
     const tableData = studentList.map(student => [student.Name, student.LRN, student.Age, student.Address, student.Contact, student.Gender]);
@@ -235,7 +235,15 @@ function TUsers({ onCancelClick }) {
         <Dropdown options={gender} label={<span style={{ fontWeight: 'bold', color: 'black' }}>Gender</span>} sx={{ outline: '4px solid black' }} />
       </div>
       <div style={{ borderBottomWidth: 3, borderColor: '#F2B569' }}></div>
-      <table id="student-table" className='w-full mt-8 ' style={{ borderCollapse: 'bold' }}>
+        <div style={{
+          borderBottom: '3px solid #F2B569',
+          padding: '10px',
+          marginBottom: '20px',
+          background: 'linear-gradient(to right, #ffffe0, #e8f48c)'
+        }}>
+          <p style={{ fontSize: '18px', fontWeight: 'bold', color: 'black' }}>Class Adviser: <span style={{ color: "#014421" }}>Mr. Johnny Bravo</span></p>
+        </div>
+      <table id="student-table" className='w-full mt-8 ' style={{ borderCollapse: 'bold', marginTop: '-8px' }}>
         <thead>
           <tr>
             <th className='border-4 px-4 py-2 border font-bold' style={{ color: 'black', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Student Name</th>
