@@ -22,7 +22,7 @@ import Grades from "./Grades";
 import Attendance from "./Attendance";
 import Billings from "./Billings";
 import Ledger from "./Ledger";
-import WelcomeModal from "../component/WelcomeModal"; // Recently added
+import WelcomeModal from "../component/WelcomeModal";
 
 const settings = ["Profile", "Account", "Logout"];
 
@@ -33,9 +33,7 @@ function ADashboard() {
   const [showAttendance, setShowAttendance] = useState(false);
   const [showBillings, setShowBillings] = useState(false);
   const [showLedger, setShowLedger] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // Recently added
-
-  /* Recently added */
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
     setShowWelcomeModal(true);
@@ -44,8 +42,6 @@ function ADashboard() {
   const handleCloseWelcomeModal = () => {
     setShowWelcomeModal(false);
   };
-
-  /* Recently added */
 
   const handleClick = (section) => {
     setShowUser(false);
@@ -287,15 +283,14 @@ function ADashboard() {
           )}
       </Container>
 
-      {/* Recently added */}
       <WelcomeModal
         open={showWelcomeModal}
         handleClose={handleCloseWelcomeModal}
+        type="admin"  // Recently added
         title="Welcome to Admin Dashboard!"
         content="Here, you can manage user accounts, track grades, monitor
         attendance, oversee billings, and balance the ledger with ease."
       />
-      {/* Recently added */}
     </div>
   );
 }

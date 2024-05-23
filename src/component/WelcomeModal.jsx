@@ -6,6 +6,10 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import useTheme from "@mui/material/styles/useTheme";
+import adminLogo from "../assets/samplelogo1.png";    // Recently added
+import teacherLogo from "../assets/samplelogo2.png";  // Recently added
+import studentLogo from "../assets/samplelogo3.png";  // Recently added
+import schoolLogo from "../assets/schlogo.webp";      // Recently added
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -27,7 +31,8 @@ const useResponsiveStyle = () => {
   };
 };
 
-export default function WelcomeModal({ open, handleClose, title, content }) {
+// Note: Added "type" prop
+export default function WelcomeModal({ open, handleClose, title, content, type }) {
   const style = useResponsiveStyle();
 
   const handleBackdropClick = (event) => {
@@ -35,6 +40,23 @@ export default function WelcomeModal({ open, handleClose, title, content }) {
       handleClose();
     }
   };
+
+  // Recently Added
+  // Declaring which logo to display based on the 'type' prop (page)
+  let logoSrc;
+  switch (type) {
+    case "admin":
+      logoSrc = adminLogo;
+      break;
+    case "teacher":
+      logoSrc = teacherLogo;
+      break;
+    case "student":
+      logoSrc = studentLogo;
+      break;
+    default:
+      logoSrc = schoolLogo; // Default logo if the type is unknown
+  }
 
   return (
     <Modal
@@ -72,11 +94,13 @@ export default function WelcomeModal({ open, handleClose, title, content }) {
               marginTop: "3vh",
             }}
           >
+            {/* Recently added */}
+            <img src={logoSrc} alt="Logo" style={{ width: "100px", height: "auto" }} />
             <Typography
               id="modal-modal-title"
               variant="h6"
               component="h2"
-              style={{ color: "#079440", fontWeight: "bold", marginTop: "3vh" }}
+              style={{ color: "#079440", fontWeight: "bold", marginTop: "1vh" }}
             >
               {title}
             </Typography>

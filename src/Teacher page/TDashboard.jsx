@@ -16,7 +16,7 @@ import star from "../assets/star.webp";
 import attendance from "../assets/attendance.webp";
 import TAttendance from "./TAttendance";
 import TGrades from "./TGrades";
-import WelcomeModal from "../component/WelcomeModal"; // Recently added
+import WelcomeModal from "../component/WelcomeModal";
 
 const settings = ["Profile", "Account", "Logout"];
 
@@ -24,9 +24,7 @@ function TDashboard() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [showGrades, setShowGrades] = useState(false);
   const [showAttendance, setShowAttendance] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // Recently added
-
-  /* Recently added */
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
     setShowWelcomeModal(true);
@@ -35,8 +33,6 @@ function TDashboard() {
   const handleCloseWelcomeModal = () => {
     setShowWelcomeModal(false);
   };
-
-  /* Recently added */
 
   const handleClick = (section) => {
     setShowGrades(false);
@@ -207,14 +203,13 @@ function TDashboard() {
           )}
       </Container>
 
-      {/* Recently added */}
       <WelcomeModal
         open={showWelcomeModal}
         handleClose={handleCloseWelcomeModal}
+        type="teacher"  // Recently added
         title="Welcome to Teacher Dashboard!"
         content="Here, you can effortlessly manage grades and attendance, empowering your teaching journey."
       />
-      {/* Recently added */}
     </div>
   );
 }
