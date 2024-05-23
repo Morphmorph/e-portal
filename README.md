@@ -2,9 +2,9 @@ E-PORTAL RECENT CHANGES
 
 o Modified:
 
-WelcomeModal.jsx => see comments in the file
-ADashboard.jsx => see comments in the file
-SDashboard.jsx => see comments in the file
+WelcomeModal.jsx => see comments in the file,
+ADashboard.jsx => see comments in the file,
+SDashboard.jsx => see comments in the file,
 TDashboard.jsx => see comments in the file
 
 o Added:
