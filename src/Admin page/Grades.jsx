@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from "@mui/material/TextField";
 import Dropdown from '../component/Dropdown';
-import GradeTable from './GradeTable';
-import GradeViews from './Views/GradeViews';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
 
@@ -61,9 +59,7 @@ function Grades({onCancelClick}) {
 
   return (
     <div>
-      {showGradeViews ? (
-        <GradeViews onCancelClick={() => setShowGradeViews(false)} />
-      ) : (
+      
         <div>
          <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
          <CancelIcon
@@ -85,37 +81,20 @@ function Grades({onCancelClick}) {
         
        
         <div className='justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0'>
-            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>GRADES</h1>
+            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>GRADE SWITCHES</h1>
         </div>
-        
-        <TextField
-          id="outlined-basic"
-          variant="outlined"
-          label="Search"
-          sx={{
-            width: '100%',
-            maxWidth: { md: '500px', },
-            mx: 2,
-            marginBottom: '10px',
-          }}
-        />
+
         </div>
         <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center '>
-        <Dropdown options={sy} label="School Year" />
-        <Dropdown options={gradelevel} label="Grade level" />
-        <Dropdown options={sections} label="Section" />
+      
         </div>
         <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-        <div data-aos='fade-right' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5' style={Style}>
-            <h1 className='text-2xl font-semibold' style={{color: '#F2B569'}}>Class adviser:</h1>
-            <span className='text-xl font-medium px-3 uppercase text-white'>Son Goku</span>
-            <span className='ml-0 text-center sm:ml-auto text-green-600 px-2 item-div'>View details</span>
-          </div>
+        
         <div data-aos='fade-right' >
-        <GradeTable showGradeView={handleViewGrade} />
+       
       </div>
       </div>
-      )}
+      
     </div>
   )
 }

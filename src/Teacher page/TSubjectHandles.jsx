@@ -1,25 +1,47 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
-import add from '../assets/add.webp'
 import Aos from 'aos';
 import 'aos/dist/aos.css'
-import Dropdown from '../component/Dropdown';
-import AddSubjectHandleModal from '../component/AddSubjectHandleModal';
-import TSubjectHandleTable from './TSubjectHandleTable';
 
+import TSubjectHandleTable from './TSubjectHandleTable';
+import axios from 'axios';
+import { useUser } from '../UserContext';
+import TSubjectSection from './TSubjectSection';
 
 function TSubjectHandles({onCancelClick, }) {
-
-  const [open, setOpen] = useState(false);
+  const { loggedInUser } = useUser()
+  const [subjectHandle, setSubjectHandle] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [tableRows, setTableRows] = useState([]);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
-const addSubjectToTable = (subjectData) => {
-    setTableRows([...tableRows, subjectData]);
-    handleClose(); // Close the modal after adding the subject
+  const handleViewProfile = (row) => {
+    setSelectedRow(row);
   };
+
+  useEffect(() => {
+    // Fetch enrolled students data
+    const fetchHandleSubjects = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8081/api/teachers/${loggedInUser.user_id}/subject_handles`); // Pass teacherSection as section_handle_id
+        const subjectHandles = response.data;
+        setTableRows(subjectHandles);
+        console.log("Subject handles:", subjectHandles);
+      } catch (error) {
+        console.error('Error fetching subject handles data:', error);
+      }
+    };
+  
+    fetchHandleSubjects(); // Call the function to fetch enrolled students data
+    const interval = setInterval(fetchHandleSubjects, 5000); // Fetch data every 5 seconds
+  
+    return () => clearInterval(interval); // Clean up setInterval on component unmount
+  }, []);
+  
+  const addSubjectToTable = (subjectData) => {
+    setTableRows([...tableRows, subjectData]);
+  };
+
   Aos.init({
     // Global settings:
     disable: false, 
@@ -49,50 +71,44 @@ const addSubjectToTable = (subjectData) => {
     border: '1px solid rgba(255, 255, 255, 0.125)',
     boxShadow: '5px -4px 1px rgb(173, 173, 172)',
   };
+
+
   return (
     <div>
-         <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
-         <CancelIcon
-          sx={{
-            color: '#F2B569',
-            fontSize: 40,
-            transition: 'color 0.3s, transform 0.3s',
-            '&:hover': {
-              color: 'red', // Change the color on hover
-              transform: 'scale(1.1)', // Apply a scale effect on hover
-            },
-             cursor: 'pointer' 
-          }}
-          onClick={onCancelClick}
-        />
-        
-        </div>
-       <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-start mt-0 md:mt-0 items-center ' style={{top: '10px', right: '10px'}}>
-        
-       
-        <div className='justify-start items-start lg:justify-center sm:items-center mb-2 md:mt-0'>
-            <h1 className='text-2xl font-serif font-semibold px-5 pt-4' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>Handled Subjects</h1>
-        </div>
-        
-        </div>
+      {selectedRow ? (
+        <TSubjectSection  selectedRow={selectedRow} onCancelClick={() => setSelectedRow(null)}/>
+      ) : (
         <div>
-
-              <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px', }}>
-              <div className='flex items-center justify-center rounded-lg px-5 mx-10 py-2 w-full lg:w-80 item-div' style={{backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px',}} onClick={handleOpen}>
-              <img src={add} alt="" className="h-12 w-12 lg:h-10 lg:w-10" />
-              <h1 className='text-xl font-serif px-1 ' style={{ color: '#079440' }}>Add Handled Subjects</h1>
-              </div>
-              </div>
-
-           
+          <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
+            <CancelIcon
+              sx={{
+                color: '#F2B569',
+                fontSize: 40,
+                transition: 'color 0.3s, transform 0.3s',
+                '&:hover': {
+                  color: 'red',
+                  transform: 'scale(1.1)',
+                },
+                cursor: 'pointer'
+              }}
+              onClick={onCancelClick}
+            />
+          </div>
+          <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-start mt-0 md:mt-0 items-center'>
+            <div className='justify-start items-start lg:justify-center sm:items-center mb-2 md:mt-0'>
+              <h1 className='text-2xl font-serif font-semibold px-5 pt-4' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+                Handled Subjects
+              </h1>
+            </div>
+          </div>
+          <div data-aos='fade-right'>
+            <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
+            <TSubjectHandleTable rows={tableRows} showProfileView={handleViewProfile} />
+          </div>
         </div>
-        <div data-aos='fade-up'>
-        <AddSubjectHandleModal open={open} handleClose={handleClose} addSubjectToTable={addSubjectToTable}/>
-        </div>
-        <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-       <TSubjectHandleTable rows={tableRows}/>
+      )}
     </div>
-  )
+  );
 }
 
 export default TSubjectHandles

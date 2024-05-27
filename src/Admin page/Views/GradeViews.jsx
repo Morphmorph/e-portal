@@ -1,6 +1,7 @@
 import React from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
 import add from '../../assets/add.webp'
+import border from '../../assets/borders.png'
 import BillingsTable from '../BillingsTable';
 import Dropdown from '../../component/Dropdown';
 import Aos from 'aos';
@@ -8,7 +9,7 @@ import 'aos/dist/aos.css'
 import GradesInfo from '../../Users/GradesInfo';
 
 
-function GradeViews({onCancelClick, isTeacher, isHonor }) {
+function GradeViews({onCancelClick, isTeacher, isHonor, userData }) {
   Aos.init({
     // Global settings:
     disable: false, 
@@ -80,12 +81,8 @@ function GradeViews({onCancelClick, isTeacher, isHonor }) {
               <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px', }}>
               
               </div>
-            ) :
-            (!isTeacher ? (
-              <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center' style={{ top: '10px', right: '10px', }}>
-                <Dropdown options={gradelevel} label="Grade level" />
-              </div>
-            ):(
+            ) : (
+           
               isTeacher && (
                 <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px', }}>
                 <div className='flex items-center justify-center rounded-lg px-5 mx-10 py-2 w-full lg:w-56 item-div' style={{backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px',}}>
@@ -94,19 +91,21 @@ function GradeViews({onCancelClick, isTeacher, isHonor }) {
                 </div>
                 </div>
               
-            )))}
+            ))}
         </div>
 
         <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
         <div data-aos='fade-right' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5' style={Style}>
         <h1 className='text-2xl font-semibold' style={{color: '#F2B569'}}>Student ID:</h1>
-            <span className='text-xl font-medium px-3 uppercase text-white'>1234567890</span>
+            <span className='text-xl font-medium px-3 uppercase text-white'>{userData.student.student_id}</span>
             <h1 className='text-2xl font-semibold' style={{color: '#F2B569'}}>Student Name:</h1>
-            <span className='text-xl font-medium px-3 uppercase text-white'>John Doe</span>
-            <span className='ml-0 text-center sm:ml-auto text-green-600 px-2 item-div'>View details</span>
+            <span className='text-xl font-medium px-3 uppercase text-white'>{userData.student.name}</span>
           </div>
       <div data-aos='fade-right'>
-      <GradesInfo/>
+      <div className='flex items-center justify-center rounded-xl py-2 w-full'>
+      <span className='absolute text-7xl sm:text-8xl text-green-600'>99</span>
+      <img src={border} alt="" className=" h-60 w-60 sm:h-80 sm:w-80" />
+      </div>
       </div>
     </div>
   )

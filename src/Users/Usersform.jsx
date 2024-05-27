@@ -5,15 +5,21 @@ import CustomDropdown from '../component/CustomDropdown';
 import CustomDatePicker from '../component/CustomDatePicker';
 import dayjs from 'dayjs'; // Import dayjs library for date formatting
 import Aos from 'aos';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
 import 'aos/dist/aos.css';
+import SuccessModal from "../component/SuccessModal";
 import data from './options.json'; // Import the JSON data
 
     function Usersform({ onCancelClick,  onSaveUserData, userTypeOptions  }) {
 
+        const navigate = useNavigate();
         const [errors, setErrors] = useState({}); 
+        const [loading, setLoading] = React.useState(false); 
         const [userType, setUserType] = useState('student');
-
+        const [successModalOpen, setSuccessModalOpen] = useState(false);
         const [userData, setUserData] = useState({
             student: {
                 studentID: '',
@@ -21,14 +27,15 @@ import data from './options.json'; // Import the JSON data
                 firstName: '',
                 middleName: '',
                 password: '',
-                contactNumber: '',
                 address: '',
                 gradeLevel: null,
-                section: '',
-                adviser: '',
+                
                 dob: null,
                 age: null,
                 gender: '',
+                created_at: new Date().toISOString(),
+            },
+            parents: {
                 mothersName: '',
                 mothersContact: '',
                 mothersOccupation: '',
@@ -38,9 +45,9 @@ import data from './options.json'; // Import the JSON data
                 fathersContact: '',
                 fathersOccupation: '',
                 f_dob: null,
-                f_age: null
+                f_age: null,
+                created_at: new Date().toISOString(),
             },
-            
             teacher: {
                 employeeID: '',
                 lastName: '',
@@ -52,16 +59,18 @@ import data from './options.json'; // Import the JSON data
                 dob: null,
                 age: null,
                 gender: '',
-                gradeLevel: null,
-                section: '',
+                created_at: new Date().toISOString(),
+            },
+            academic: {
                 lastSchoolAttended: '',
                 schoolAddress: '',
                 yearGraduated: null,
                 degree: '',
                 prcNumber: '',
                 expirationDate: null,
-                yearsOfTeaching: ''
-            },
+                yearsOfTeaching: '',
+                created_at: new Date().toISOString(),
+            }
             
         });
         
@@ -73,7 +82,7 @@ import data from './options.json'; // Import the JSON data
             border: '1px solid rgba(255, 255, 255, 0.125)',
             boxShadow: '5px -4px 1px rgb(173, 173, 172)',
         };
-    const [showForm, setShowForm] = useState(true); // State variable to manage form visibility
+
     const genderOptions = [
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
@@ -81,8 +90,9 @@ import data from './options.json'; // Import the JSON data
     ];
 
     const gradeLevels = data.gradeLevels; // Updated to use JSON data
-    const sections = data.sections; // Updated to use JSON data
+    // Updated to use JSON data
     const advisers = data.advisers;
+
     useEffect(() => {
         const initAos = async () => {
             await Aos.init({
@@ -115,6 +125,7 @@ import data from './options.json'; // Import the JSON data
     const validateStudentData = () => {
         const errors = {};
         const { student } = userData;
+        const { parents } = userData;
         const nameRegex = /^[a-zA-Z\- ]*$/;
 
         if (!student.studentID) errors['studentID'] = "LRN is required";
@@ -142,31 +153,30 @@ import data from './options.json'; // Import the JSON data
         if (!student.dob) errors['dob'] = "Date of Birth is required";
         if (!student.age) errors['age'] = "Age is required";
         if (!student.gradeLevel) errors['gradeLevel'] = "Grade level is required";
-        if (!student.section) errors['section'] = "Section is required";
-        if (!student.adviser) errors['adviser'] = "Class adviser is required";
+       
 
 
-        if (!student.mothersName) {
+        if (!parents.mothersName) {
             errors['mothersName'] = "Mother's name is required";
-        } else if (!nameRegex.test(student.mothersName)) {
+        } else if (!nameRegex.test(parents.mothersName)) {
             errors['mothersName'] = "Mother's name should contain only letters";
         }
 
-        if (!student.mothersContact) errors['mothersContact'] = "Contact number is required";
-        if (!student.m_dob) errors['m_dob'] = "Date of Birth is required";
-        if (!student.m_age) errors['m_age'] = "Age is required";
-        if (!student.mothersOccupation) errors['mothersOccupation'] = "Mother's occupation is required";
+        if (!parents.mothersContact) errors['mothersContact'] = "Contact number is required";
+        if (!parents.m_dob) errors['m_dob'] = "Date of Birth is required";
+        if (!parents.m_age) errors['m_age'] = "Age is required";
+        if (!parents.mothersOccupation) errors['mothersOccupation'] = "Mother's occupation is required";
 
-        if (!student.fathersName) {
+        if (!parents.fathersName) {
             errors['fathersName'] = "Father's name is required";
-        } else if (!nameRegex.test(student.fathersName)) {
+        } else if (!nameRegex.test(parents.fathersName)) {
             errors['fathersName'] = "Father's name should contain only letters";
         }
 
-        if (!student.fathersContact) errors['fathersContact'] = "Contact number is required";
-        if (!student.f_dob) errors['f_dob'] = "Date of Birth is required";
-        if (!student.f_age) errors['f_age'] = "Age is required";
-        if (!student.fathersOccupation) errors['fathersOccupation'] = "Father's occupation is required";
+        if (!parents.fathersContact) errors['fathersContact'] = "Contact number is required";
+        if (!parents.f_dob) errors['f_dob'] = "Date of Birth is required";
+        if (!parents.f_age) errors['f_age'] = "Age is required";
+        if (!parents.fathersOccupation) errors['fathersOccupation'] = "Father's occupation is required";
 
         return errors;
     };
@@ -174,6 +184,7 @@ import data from './options.json'; // Import the JSON data
     const validateTeacherData = () => {
         const errors = {};
         const { teacher } = userData;
+        const { academic } = userData;
 
         if (!teacher.employeeID) errors['employeeID'] = "Employee ID is required";
         if (!teacher.lastName) errors['lastName'] = "Last Name is required";
@@ -184,16 +195,14 @@ import data from './options.json'; // Import the JSON data
         if (!teacher.contactNumber) errors['contactNumber'] = "Contact number is required";
         if (!teacher.address) errors['address'] = "Complete address is required";
         if (!teacher.dob) errors['dob'] = "Date of Birth is required";
-        if (!teacher.gradeLevel) errors['gradeLevel'] = "Handled Grade level is required";
-        if (!teacher.section) errors['section'] = "Section is required";
 
-        if (!teacher.lastSchoolAttended) errors['lastSchoolAttended'] = "This field is required";
-        if (!teacher.schoolAddress) errors['schoolAddress'] = "This field is required";
-        if (!teacher.yearGraduated) errors['yearGraduated'] = "This field is required";
-        if (!teacher.degree) errors['degree'] = "This field is required";
-        if (!teacher.prcNumber) errors['prcNumber'] = "This field is required";
-        if (!teacher.expirationDate) errors['expirationDate'] = "This field is required";
-        if (!teacher.yearsOfTeaching) errors['yearsOfTeaching'] = "This field is required";
+        if (!academic.lastSchoolAttended) errors['lastSchoolAttended'] = "This field is required";
+        if (!academic.schoolAddress) errors['schoolAddress'] = "This field is required";
+        if (!academic.yearGraduated) errors['yearGraduated'] = "This field is required";
+        if (!academic.degree) errors['degree'] = "This field is required";
+        if (!academic.prcNumber) errors['prcNumber'] = "This field is required";
+        if (!academic.expirationDate) errors['expirationDate'] = "This field is required";
+        if (!academic.yearsOfTeaching) errors['yearsOfTeaching'] = "This field is required";
 
         return errors;
     };
@@ -226,6 +235,49 @@ import data from './options.json'; // Import the JSON data
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData.student.studentID, userData.student.lastName, userData.teacher.employeeID, userData.teacher.lastName]);
 
+    const handleInputChange = (e, category, subcategory = null) => {
+        const { name, value } = e.target;
+        // Remove the error for the field being updated
+        const updatedErrors = { ...errors };
+        delete updatedErrors[name];
+    
+        if (subcategory) {
+            setUserData(prevState => ({
+                ...prevState,
+                [category]: {
+                    ...prevState[category],
+                    [subcategory]: {
+                        ...prevState[category][subcategory],
+                        [name]: value
+                    }
+                }
+            }));
+        } else {
+            const updatedUserData = {
+                ...userData,
+                [category]: {
+                    ...userData[category],
+                    [name]: value,
+                    age: name === 'age' ? value : userData[category].age // Update age if age field changes
+                }
+            };
+            setUserData(updatedUserData);
+        }
+    
+        // Check if the changed field is relevant to generating the password
+        if ((category === 'student' && (name === 'studentID' || name === 'lastName')) ||
+            (category === 'teacher' && (name === 'employeeID' || name === 'lastName'))) {
+            handlePasswordChange(); // Call handlePasswordChange to update the password field
+        }
+    
+        // Clear error for password field if it has a value
+        if (name === 'password' && value.trim() !== '') {
+            delete updatedErrors['password'];
+        }
+    
+        setErrors(updatedErrors);
+    };
+    
     
     const handleDropdownChange = (category, member, value) => {
         // Update the value for the specified category and member
@@ -236,9 +288,7 @@ import data from './options.json'; // Import the JSON data
                 [category]: {
                     ...prevState[category],
                     [member]: value,
-                    // Reset the section and adviser values when grade level changes
-                    section: null,
-                    adviser: null
+                    
                 }
             }));
         } else {
@@ -269,9 +319,10 @@ import data from './options.json'; // Import the JSON data
     const handleDateChange = (category, member, date) => {
         const updatedUserData = {
             ...userData,
-            [category]: {
+            [category]:{
                 ...userData[category],
                 [member]: date,
+  
             }
         };
     
@@ -279,6 +330,10 @@ import data from './options.json'; // Import the JSON data
         if (member === 'dob') {
             updatedAge = calculateAge(date);
             updatedUserData[category].age = updatedAge;
+            setUserData(prevState => ({
+                ...prevState,
+                student: updatedUserData,
+            }));
         } else if (member === 'm_dob') {
             updatedAge = calculateAge(date);
             updatedUserData[category].m_age = updatedAge;
@@ -295,47 +350,6 @@ import data from './options.json'; // Import the JSON data
         setErrors(updatedErrors);
     };
     
-    
-    
-    const handleInputChange = (e, category, subcategory = null) => {
-        const { name, value } = e.target;
-        // Remove the error for the field being updated
-        const updatedErrors = { ...errors };
-        delete updatedErrors[name];
-        setErrors(updatedErrors);
-    
-        if (subcategory) {
-            setUserData(prevState => ({
-                ...prevState,
-                [category]: {
-                    ...prevState[category],
-                    [subcategory]: {
-                        ...prevState[category][subcategory],
-                        [name]: value
-                    }
-                }
-            }));
-        } else {
-            const updatedUserData = {
-                ...userData,
-                [category]: {
-                    ...userData[category],
-                    [name]: value,
-                    age: name === 'age' ? value : userData[category].age // Update age if age field changes
-                }
-            };
-            setUserData(updatedUserData);
-    
-          
-        }
-    
-        // Check if the changed field is relevant to generating the password
-        if ((category === 'student' && (name === 'studentID' || name === 'lastName')) ||
-            (category === 'teacher' && (name === 'employeeID' || name === 'lastName'))) {
-            handlePasswordChange(); // Call handlePasswordChange to update the password field
-        }
-    };
-    
     const calculateAge = (dob) => {
     if (!dob) return '';
     const birthDate = new Date(dob);
@@ -347,65 +361,104 @@ import data from './options.json'; // Import the JSON data
     }
     return age;
     };
+    const getGradeLabel = (value) => {
+        const grade = data.gradeLevels.find((grade) => grade.value === value);
+        return grade ? grade.label : '';
+      };
+    
 
     const handleSubmit = () => {
         let validationErrors = {};
         let serializedData = {};
-      
-        // Format date fields before sending the data
+        
         const formattedData = {
-          ...userData,
-          student: {
-            ...userData.student,
-            dob: userData.student.dob ? dayjs(userData.student.dob).format('YYYY-MM-DD') : null,
-            m_dob: userData.student.m_dob ? dayjs(userData.student.m_dob).format('YYYY-MM-DD') : null,
-            f_dob: userData.student.f_dob ? dayjs(userData.student.f_dob).format('YYYY-MM-DD') : null,
-          },
-          // Format other date fields similarly if needed
+            ...userData,
+            student: {
+                ...userData.student,
+                dob: userData.student.dob ? dayjs(userData.student.dob).format('YYYY-MM-DD') : null,
+            },
+            parents: {
+                ...userData.parents,
+                m_dob: userData.parents.m_dob ? dayjs(userData.parents.m_dob).format('YYYY-MM-DD') : null,
+                f_dob: userData.parents.f_dob ? dayjs(userData.parents.f_dob).format('YYYY-MM-DD') : null,
+            },
+            teacher: {
+                ...userData.teacher,
+                dob: userData.teacher.dob ? dayjs(userData.teacher.dob).format('YYYY-MM-DD') : null,
+            },
+            academic: {
+                ...userData.academic,
+                yearGraduated: userData.academic.yearGraduated ? dayjs(userData.academic.yearGraduated).format('YYYY') : null,
+                expirationDate: userData.academic.expirationDate ? dayjs(userData.academic.expirationDate).format('YYYY-MM-DD') : null,
+            },
         };
-      
+    
         if (userType === 'student') {
-          validationErrors = validateStudentData();
-          serializedData = {
-            userType: userType,
-            student: formattedData.student,
-          };
+            validationErrors = validateStudentData();
+            setLoading(true);
+            setTimeout(() => setLoading(false), 500);
+            if (Object.keys(validationErrors).length === 0) {
+                // Use the getGradeLabel and getSectionLabel functions to retrieve labels
+                const { gradeLevel } = formattedData.student;
+                const gradeLevelLabel = getGradeLabel(gradeLevel);
+                
+                setLoading(false);
+                // Construct the serialized data for a student including parent information
+                serializedData = {
+                    role: 'student',
+                    ...formattedData.student,
+                    gradeLevel: gradeLevelLabel,
+                    parents: {
+                        ...formattedData.parents,
+                    },
+                };
+            }
         } else if (userType === 'teacher') {
-          validationErrors = validateTeacherData();
-          serializedData = {
-            userType: userType,
-            teacher: formattedData.teacher,
-          };
+            validationErrors = validateTeacherData();
+            setLoading(true);
+            setTimeout(() => setLoading(false), 500);
+            if (Object.keys(validationErrors).length === 0) {
+                // Construct the serialized data for a teacher
+                setLoading(false);
+                serializedData = {
+                    role: 'teacher',
+                    ...formattedData.teacher,
+                    academic: {
+                        ...formattedData.academic,
+                    },
+                };
+            }
         }
-      
+    
         if (Object.keys(validationErrors).length === 0) {
-            console.log('Submitted data:', serializedData);
-          // Send the formatted data to the backend
-          axios.post('http://127.0.0.1:8081/api/users/', serializedData)
-            .then(response => {
-              console.log('Submitted data:', response.data);
-              // Handle successful response if needed
-            })
-            .catch(error => {
-              if (error.response) {
-                // The request was made and the server responded with a status code
-                console.error('Error submitting data:', error.response.data);
-              } else if (error.request) {
-                // The request was made but no response was received
-                console.error('No response received:', error.request);
-              } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error('Error setting up the request:', error.message);
-              }
-              // Handle the error gracefully
-            });
+            console.log('Serialized Data:', serializedData);
+            setLoading(true);
+            axios.post('http://127.0.0.1:8081/api/register/', serializedData)
+                .then(response => {
+                    setLoading(false);
+                    setSuccessModalOpen(true);
+                    console.log('Submitted data:', response.data);
+                    console.log('Serialized Data:', serializedData); // Display submitted data
+                    console.log('Response:', response.data);
+                    
+                })
+                .catch(error => {
+                    // Handle errors
+                });
         } else {
-          setErrors(validationErrors);
+            setErrors(validationErrors);
         }
-      };
-      
+    };
+       
     return (
         <div>
+            <SuccessModal
+                open={successModalOpen}
+                handleClose={() => {
+                    setSuccessModalOpen(false);
+                    onCancelClick(); // Call onCancelClick to navigate to the parent file
+                }}
+            />
             <div data-aos='fade-left' className='flex justify-start items-center pb-5' style={{ top: '10px', right: '10px' }}>
                 <CancelIcon
                     sx={{
@@ -502,15 +555,7 @@ import data from './options.json'; // Import the JSON data
                             error={errors['gender']}
                             helperText={errors['gender'] ? "This field is required" : ""}
                         />
-
-
-                        <CustomTextField
-                            label="Contact number"
-                            type="numeric"
-                            value={userData.student.contactNumber}
-                            onChange={e => handleInputChange(e, 'student')} 
-                            name="contactNumber"
-                        />
+                        
                          <CustomTextField
                             label="Complete address"
                             value={userData.student.address}
@@ -549,27 +594,7 @@ import data from './options.json'; // Import the JSON data
                         helperText={errors['gradeLevel']}
                     />
 
-                    <CustomDropdown
-                        label="Section"
-                        options={userData.student.gradeLevel ? sections[userData.student.gradeLevel] : []}
-                        value={userData.student.section}
-                        onChange={(value) => handleDropdownChange('student', 'section', value)}
-                        required
-                        error={errors['section']}
-                        helperText={errors['section']}
-                    />
-
-
-                        <CustomDropdown
-                            label="Class adviser"
-                            options={advisers}
-                            value={userData.student.adviser}
-                           onChange={(value) => handleDropdownChange('student', 'adviser', value)}
-                            required
-                            error={errors['adviser']}
-                            helperText={errors['adviser']}
-                        />
-                        
+                    
                     </>
             )}
 
@@ -661,27 +686,6 @@ import data from './options.json'; // Import the JSON data
                             error={errors['age']}
                             helperText={errors['age'] ? "This field is required" : ""}
                         />
-
-                        <CustomDropdown
-                            label="Handled Grade level"
-                            options={gradeLevels}
-                            value={userData.teacher.gradeLevel}
-                           onChange={(value) => handleDropdownChange('teacher', 'gradeLevel', value)}
-                           
-                            required
-                            error={errors['gradeLevel']}
-                            helperText={errors['gradeLevel'] ? "This field is required" : ""}
-                        />
-
-                        <CustomDropdown
-                            label="Section"
-                            options={userData.teacher.gradeLevel ? sections[userData.teacher.gradeLevel] : []}
-                             value={userData.teacher.section}
-                           onChange={(value) => handleDropdownChange('teacher', 'section', value)}
-                            required
-                            error={errors['section']}
-                            helperText={errors['section'] ? "This field is required" : ""}
-                        />
                         
                     </>
                )}
@@ -697,16 +701,16 @@ import data from './options.json'; // Import the JSON data
                     <div data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
                     <CustomTextField
                         label="Mother's Name"
-                        value={userData.student.mothersName}
-                        onChange={e => handleInputChange(e, 'student')} 
+                        value={userData.parents.mothersName}
+                        onChange={e => handleInputChange(e, 'parents')} 
                         name="mothersName"
                         error={errors['mothersName']}
                         helperText={errors['mothersName']}
                     />
                        <CustomDatePicker
                             label="Date of Birth"
-                            value={userData.student.m_dob}
-                            onChange={(date) => handleDateChange('student', 'm_dob', date)}
+                            value={userData.parents.m_dob}
+                            onChange={(date) => handleDateChange('parents', 'm_dob', date)}
                             required
                             error={errors['m_dob']}
                             helperText={errors['m_dob'] ? "This field is required" : ""}
@@ -714,20 +718,20 @@ import data from './options.json'; // Import the JSON data
 
                     <CustomTextField
                         label="Mother's Age"
-                        value={userData.student.m_age}
-                        onChange={(e) => handleInputChange(e, 'student')} 
+                        value={userData.parents.m_age}
+                        onChange={(e) => handleInputChange(e, 'parents')} 
                         error={errors['m_age']}
                         helperText={errors['m_age']}
                         InputLabelProps={{
-                            shrink: !!userData.student.m_age, // Set label to active position if age has data
+                            shrink: !!userData.parents.m_age, // Set label to active position if age has data
                         }}
                     />
                 
                         <CustomTextField
                             label="Mother's Contact number"
                             type='numeric'
-                            value={userData.student.mothersContact}
-                            onChange={e => handleInputChange(e, 'student')} 
+                            value={userData.parents.mothersContact}
+                            onChange={e => handleInputChange(e, 'parents')} 
                             name="mothersContact"
                             error={errors['mothersContact']}
                             helperText={errors['mothersContact']}
@@ -735,8 +739,8 @@ import data from './options.json'; // Import the JSON data
                         
                         <CustomTextField
                             label="Mother's Occupation"
-                            value={userData.student.mothersOccupation}
-                            onChange={e => handleInputChange(e, 'student')} 
+                            value={userData.parents.mothersOccupation}
+                            onChange={e => handleInputChange(e, 'parents')} 
                             name="mothersOccupation"
                             error={errors['mothersOccupation']}
                             helperText={errors['mothersOccupation']}
@@ -746,36 +750,36 @@ import data from './options.json'; // Import the JSON data
                         <div data-aos='fade-right' className='py-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
                         <CustomTextField
                             label="Father's Name"
-                            value={userData.student.fathersName}
-                            onChange={e => handleInputChange(e, 'student')} 
+                            value={userData.parents.fathersName}
+                            onChange={e => handleInputChange(e, 'parents')} 
                             name="fathersName"
                             error={errors['fathersName']}
                             helperText={errors['fathersName']}
                         />
                        <CustomDatePicker
                             label="Date of Birth"
-                            value={userData.student.f_dob}
-                            onChange={(date) => handleDateChange('student', 'f_dob', date)}
+                            value={userData.parents.f_dob}
+                            onChange={(date) => handleDateChange('parents', 'f_dob', date)}
                             required
                             error={errors['f_dob']}
                             helperText={errors['f_dob'] ? "This field is required" : ""}
                         />
                        <CustomTextField
                         label="Father's Age"
-                        value={userData.student.f_age}
-                        onChange={(e) => handleInputChange(e, 'student')} 
+                        value={userData.parents.f_age}
+                        onChange={(e) => handleInputChange(e, 'parents')} 
                         error={errors['f_age']}
                         helperText={errors['f_age']}
                         InputLabelProps={{
-                            shrink: !!userData.student.f_age, // Set label to active position if age has data
+                            shrink: !!userData.parents.f_age, // Set label to active position if age has data
                         }}
                     />
                 
                         <CustomTextField
                             label="Father's Contact number"
                             type='numeric'
-                            value={userData.student.fathersContact}
-                            onChange={e => handleInputChange(e, 'student')} 
+                            value={userData.parents.fathersContact}
+                            onChange={e => handleInputChange(e, 'parents')} 
                             name="fathersContact"
                             error={errors['fathersContact']}
                             helperText={errors['fathersContact']}
@@ -783,18 +787,27 @@ import data from './options.json'; // Import the JSON data
                         
                         <CustomTextField
                             label="Father's Occupation"
-                            value={userData.student.fathersOccupation}
-                            onChange={e => handleInputChange(e, 'student')} 
+                            value={userData.parents.fathersOccupation}
+                            onChange={e => handleInputChange(e, 'parents')} 
                             name="fathersOccupation"
                             error={errors['fathersOccupation']}
                             helperText={errors['fathersOccupation']}
                         />
                     </div>
-                    <div className="flex justify-center mt-5">
-                         
-                            <button onClick={handleSubmit} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div">
-                                Submit
-                            </button>
+                    <div className="flex justify-center mt-5">       
+                        <Button
+                        variant="contained"
+                        style={{ background: "#F2B569", color: 'white'}}
+                        startIcon={
+                            loading && (
+                            <CircularProgress size={24} />
+                            )
+                        }
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        >
+                        {loading ? "Submitting..." : "Submit"}
+                        </Button>
                         </div>
                 </div>
             )}
@@ -808,8 +821,8 @@ import data from './options.json'; // Import the JSON data
                     
                     <CustomTextField
                         label="Last School Attended"
-                        value={userData.teacher.lastSchoolAttended}
-                        onChange={e => handleInputChange(e,'teacher')} 
+                        value={userData.academic.lastSchoolAttended}
+                        onChange={e => handleInputChange(e,'academic')} 
                         name="lastSchoolAttended"
                         required
                         error={errors['lastSchoolAttended']}
@@ -817,8 +830,8 @@ import data from './options.json'; // Import the JSON data
                     />
                         <CustomTextField
                             label="School Address"
-                            value={userData.teacher.schoolAddress}
-                            onChange={e => handleInputChange(e, 'teacher')} 
+                            value={userData.academic.schoolAddress}
+                            onChange={e => handleInputChange(e, 'academic')} 
                             name="schoolAddress"
                             required
                             error={errors['schoolAddress']}
@@ -826,8 +839,8 @@ import data from './options.json'; // Import the JSON data
                         />
                         <CustomDatePicker
                             label="Year Graduated"
-                            value={userData.teacher.yearGraduated}
-                            onChange={(date) => handleDateChange('teacher', date)}
+                            value={userData.academic.yearGraduated}
+                            onChange={(date) => handleDateChange('academic', 'yearGraduated', date)}
                             required
                             yearOnly
                             error={errors['yearGraduated']}
@@ -836,8 +849,8 @@ import data from './options.json'; // Import the JSON data
                         
                         <CustomTextField
                             label="Degree"
-                            value={userData.teacher.degree}
-                            onChange={e => handleInputChange(e, 'teacher')} 
+                            value={userData.academic.degree}
+                            onChange={e => handleInputChange(e, 'academic')} 
                             name="degree"
                             required
                             
@@ -847,25 +860,25 @@ import data from './options.json'; // Import the JSON data
                         <CustomTextField
                             label="PRC Number"
                             type="numeric"
-                            value={userData.teacher.prcNumber}
-                            onChange={e => handleInputChange(e, 'teacher')} 
+                            value={userData.academic.prcNumber}
+                            onChange={e => handleInputChange(e, 'academic')} 
                             name="prcNumber"
                             error={errors['prcNumber']}
                             helperText={errors['prcNumber']}
                         />
                         <CustomDatePicker
                             label="Expiration Date"
-                            value={userData.teacher.expirationDate}
-                            onChange={(date) => handleDateChange('teacher', date)}
+                            value={userData.academic.expirationDate}
+                            onChange={(date) => handleDateChange('academic', 'expirationDate', date)}
                             error={errors['expirationDate']}
                             helperText={errors['expirationDate']}
                         />
                         <CustomTextField
                             label="Years of Teaching"
                             type="numeric"
-                            value={userData.teacher.yearsOfTeaching}
+                            value={userData.academic.yearsOfTeaching}
                             required
-                            onChange={e => handleInputChange(e, 'teacher')} 
+                            onChange={e => handleInputChange(e, 'academic')} 
                             name="yearsOfTeaching"
                             error={errors['yearsOfTeaching']}
                             helperText={errors['yearsOfTeaching']}
@@ -874,9 +887,19 @@ import data from './options.json'; // Import the JSON data
                        
                     </div>
                     <div className="flex justify-center mt-5">
-                        <button onClick={handleSubmit} className="bg-yellow-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded item-div">
-                            Submit
-                        </button>
+                    <Button
+                        variant="contained"
+                        style={{ background: "#F2B569", color: 'white'}}
+                        startIcon={
+                            loading && (
+                            <CircularProgress size={24} />
+                            )
+                        }
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        >
+                        {loading ? "Submitting..." : "Submit"}
+                        </Button>
                     </div>
                 </div>
             )}

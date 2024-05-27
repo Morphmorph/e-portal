@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from 'react';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -18,6 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import add from "../assets/add.webp";
 import data from ".././Users/options.json"; // assuming the JSON file is in the same directory
+import axios from 'axios';
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -31,7 +32,7 @@ const useResponsiveStyle = () => {
     boxShadow: 24,
     p: 4,
     borderRadius: 2,
-    overflowY: "scroll", // Enable vertical scrolling
+    // overflowY: "scroll", // Enable vertical scrolling
     maxHeight: "90vh", // Set a maximum height to prevent modal from exceeding viewport height
     [theme.breakpoints.up("sm")]: {
       width: 550,
@@ -42,7 +43,7 @@ const useResponsiveStyle = () => {
 export default function AddSubjectHandleModal({ open, handleClose, addSubjectToTable }) {
   const style = useResponsiveStyle();
   const [gradeLevel, setGradeLevel] = React.useState("");
-  const [section, setSection] = React.useState("");
+  const [section, setSection] = useState(null);
   const [subject, setSubject] = React.useState("");
   const [timeIn, setTimeIn] = React.useState(null);
   const [timeOut, setTimeOut] = React.useState(null);
@@ -51,7 +52,24 @@ export default function AddSubjectHandleModal({ open, handleClose, addSubjectToT
   const [subjectError, setSubjectError] = React.useState(false);
   const [timeInError, setTimeInError] = React.useState(false);
   const [timeOutError, setTimeOutError] = React.useState(false);
+  const [teachers, setTeachers] = React.useState([]);
+  const [selectedTeacher, setSelectedTeacher] = React.useState("");
+  const [teacherError, setTeacherError] = React.useState(false);
 
+  // Fetch teacher data
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8081/api/users/');
+      const { teachers } = response.data;
+      setTeachers(teachers);
+    } catch (error) {
+      console.error('Error fetching teacher data:', error);
+    }
+  };
   // Load data from JSON file
   const { gradeLevels, sections, subjects } = data;
 
@@ -82,59 +100,110 @@ export default function AddSubjectHandleModal({ open, handleClose, addSubjectToT
     setSubject(selectedSubject);
     setSubjectError(false); // Clear subject error when a selection is made
   };
-
-  const handleTimeInChange = (newTime) => {
-    setTimeIn(newTime);
-    setTimeInError(false); // Clear time in error when a selection is made
+  const getGradeLabel = (value) => {
+    const grade = data.gradeLevels.find((grade) => grade.value === value);
+    return grade ? grade.label : '';
   };
+
+  const getSectionLabel = (grade, value) => {
+    const section = data.sections[grade].find((section) => section.value === value);
+    return section ? section.label : '';
+  };
+
+  const getSubjectLabel = (grade, value) => {
+    const subjects = data.subjects[grade].find((subjects) => subjects.value === value);
+    return subjects ? subjects.label : '';
+  };
+  const handleTimeInChange = (newTime) => {
+    setTimeIn(new Date(newTime));
+    setTimeInError(false); // Clear time in error when a selection is made
+};
 
   const handleTimeOutChange = (newTime) => {
-    setTimeOut(newTime);
+    setTimeOut(new Date(newTime));
     setTimeOutError(false); // Clear time out error when a selection is made
+};
+
+  const handleChangeTeacher = (event) => {
+    const selectedTeacherId = event.target.value;
+    setSelectedTeacher(selectedTeacherId);
+    setTeacherError(false);
   };
 
-  const handleAddButtonClick = () => {
+  const handleAddButtonClick = async () => {
     let isError = false;
-    const currentDate = new Date();
-    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
-    
+    console.log("Selected data:", {
+      gradeLevel,
+      section,
+      subject,
+      timeIn,
+      timeOut,
+      selectedTeacher
+    });
+   // Convert grade level and section to labels
+   const gradeLevelLabel = getGradeLabel(gradeLevel);
+   const sectionLabel = section ? getSectionLabel(gradeLevel, section) : null;
+   const subjectLabel = subject ? getSubjectLabel(gradeLevel, subject) : null; 
     // Check if any required field is empty
-    if (!gradeLevel || !section || !subject || !timeIn || !timeOut) {
+    if (!gradeLevel || !section || !subject || !timeIn || !timeOut || !selectedTeacher) {
       // Set error state for the respective fields
       setGradeError(!gradeLevel);
       setSectionError(!section);
       setSubjectError(!subject);
       setTimeInError(!timeIn);
       setTimeOutError(!timeOut);
-  
+      setTeacherError(!selectedTeacher);
       isError = true;
     }
   
     // Convert timeIn and timeOut values to Date objects
-    const parsedTimeIn = new Date(timeIn);
-    const parsedTimeOut = new Date(timeOut);
+    const formatTime = (dateString) => {
+      const date = dateString instanceof Date ? dateString : new Date(dateString);
+      if (date instanceof Date && !isNaN(date)) {
+          const hours = date.getHours().toString().padStart(2, '0');
+          const minutes = date.getMinutes().toString().padStart(2, '0');
+          return `${hours}:${minutes}`;
+      } else {
+          return ''; // Handle invalid date input
+      }
+  };
+    
 
     // If there is no error, add the subject to the table
     if (!isError) {
-      addSubjectToTable({
-        createdate: formattedDate, // Assuming you want to use current date
-        subjectname: subject,
-        gradelvl: gradeLevel,
-        section: section,
-        timeIn: parsedTimeIn,
-        timeOut: parsedTimeOut
-      });
-    // Reset all fields to their initial state
-      setGradeLevel("");
-      setSection("");
-      setSubject("");
-      setTimeIn(null);
-      setTimeOut(null);
-      setGradeError(false);
-      setSectionError(false);
-      setSubjectError(false);
-      setTimeInError(false);
-      setTimeOutError(false);
+      const formattedTimeIn = formatTime(timeIn);
+      const formattedTimeOut = formatTime(timeOut);
+      try {
+        await axios.post('http://127.0.0.1:8081/api/add_subject_handle/', {
+          teacher: selectedTeacher,
+          grade_level: gradeLevelLabel,
+          section: sectionLabel,
+          subject: subjectLabel,
+          time_in: formattedTimeIn,
+          time_out: formattedTimeOut
+        });
+        addSubjectToTable({
+          teacher: selectedTeacher,
+          subjectname: subject,
+          gradelvl: gradeLevel,
+          section: section,
+          timeIn: timeIn,
+          timeOut: timeOut
+        });
+        // Reset all fields to their initial state
+        setGradeLevel("");
+        setSection("");
+        setSubject("");
+        setTimeIn(null);
+        setTimeOut(null);
+        setGradeError(false);
+        setSectionError(false);
+        setSubjectError(false);
+        setTimeInError(false);
+        setTimeOutError(false);
+      } catch (error) {
+        console.error('Error adding subject handle:', error);
+      }
     }
   };
 
@@ -172,20 +241,33 @@ export default function AddSubjectHandleModal({ open, handleClose, addSubjectToT
             component="h2"
             style={{ color: "#079440", fontWeight: "bold", marginTop: "3vh" }}
           >
-            Add Handled Subjects
+            Teacher Handled Subjects
           </Typography>
 
           <Grid container spacing={2}>
-            {/* ID textfield */}
+            {/* Adviser select field */}
             <Grid item xs={12} sm={6} mt={3}>
-              <TextField
-                disabled
-                id="id-disabled"
-                label="ID"
-                defaultValue="123456789"
-                size="small"
-                fullWidth
-              />
+              <FormControl variant="outlined" size="small" fullWidth error={teacherError}>
+                <InputLabel id="grade-level-label">Teacher</InputLabel>
+                <Select
+                    labelId="teacher-label"
+                    id="teacher-select"
+                    value={selectedTeacher}
+                    onChange={handleChangeTeacher}
+                    label="Teacher"
+                    >
+                    {teachers.map((teacher) => {
+                        const { teacher: teacherData, academic } = teacher; // Destructure nested properties
+                        console.log("Teacher:", teacher); // Log each teacher object
+                        return (
+                        <MenuItem key={teacherData.id} value={teacherData.id}> {/* Access id from teacherData */}
+                            {`${teacherData.firstName || ''} ${teacherData.middleName || ''} ${teacherData.lastName || ''}`}
+                        </MenuItem>
+                        );
+                    })}
+                </Select>
+                {teacherError && <Typography variant="caption" color="error">This field is required</Typography>}
+              </FormControl>
             </Grid>
 
             {/* Grade level select field */}
@@ -260,48 +342,27 @@ export default function AddSubjectHandleModal({ open, handleClose, addSubjectToT
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Grid container spacing={2} mt={3}>
               <Grid item xs={12} sm={6}>
+              <FormControl variant="outlined" size="small" fullWidth error={timeInError}>
               <TimePicker
                 label="Time start"
                 value={timeIn}
                 onChange={handleTimeInChange}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    InputProps={{
-                      style: {
-                        borderColor: timeInError ? 'red' : '', // Change border color to red if there's an error
-                      },  
-                    }}
-                    error={timeInError}
-                    helperText={timeInError ? "Please select a time" : null}
-                  />
-                )}
+                
               />
-              {timeInError && <Typography variant="caption" color="error">This field is required</Typography>}
-
+             {timeInError && <Typography variant="caption" color="error">This field is required</Typography>}
+              </FormControl>
               </Grid>
              
               <Grid item xs={12} sm={6}>
+              <FormControl variant="outlined" size="small" fullWidth error={timeOutError}>
               <TimePicker
                 label="Time end"
                 value={timeOut}
                 onChange={handleTimeOutChange}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    InputProps={{
-                      style: {
-                        borderColor: timeInError ? 'red' : '', // Change border color to red if there's an error
-                      },
-                    }}
-                    error={timeOutError}
-                    helperText={timeOutError ? "Please select a time" : null}
-                  />
-                )}
+                
               />
-              {timeOutError && <Typography variant="caption" color="error">This field is required</Typography>}
+             {timeOutError && <Typography variant="caption" color="error">This field is required</Typography>}
+              </FormControl>
               </Grid>
             </Grid>
           </LocalizationProvider>

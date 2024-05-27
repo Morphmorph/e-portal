@@ -5,12 +5,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-function Dropdown({ options, label }) {
-  const [value, setValue] = useState('');
+function Dropdown({ options, label, value, onChange, }) {
+  const [selected, setSelected] = useState(false);
 
   const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+    onChange(event.target.value);
+    setSelected(true); // Set selected to true when an item is selected
+};
 
   return (
     <Box
@@ -22,21 +23,19 @@ function Dropdown({ options, label }) {
       }}
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">{label}</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={value}
-          label={label}
-          onChange={handleChange}
-        >
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+            <InputLabel>{label}</InputLabel>
+            <Select
+                value={value || ''}
+                onChange={handleChange}
+                label={label}
+            >
+                {options.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
     </Box>
   );
 }

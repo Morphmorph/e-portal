@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,65 +7,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 170 },
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'contact', label: 'Contact no.', minWidth: 170 },
-  { id: 'gradelevel', label: 'Grade level', minWidth: 170 },
-  { id: 'section', label: 'Section', minWidth: 170 },
-  { id: 'adviser', label: 'Adviser', minWidth: 170 },
-  {
-    id: 'status',
-    label: 'Status',
-    minWidth: 170,
-    align: 'center',
-    render: (value) => (
-      <span style={{ fontWeight: 'bold', padding: 10, color: value === 'Present' ? '#079440' : '#F2B569', borderRadius: 5,}}>
-        {value}
-      </span>
-    ),
-  },
-  {
-    id: 'overall',
-    label: 'Overall',
-    minWidth: 170,
-    align: 'center',
-    render: (value) => (
-      <Button variant="contained" color="primary" >
-        View
-      </Button>
-    ),
-  },
+  { id: 'date', label: 'Date', minWidth: 170, align: 'center' },
+  { id: 'day', label: 'Day', minWidth: 170, align: 'center' },
+  { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
 ];
 
-function createData(id, name, contact, gradelevel, section, adviser, status) {
-  return { id, name, contact, gradelevel, section, adviser, status };
-}
-
-const rows = [
-  createData(
-    1234567890,
-    'John Doe Dobido',
-    9876543210,
-    'Grade 1',
-    'Peace',
-    'Son Goku',
-    'Absent' 
-  ),
-  createData(
-    6231811933,
-    ' Doe Dobido-bido',
-    9663718826,
-    'Grade 1',
-    'Peace',
-    'Son Goku',
-    'Present' 
-  ),
-];
-
-export default function AttendanceTable() {
+export default function AttendanceTable({ attendanceSData }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -76,6 +25,22 @@ export default function AttendanceTable() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const dateTime = new Date(dateTimeString);
+    
+    const options = {
+      year: 'numeric',
+      month: 'long', // This will give you the full month name (e.g., "January")
+      day: '2-digit',
+    };
+  
+    return dateTime.toLocaleString('en-US', options);
+  };
+
+  const formatDay = (dateString) => {
+    return new Date(dateString).toLocaleDateString(undefined, { weekday: 'long' });
   };
 
   return (
@@ -96,29 +61,41 @@ export default function AttendanceTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+          {attendanceSData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  No data available.
+                </TableCell>
+              </TableRow>
+            ) : (
+            attendanceSData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align} style={{ borderLeft: '1px solid #ccc' }}>
-                          {column.render ? column.render(value) : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+              .map((row, index) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  <TableCell align="center" >{formatDateTime(row.date)}</TableCell>
+                  <TableCell align="center" style={{borderLeftWidth: 1,}}>{formatDay(row.date)}</TableCell>
+                  <TableCell align="center" style={{borderLeftWidth: 1,}}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '5px 50px', // Padding inside the background color
+                        backgroundColor: row.status === 'Present' ? '#079440' : '#F2B569',
+                        color: 'white',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      {row.status}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              )))}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={attendanceSData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

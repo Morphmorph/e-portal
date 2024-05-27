@@ -73,7 +73,7 @@ const HoverButton = React.memo(styled(Button)({
   
   
   
-function Dashboard() {
+function Dashboard({setLoggedInUser}) {
 
   const [showWelcome, setShowWelcome] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
@@ -337,7 +337,7 @@ Aos.init({
       />
     </div>
     {showLogin ? (
-        <Login onCancelClick={handleCancelClick} />
+        <Login onCancelClick={handleCancelClick} setLoggedInUser={setLoggedInUser}/>
       ) : (
         showWelcome && (
     <div className='flex-1 px-4 flex flex-col text-center justify-center pb-10 pt-10 md:pt-10 lg:pb-0 mt-0 mx-2 lg:text-start lg:justify-center'>
@@ -368,15 +368,15 @@ Aos.init({
 
 <section id="contact" className='lg:h-screen grid gap-8 md:grid-cols-2 pt-5 pb-5 md:pb-5 md:pt-0 md:bottom-40' style={{backgroundColor: '' }}>
   <div data-aos='fade-up-right' className='flex-1 mt:5 flex flex-col px-4 items-center justify-center md:items-center md:justify-center md:mt-0'>
-    <div className='p-5 rounded-lg text-center md:mt-5' style={cardStyle2}>
+    <div className='p-5 rounded-lg text-center mt-0 lg:mt-5' style={cardStyle2}>
       <h1 className='text-white text-2xl sm:text-2xl md:text-4xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>VISION</h1>
-      <p className='text-black text-xl sm:text-xl md:text-xl font-semibold mb-2 italic'style={{}}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
+      <p className='text-black text-xl sm:text-xl md:text-xl font-semibold mb-2 italic'style={{}}>Cagayan de Oro Christian School is a Christ-centered and family-oriented dynamic learning community, committed to develop individuals to be academically competent, socially responsible and spiritually mature.</p>
     </div>
   </div>
   <div data-aos='fade-up-left' className='flex-1 flex flex-col px-4 items-center justify-center md:items-center md:justify-center '>
     <div className='p-5 rounded-lg text-center md:mt-5' style={cardStyle2}>
       <h1 className='text-white text-2xl sm:text-2xl md:text-4xl font-bold mb-2 italic' style={{ color: '#F2B569', textShadow: '2px 2px 4px rgba(8, 8, 0, 0.8)' }}>MISSION</h1>
-      <p className='text-black text-xl sm:text-xl md:text-xl font-semibold mb-2 italic'style={{  }}>The Christian Center, now Cagayan de Oro Christian School (COCS) is the ministerial arm of the United Church of Christ in the Philippines, (UCCP) Cagayan de Oro City that welcomes young children to grow in wisdom and stature and in favor with God and man. COCS is a school where the education of the heart begins.</p>
+      <p className='text-black text-xl sm:text-xl md:text-xl font-semibold mb-2 italic'style={{}}>COCS provides quality education where the curriculum is unique by the inclusion of Bible as the core subject, operational and conductive activities: to produce competent and productive learners who are socially responsible and molded into Christ-like character.</p>
     </div>
   </div>
 </section>

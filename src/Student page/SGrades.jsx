@@ -91,21 +91,7 @@ export default function SGrades({ onCancelClick }) {
         data-aos="fade-right"
         style={{ borderBottomWidth: 1, borderColor: "#F2B569" }}
       ></div>
-      <div
-        data-aos="fade-right"
-        className="flex flex-col sm:flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5"
-        style={Style}
-      >
-        <h1 className="text-2xl font-semibold" style={{ color: "#F2B569" }}>
-          Class adviser:
-        </h1>
-        <span className="text-xl font-medium px-3 uppercase text-white">
-          Son Goku
-        </span>
-        <span className="ml-0 text-center sm:ml-auto text-green-600 px-2 item-div">
-          View details
-        </span>
-      </div>
+      
       <div data-aos="fade-right">
         <SGradeTable />
       </div>

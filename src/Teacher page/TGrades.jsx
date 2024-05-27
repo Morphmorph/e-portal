@@ -6,12 +6,26 @@ import GradeTable from '../Admin page/GradeTable';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
 import GradeViews from '../Admin page/Views/GradeViews';
+import AddGradeModal from '../component/AddGradeModal';
+import SuccessModal from '../component/SuccessModal';
 
-function TGrades({onCancelClick}) {
+function TGrades({onCancelClick, enrolledStudents}) {
   const [showGradeViews, setShowGradeViews] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [open, setOpen] = useState(false);
+  const handleOpen = (user) => {
+      setOpen(true);
+      setSelectedUser(user);
+
+      console.log('selected rows:', selectedUser)
+  }
+  const handleClose = () => setOpen(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+
 
   const handleViewGrade = () => {
     setShowGradeViews(true);
+
   };
   Aos.init({
     // Global settings:
@@ -61,8 +75,15 @@ function TGrades({onCancelClick}) {
 
   return (
     <div>
+      <SuccessModal
+            open={successModalOpen}
+            handleClose={() => {
+                setSuccessModalOpen(false);
+                setOpen(false)
+            }}
+        />
       {showGradeViews ? (
-        <GradeViews onCancelClick={() => setShowGradeViews(false)}  isTeacher={true}/>
+        <GradeViews onCancelClick={() => setShowGradeViews(false)}  isTeacher={false}/>
       ) : (
         <div>
          <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
@@ -85,7 +106,7 @@ function TGrades({onCancelClick}) {
         
        
         <div className='justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0'>
-            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>GRADES</h1>
+            <h1 className='text-2xl font-serif font-semibold px-5' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>ADD GRADES</h1>
         </div>
         
         <TextField
@@ -112,7 +133,9 @@ function TGrades({onCancelClick}) {
             <span className='ml-0 text-center sm:ml-auto text-green-600 px-2 item-div'>View details</span>
           </div> */}
         <div data-aos='fade-right' >
-        <GradeTable showGradeView={handleViewGrade} />
+        <AddGradeModal open={open} handleClose={handleClose} handleSuccessModalOpen={() => setSuccessModalOpen(true)}/>
+      
+        <GradeTable handleOpen={handleOpen} showGradeView={handleViewGrade} enrolledStudents={enrolledStudents} userData={selectedUser}/>
       </div>
       </div>
       )}
