@@ -66,7 +66,7 @@ function Attendance({ onCancelClick, selectedStudentId }) {
   
   return (
     <div>
-      <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
+      <div data-aos='fade-left' className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
         <CancelIcon
           sx={{
             color: '#F2B569',
@@ -80,10 +80,9 @@ function Attendance({ onCancelClick, selectedStudentId }) {
           }}
           onClick={onCancelClick}
         />
-      </div>
-      <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-0 items-center'>
-        <div className='justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0'>
-          <h1 className='text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>ATTENDANCE RECORD</h1>
+      
+        <div className='justify-center items-center'>
+          <h1 className='text-lg sm:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>ATTENDANCE RECORD</h1>
         </div>
        
          

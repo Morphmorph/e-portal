@@ -79,7 +79,7 @@ function TSubjectHandles({onCancelClick, }) {
         <TSubjectSection  selectedRow={selectedRow} onCancelClick={() => setSelectedRow(null)}/>
       ) : (
         <div>
-          <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
+          <div data-aos='fade-left' className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
             <CancelIcon
               sx={{
                 color: '#F2B569',
@@ -93,15 +93,16 @@ function TSubjectHandles({onCancelClick, }) {
               }}
               onClick={onCancelClick}
             />
-          </div>
-          <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-start mt-0 md:mt-0 items-center'>
-            <div className='justify-start items-start lg:justify-center sm:items-center mb-2 md:mt-0'>
-              <h1 className='text-2xl font-serif font-semibold px-5 pt-4' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+          
+        
+            <div className='justify-center items-center '>
+              <h1 className='text-xl sm:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>
                 Handled Subjects
               </h1>
             </div>
-          </div>
-          <div data-aos='fade-right'>
+            </div>
+
+          <div data-aos='fade-right' className='pt-5'>
             <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
             <TSubjectHandleTable rows={tableRows} showProfileView={handleViewProfile} />
           </div>

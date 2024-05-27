@@ -7,7 +7,7 @@ import Dropdown from '../../component/Dropdown';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
 import GradesInfo from '../../Users/GradesInfo';
-
+import StarsIcon from '@mui/icons-material/Stars';
 
 function GradeViews({onCancelClick, isTeacher, isHonor, userData }) {
   Aos.init({
@@ -49,7 +49,7 @@ function GradeViews({onCancelClick, isTeacher, isHonor, userData }) {
   };
   return (
     <div>
-         <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
+         <div data-aos='fade-left' className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
          <CancelIcon
           sx={{
             color: '#F2B569',
@@ -64,47 +64,34 @@ function GradeViews({onCancelClick, isTeacher, isHonor, userData }) {
           onClick={onCancelClick}
         />
         
-        </div>
-       <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-start mt-0 md:mt-0 items-center ' style={{top: '10px', right: '10px'}}>
         
        
-        <div className='justify-start items-start lg:justify-center sm:items-center mb-2 md:mt-0'>
-            <h1 className='text-2xl font-serif font-semibold px-5 pt-4' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'}}>Student Grades</h1>
+        <div className='justify-center items-center '>
+            <h1 className='text-xl sm:text-2xl font-serif font-semibold px-5' style={{color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', textTransform: 'uppercase'}}>Student Grades</h1>
         </div>
         
         </div>
-        <div>
 
-        
-           
-            {isHonor ? (
-              <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px', }}>
-              
-              </div>
-            ) : (
-           
-              isTeacher && (
-                <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px', }}>
-                <div className='flex items-center justify-center rounded-lg px-5 mx-10 py-2 w-full lg:w-56 item-div' style={{backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px',}}>
-                <img src={add} alt="" className="h-12 w-12 lg:h-10 lg:w-10" />
-                <h1 className='text-xl font-serif px-1 ' style={{ color: '#079440' }}>Add Grades</h1>
-                </div>
-                </div>
-              
-            ))}
-        </div>
-
-        <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
-        <div data-aos='fade-right' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5' style={Style}>
-        <h1 className='text-2xl font-semibold' style={{color: '#F2B569'}}>Student ID:</h1>
-            <span className='text-xl font-medium px-3 uppercase text-white'>{userData.student.student_id}</span>
-            <h1 className='text-2xl font-semibold' style={{color: '#F2B569'}}>Student Name:</h1>
+        <div data-aos='fade-right' className='pt-5' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
+        <div data-aos='fade-right' className='flex flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5' style={Style}>
+        <StarsIcon
+          sx={{
+            color: '#F2B569',
+            fontSize: 40,
+            transition: 'color 0.3s, transform 0.3s',
+            '&:hover': {
+              color: '#079440', // Change the color on hover
+              transform: 'scale(1.1)', // Apply a scale effect on hover
+            },
+             cursor: 'pointer' 
+          }}
+        />
             <span className='text-xl font-medium px-3 uppercase text-white'>{userData.student.name}</span>
           </div>
       <div data-aos='fade-right'>
-      <div className='flex items-center justify-center rounded-xl py-2 w-full'>
-      <span className='absolute text-7xl sm:text-8xl text-green-600'>99</span>
-      <img src={border} alt="" className=" h-60 w-60 sm:h-80 sm:w-80" />
+      <div className='flex items-center justify-center rounded-xl py-5 w-full'>
+      <span className='absolute text-8xl sm:text-9xl text-green-600'>99</span>
+      <img src={border} alt="" className=" h-80 w-80 sm:h-96 sm:w-96" />
       </div>
       </div>
     </div>

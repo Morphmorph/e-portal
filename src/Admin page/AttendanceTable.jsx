@@ -79,8 +79,8 @@ export default function AttendanceTable({ attendanceSData }) {
                       style={{
                         display: 'inline-block',
                         padding: '5px 50px', // Padding inside the background color
-                        backgroundColor: row.status === 'Present' ? '#079440' : '#F2B569',
-                        color: 'white',
+                        color: row.status === 'Present' ? 'blue' : 'red',
+                        
                         borderRadius: '4px',
                       }}
                     >

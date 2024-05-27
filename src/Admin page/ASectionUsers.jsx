@@ -150,9 +150,9 @@ const handleSaveUserData = (userType, userData) => {
         />
       </div>
       
-      <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center sm:justify-start mt-0 md:mt-0 items-center ' style={{ top: '10px', right: '10px' }}>
+      <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-start mt-0 md:mt-0 items-center ' style={{ top: '10px', right: '10px' }}>
       <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
-        <h1 className='text-2xl uppercase font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+        <h1 className='text-xl sm:text-2xl uppercase font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
           {selectedRow.grade_level} - {selectedRow.section_name}
         </h1>
       </div>

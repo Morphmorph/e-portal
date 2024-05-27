@@ -46,50 +46,39 @@ export default function SGrades({ onCancelClick }) {
 
   return (
     <div>
-      <div
-        className="flex justify-start items-center"
-        style={{ top: "10px", right: "10px" }}
-      >
-        <CancelIcon
-          sx={{
-            color: "#F2B569",
-            fontSize: 40,
-            transition: "color 0.3s, transform 0.3s",
-            "&:hover": {
-              color: "red", // Change the color on hover
-              transform: "scale(1.1)", // Apply a scale effect on hover
-            },
-            cursor: "pointer",
-          }}
-          onClick={onCancelClick}
-        />
+       <div data-aos='fade-left' className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
+            <CancelIcon
+              sx={{
+                color: '#F2B569',
+                fontSize: 40,
+                transition: 'color 0.3s, transform 0.3s',
+                '&:hover': {
+                  color: 'red',
+                  transform: 'scale(1.1)',
+                },
+                cursor: 'pointer'
+              }}
+              onClick={onCancelClick}
+            />
+      
+      
+        <div className='justify-center items-center'>
+              <h1 className='text-xl sm:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>
+                Report of grades
+              </h1>
+            </div>
       </div>
-      <div
-        data-aos="fade-left"
-        className="flex flex-col sm:flex-row justify-center sm:justify-start mt-0 items-center "
-        style={{ top: "10px", right: "10px" }}
-      >
-        <div className="justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0">
-          <h1
-            className="text-2xl font-serif font-semibold px-5"
-            style={{
-              color: "#079440",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            REPORT OF GRADES
-          </h1>
-        </div>
-      </div>
-      <div
+      
+      {/* <div
         data-aos="fade-left"
         className="flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center "
       >
         <Dropdown options={gradelevel} label="Grade level" />
-      </div>
+      </div> */}
       <div
         data-aos="fade-right"
         style={{ borderBottomWidth: 1, borderColor: "#F2B569" }}
+        className="pt-5"
       ></div>
       
       <div data-aos="fade-right">

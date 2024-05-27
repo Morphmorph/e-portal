@@ -77,39 +77,29 @@ function ASectionHandled({ onCancelClick }) {
         <ASectionUsers selectedRow={selectedRow} onCancelClick={() => setSelectedRow(null)} />
       ) : (
         <div>
-          <div className="flex justify-start items-center" style={{ top: '10px', right: '10px' }}>
-            <CancelIcon
-              sx={{
-                color: '#F2B569',
-                fontSize: 40,
-                transition: 'color 0.3s, transform 0.3s',
-                '&:hover': {
-                  color: 'red', // Change the color on hover
-                  transform: 'scale(1.1)', // Apply a scale effect on hover
-                },
-                cursor: 'pointer',
-              }}
-              onClick={onCancelClick}
-            />
-          </div>
-          <div
-            data-aos="fade-left"
-            className="flex flex-col md:flex-row justify-center lg:justify-start mt-0 md:mt-0 items-center "
-            style={{ top: '10px', right: '10px' }}
-          >
-            <div className="justify-start items-start lg:justify-center sm:items-center mb-2 md:mt-0">
-              <h1
-                className="text-2xl font-serif font-semibold px-5 pt-4"
-                style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}
-              >
-                Teacher Advisory
-              </h1>
+          <div data-aos='fade-left' className='flex justify-start items-center pb-5' style={{ top: '10px', right: '10px' }}>
+                <CancelIcon
+                    sx={{
+                        color: '#F2B569',
+                        fontSize: 40,
+                        transition: 'color 0.3s, transform 0.3s',
+                        '&:hover': {
+                            color: 'red', // Change the color on hover
+                            transform: 'scale(1.1)', // Apply a scale effect on hover
+                        },
+                        cursor: 'pointer'
+                    }}
+                    onClick={onCancelClick}
+                />
+
+                <div className='justify-center items-center '>
+                    <h1 className='text-xl md:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>Teacher advisory</h1>
+                </div>
             </div>
-          </div>
           <div>
             <div
               data-aos="fade-left"
-              className="flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center "
+              className="flex flex-col md:flex-row justify-center lg:justify-end mt-0 items-center "
               style={{ top: '10px', right: '10px' }}
             >
               <div
