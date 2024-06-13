@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -11,10 +11,14 @@ import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Grid from "@mui/material/Grid";
 import useTheme from "@mui/material/styles/useTheme";
 import add from "../assets/add.webp";
+import { SwitchContext } from '../switchStatesContext';
 import axios from 'axios';
+import Modals from './Modal';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -35,72 +39,129 @@ const useResponsiveStyle = () => {
   };
 };
 
-export default function AddGradeModal({ open, handleClose, handleSuccessModalOpen, teacherGradeLevel, teacherSection }) {
+export default function AddGradeModal({ open, handleClose, handleSuccessModalOpen, selectedUser, selectedRow}) {
+  const { switchStates } = useContext(SwitchContext);
+  console.log('switchStates in AddGradeModal:', switchStates);
+
   const [loading, setLoading] = useState(false);
   const style = useResponsiveStyle();
-  const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState("");
-  const [studentError, setStudentError] = useState(false);
+  const [grade, setGrade] = useState('');
+  const [gradingPeriod, setGradingPeriod] = useState('');
+  const [gradeError, setGradeError] = useState(false);
+  const [gradingPeriodError, setGradingPeriodError] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalDescription, setModalDescription] = useState("");
 
-  const handleChangeStudent = (event) => {
-    const selectedStudentId = event.target.value;
-    setSelectedStudent(selectedStudentId);
-    setStudentError(false);
-  };
+  const availableGradingPeriods = ['1st Grading', '2nd Grading', '3rd Grading', '4th Grading'].filter((period, index) => 
+    switchStates && (
+      (switchStates[`first`] && index === 0) || 
+      (switchStates[`second`] && index === 1) || 
+      (switchStates[`third`] && index === 2) || 
+      (switchStates[`fourth`] && index === 3)
+    )
+  );
   
-  useEffect(() => {
-    fetchData(); // Fetch data initially
-    const interval = setInterval(fetchData, 5000); // Fetch data every 5 seconds
-
-    return () => clearInterval(interval); // Clean up setInterval on component unmount
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`http://127.0.0.1:8081/api/get_students/?grade_level=${teacherGradeLevel}&without_section=true`);
-      const { students } = response.data;
-      setStudents(students);
-    } catch (error) {
-      console.error('Error fetching student data:', error);
-    }
+  const handleChangeGrade = (event) => {
+    const value = event.target.value;
+    setGrade(value);
+    setGradeError(!value);
   };
-  
+
+  const handleChangeGradingPeriod = (event) => {
+    const value = event.target.value;
+    setGradingPeriod(value);
+    setGradingPeriodError(!value);
+  };
 
   const handleAddButtonClick = async () => {
     try {
-      if (!selectedStudent) {
-        setStudentError(true);
+      if (!grade || !gradingPeriod) {
+        setGradeError(!grade);
+        setGradingPeriodError(!gradingPeriod);
         return;
       }
 
-      const sectionHandleData = {
-        student_id: selectedStudent,
-        section_handle_id: teacherSection
-
+      const gradeData = {
+        student: selectedUser.student.user_id,
+        subject_handle: selectedRow.id,
+        grading_period: gradingPeriod,
+        grade: grade
       };
- // Log the student_id and section_id
- console.log('Student ID:', selectedStudent);
- console.log('Section ID:', teacherSection);
 
-      const response = await axios.post('http://127.0.0.1:8081/api/add_student_to_section/', sectionHandleData);
-      
+      const response = await axios.post('http://127.0.0.1:8081/api/add_grade/', gradeData);
+
       setLoading(true);
-      if (response.status === 200) {
+      if (response.status === 201) {
         setLoading(false);
         handleSuccessModalOpen();
-        console.log("Student added to section successfully");
-        console.log("Added student data:", sectionHandleData);
-        setSelectedStudent("");
-        setStudentError(false);
+        console.log("Grade added successfully");
+        console.log("Added grade data:", gradeData);
+        setGrade('');
+        setGradingPeriod('');
+        setGradeError(false);
+        setGradingPeriodError(false);
       } else {
-        // Handle other response statuses if needed
+        setLoading(false);
+        if (response.status === 400) {
+          const { error } = response.data;
+          setModalTitle("Adding Error!");
+          setModalDescription(error);
+          setShowErrorModal(true);
+        } else if (response.status === 405) {
+          const { error } = response.data;
+          setModalTitle("Not Found Error!");
+          setModalDescription(error);
+          setShowErrorModal(true);
+        } else if (response.status === 500) {
+          const { error } = response.data;
+          setModalTitle("Internal Server Error!");
+          setModalDescription(error);
+          setShowErrorModal(true);
+        }
       }
     } catch (error) {
-      console.error("Error adding student to section:", error);
+      setLoading(false);
+      // Handle network error
+      console.error("Error adding section handle:", error);
+
+      // Check if it's a network error
+      if (!error.response) {
+        setModalTitle("Network Error!");
+        setModalDescription("Network error occurred, please try again later.");
+      } else {
+        // It's some other error
+        const { response } = error;
+        if (response.status === 400) {
+          const { error } = response.data;
+          setModalTitle("Adding Error!");
+          setModalDescription(error);
+        } else if (response.status === 405) {
+          const { error } = response.data;
+          setModalTitle("Not Found Error!");
+          setModalDescription(error);
+        } else if (response.status === 500) {
+          const { error } = response.data;
+          setModalTitle("Internal Server Error!");
+          setModalDescription(error);
+        } else {
+          setModalTitle("Error!");
+          setModalDescription("An unexpected error occurred, please try again later.");
+        }
+      }
+      setShowErrorModal(true);
     }
   };
 
   return (
+    <>
+    <Modals
+        open={showErrorModal}
+        handleClose={() => setShowErrorModal(false)}
+        icon={<WarningIcon sx={{ fontSize: "200px", color: "red" }}/>}
+        title={modalTitle}
+        description={modalDescription}
+      />
     <Modal
       open={open}
       aria-labelledby="modal-modal-title"
@@ -134,23 +195,43 @@ export default function AddGradeModal({ open, handleClose, handleSuccessModalOpe
             component="h2"
             style={{ color: "#079440", fontWeight: "bold", marginTop: "3vh" }}
           >
-            Add Students Grade
+            Add Student Grade
           </Typography>
 
-          
-            <Grid item xs={12} sm={6} mt={3}>
-              <FormControl variant="outlined" size="large" fullWidth error={studentError}>
+          <Grid container spacing={2} mt={3}>
+            <Grid item xs={12} sm={6}>
+              <FormControl variant="outlined" size="large" fullWidth error={gradeError}>
                 <TextField
-                label="Grade"
-                id="name-payment-modal"
-                size="small"
-                onChange={handleChangeStudent}
-                fullWidth
-              />
-                {studentError && <Typography variant="caption" color="error">Please add a number</Typography>}
+                  labelid="grade-label"
+                  id="grade"
+                  label='Grade'
+                  value={grade}
+                  onChange={handleChangeGrade}
+                  type="number"
+                  fullWidth
+                />
+                {gradeError && <Typography variant="caption" color="error">Please add a grade</Typography>}
               </FormControl>
             </Grid>
-         
+            <Grid item xs={12} sm={6}>
+            <FormControl variant="outlined" size="large" fullWidth error={gradingPeriodError}>
+              <InputLabel id="grading-period-label">Grading Period</InputLabel>
+              <Select
+                labelId="grading-period-label"
+                id="grading-period"
+                value={gradingPeriod}
+                onChange={handleChangeGradingPeriod}
+                fullWidth
+                label="grading Period"
+              >
+                {availableGradingPeriods.map(period => (
+                  <MenuItem key={period} value={period}>{period}</MenuItem>
+                ))}
+              </Select>
+              {gradingPeriodError && <Typography variant="caption" color="error">Please select a grading period</Typography>}
+            </FormControl>
+            </Grid>
+          </Grid>
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
             <Button
@@ -172,5 +253,6 @@ export default function AddGradeModal({ open, handleClose, handleSuccessModalOpe
         </Box>
       </div>
     </Modal>
+    </>
   );
 }

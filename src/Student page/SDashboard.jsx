@@ -3,136 +3,70 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import star from "../assets/star.webp";
 import attendance from "../assets/attendance.webp";
-import billings from "../assets/billings.webp";
-import ledger from "../assets/ledger.webp";
-import SGrades from "./SGrades";
 import SAttendance from "./SAttendance";
-import SBillings from "./SBillings";
-import SLedger from "./SLedger";
-import { useUser } from '../UserContext';
+import { Link, useLocation, useNavigate } from 'react-router-dom'; 
+import SSGrades from "./SSGrades";
+
+const sections = [
+  { key: 'grades', label: 'Grades', image: star, component: SSGrades, bgColor: '#00476B' },
+  { key: 'attendance', label: 'Attendance', image: attendance, component: SAttendance, bgColor: '#682D6B' },
+];
+
+const colorMap = {
+  grades: 'violet',
+  attendance: 'orange',
+  billings: 'red',
+  ledger: 'blue',
+};
 
 export default function SDashboard() {
-  const [showGrades, setShowGrades] = useState(false);
-  const [showAttendance, setShowAttendance] = useState(false);
-  const [showBillings, setShowBillings] = useState(false);
-  const [showLedger, setShowLedger] = useState(false);
-  const { loggedInUser } = useUser();
-  
-  const handleClick = (section) => {
-    setShowGrades(false);
-    setShowAttendance(false);
-    setShowBillings(false);
-    setShowLedger(false);
+  const [activeSection, setActiveSection] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    switch (section) {
-      case "grades":
-        setShowGrades(true);
-        break;
-      case "attendance":
-        setShowAttendance(true);
-        break;
-      case "billings":
-        setShowBillings(true);
-        break;
-      case "ledger":
-        setShowLedger(true);
-        break;
-      default:
-        break;
+  useEffect(() => {
+    const storedSection = localStorage.getItem('activeSection');
+    if (storedSection) {
+      setActiveSection(storedSection);
     }
+  }, []);
+
+  const handleClick = (section) => {
+    setActiveSection(section);
+    localStorage.setItem('activeSection', section);
   };
 
   const handleCancelClick = () => {
-    setShowGrades(false);
-    setShowAttendance(false);
-    setShowBillings(false);
-    setShowLedger(false);
+    setActiveSection('');
+    localStorage.removeItem('activeSection');
+    const newPath = location.pathname.replace(/\/SDashboard\/(grades|attendance)/, '/SDashboard');
+    navigate(newPath);
   };
 
   return (
     <div>
-
       <Container
         maxWidth="xl"
         sx={{ paddingTop: "20px", marginBottom: "20px", cursor: "pointer" }}
       >
-        {(showGrades && <SGrades onCancelClick={handleCancelClick} />) ||
-          (showAttendance && (
-            <SAttendance onCancelClick={handleCancelClick} />
-          )) ||
-          (showBillings && <SBillings onCancelClick={handleCancelClick} />) ||
-          (showLedger && <SLedger onCancelClick={handleCancelClick} />) || (
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <div
-                  className="bg-violet-300 text-white p-8 text-end rounded-xl item-div"
-                  onClick={() => handleClick("grades")}
-                  style={{
-                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    boxShadow: "8px 8px 8px rgba(0, 0, 0, 0.3)",
-                  }}
-                >
-                  <h1 className="text-2xl font-bold font-serif">Grades</h1>
-                  <img
-                    src={star}
-                    alt=""
-                    className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-                  />
-                </div>
+        {activeSection && sections.find(sec => sec.key === activeSection) ? (
+          // Render the selected section component dynamically
+          React.createElement(sections.find(sec => sec.key === activeSection).component, { onCancelClick: handleCancelClick })
+        ) : (
+          // Render section links dynamically
+          <Grid container spacing={3}>
+            {sections.map((section) => (
+              <Grid key={section.key} item xs={12} sm={6} md={4} lg={4}>
+                <Link to={`/SDashboard/${section.key}`} className="link">
+                  <div className={`text-white p-8 text-end rounded-xl item-div`} onClick={() => handleClick(section.key)} style={{ backgroundColor: section.bgColor, textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", boxShadow: "8px 8px 8px rgba(0, 0, 0, 0.3)" }}>
+                    <h1 className="text-2xl font-bold font-serif">{section.label}</h1>
+                    <img src={section.image} alt="" className="h-12 w-12 lg:h-20 lg:w-20 item-image" />
+                  </div>
+                </Link>
               </Grid>
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <div
-                  className="bg-orange-300 text-white p-8 text-end rounded-xl item-div"
-                  onClick={() => handleClick("attendance")}
-                  style={{
-                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    boxShadow: "8px 8px 8px rgba(0, 0, 0, 0.3)",
-                  }}
-                >
-                  <h1 className="text-2xl font-bold font-serif">Attendance</h1>
-                  <img
-                    src={attendance}
-                    alt=""
-                    className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <div
-                  className="bg-red-300 text-white p-8 text-end rounded-xl item-div"
-                  onClick={() => handleClick("billings")}
-                  style={{
-                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    boxShadow: "8px 8px 8px rgba(0, 0, 0, 0.3)",
-                  }}
-                >
-                  <h1 className="text-2xl font-bold font-serif">Billings</h1>
-                  <img
-                    src={billings}
-                    alt=""
-                    className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <div
-                  className="bg-pink-400 text-white p-8 text-end rounded-xl item-div"
-                  onClick={() => handleClick("ledger")}
-                  style={{
-                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    boxShadow: "8px 8px 8px rgba(0, 0, 0, 0.3)",
-                  }}
-                >
-                  <h1 className="text-2xl font-bold font-serif">Ledger</h1>
-                  <img
-                    src={ledger}
-                    alt=""
-                    className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-                  />
-                </div>
-              </Grid>
-            </Grid>
-          )}
+            ))}
+          </Grid>
+        )}
       </Container>
     </div>
   );

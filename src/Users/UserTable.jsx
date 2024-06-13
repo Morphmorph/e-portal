@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 
 const columns = [
   { id: 'created_at', label: 'Date created', minWidth: 170, align: 'center' },
-  { id: 'user_type', label: 'User Type', minWidth: 170, align: 'center' },
+  { id: 'user_type', label: 'User type', minWidth: 170, align: 'center' },
   { id: 'id', label: 'ID No.', minWidth: 170 },
   { id: 'name', label: 'Name', minWidth: 170 },
   {
@@ -27,18 +27,25 @@ const columns = [
   },
 ];
 
-const UserTable = ({ showProfileView, students, teachers, selectedUserType }) => {
+const UserTable = ({ showProfileView, students, teachers, selectedUserType, searchQuery }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filteredUsers, setFilteredUsers] = useState([]);
 
-  // Update filteredUsers when props change
   useEffect(() => {
     const allUsers = [...students, ...teachers];
     const filtered = selectedUserType === 'all' ? allUsers :
       selectedUserType === 'student' ? students : teachers;
-    setFilteredUsers(filtered);
-  }, [students, teachers, selectedUserType]);
+
+    const lowercasedQuery = searchQuery.toLowerCase();
+    const searchFiltered = filtered.filter(user => {
+      const id = user.student ? user.student.studentID : user.teacher.employeeID;
+      const name = user.student ? `${user.student.firstName} ${user.student.middleName || ''} ${user.student.lastName}` : `${user.teacher.firstName} ${user.teacher.middleName || ''} ${user.teacher.lastName}`;
+      return id.toLowerCase().includes(lowercasedQuery) || name.toLowerCase().includes(lowercasedQuery);
+    });
+
+    setFilteredUsers(searchFiltered);
+  }, [students, teachers, selectedUserType, searchQuery]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -67,8 +74,8 @@ const UserTable = ({ showProfileView, students, teachers, selectedUserType }) =>
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2, height: 'auto' }}>
+      <TableContainer sx={{ maxHeight: 'none' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -148,7 +155,6 @@ const UserTable = ({ showProfileView, students, teachers, selectedUserType }) =>
       )}
     </Paper>
   );
-  
 };
 
 export default UserTable;

@@ -14,9 +14,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import useTheme from "@mui/material/styles/useTheme";
 import add from "../assets/add.webp";
-import data from ".././Users/options.json"; // assuming the JSON file is in the same directory
+import data from ".././Users/options.json"; 
 import axios from 'axios';
-
+import Modals from './Modal';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const useResponsiveStyle = () => {
   const theme = useTheme();
@@ -25,20 +26,19 @@ const useResponsiveStyle = () => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: { xs: "90%", sm: 550 }, // Adjust width based on screen size
+    width: { xs: "90%", sm: 550 },
     bgcolor: "background.paper",
     boxShadow: 24,
     p: 4,
     borderRadius: 2,
-    // overflowY: "scroll", // Enable vertical scrolling
-    maxHeight: "90vh", // Set a maximum height to prevent modal from exceeding viewport height
+    maxHeight: "90vh", 
     [theme.breakpoints.up("sm")]: {
       width: 550,
     },
   };
 };
 
-export default function AddSubjectHandleModal({ open, handleClose, handleSuccessModalOpen, }) {
+export default function AddSubjectHandleModal({ open, handleClose, handleSuccessModalOpen}) {
   const [loading, setLoading] = React.useState(false);
   const style = useResponsiveStyle();
   const [teachers, setTeachers] = React.useState([]);
@@ -48,25 +48,27 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
   const [sectionError, setSectionError] = React.useState(false);
   const [selectedTeacher, setSelectedTeacher] = React.useState("");
   const [teacherError, setTeacherError] = React.useState(false);
- 
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalDescription, setModalDescription] = useState("");
+
   const handleChangeTeacher = (event) => {
     const selectedTeacherId = event.target.value;
-    setSelectedTeacher(selectedTeacherId); // Update selectedTeacher state with the teacher ID
-    setTeacherError(false); // Clear teacher error when a selection is made
+    setSelectedTeacher(selectedTeacherId); 
+    setTeacherError(false); 
   };
-  
-  // Load data from JSON file
+
   const { gradeLevels, sections} = data;
   useEffect(() => {
-    fetchData(); // Fetch data initially
-     // Clean up setInterval on component unmount
+    fetchData();
+     
   }, []);
 
   const fetchData = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:8081/api/users/');
-      const { teachers } = response.data; // Assuming teachers is already an array
-      console.log("Fetched users data:",  teachers); // Debugging statement
+      const { teachers } = response.data; 
+      console.log("Fetched users data:",  teachers); 
   
       // Process the data as needed
       setTeachers(teachers); // Set teachers to the array directly
@@ -84,14 +86,14 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
     setGradeLevel(selectedGradeLevel);
     // Reset section when grade level changes
     setSection("");
-    setSectionError(false); // Reset section error
-    setGradeError(false); // Clear grade error when a selection is made
+    setSectionError(false); 
+    setGradeError(false); 
   };
 
   const handleChangeSection = (event) => {
     const selectedSection = event.target.value;
     setSection(selectedSection);
-    setSectionError(false); // Clear section error when a selection is made
+    setSectionError(false); 
   };
   const getGradeLabel = (value) => {
     const grade = data.gradeLevels.find((grade) => grade.value === value);
@@ -102,7 +104,9 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
     const section = data.sections[grade].find((section) => section.value === value);
     return section ? section.label : '';
   };
+
   const handleAddButtonClick = async () => {
+    
     try {  
       // Check if any required field is empty
       if (!gradeLevel || !section || !selectedTeacher) {
@@ -117,49 +121,94 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
       const sectionLabel = section ? getSectionLabel(gradeLevel, section) : null;
   
       const sectionHandleData = {
-        teacher_id: selectedTeacher, // Ensure that selectedTeacher contains the teacher's ID
-        grade_level: gradeLevelLabel, // Use the label instead of the value
-        section: sectionLabel, // Use the label instead of the value
+        teacher_id: selectedTeacher, 
+        grade_level: gradeLevelLabel, 
+        section: sectionLabel, 
       };
   
       const response = await axios.post('http://127.0.0.1:8081/api/add_section_handles/', sectionHandleData);
       
       setLoading(true)
+
       if (response.status === 200) {
-        // Handle successful response
         setLoading(false);
-         // Close the modal
-        handleSuccessModalOpen(); // Call handleSuccessModalOpen here
+        handleSuccessModalOpen(); 
         console.log("Section handle added successfully");
-        console.log("Added section handle data:", sectionHandleData); // Log added section handle data
-        // Reset all fields to their initial state
+        console.log("Added section handle data:", sectionHandleData);
         setGradeLevel("");
         setSection("");
         setSelectedTeacher("");
         setGradeError(false);
         setSectionError(false);
         setTeacherError(false);
-       
       } else {
-
+        setLoading(false);
+        if (response.status === 400) {
+          const { error } = response.data;
+          setModalTitle("Adding Error!");
+          setModalDescription(error);
+          setShowErrorModal(true);
+        } else if (response.status === 404) {
+          const { error } = response.data;
+          setModalTitle("Not Found Error!");
+          setModalDescription(error);
+          setShowErrorModal(true);
+        } else if (response.status === 500) {
+          const { error } = response.data;
+          setModalTitle("Internal Server Error!");
+          setModalDescription(error);
+          setShowErrorModal(true);
+        }
       }
-      
     } catch (error) {
+      setLoading(false);
+      // Handle network error
       console.error("Error adding section handle:", error);
+
+      // Check if it's a network error
+      if (!error.response) {
+        setModalTitle("Network Error!");
+        setModalDescription("Network error occurred, please try again later.");
+      } else {
+        // It's some other error
+        const { response } = error;
+        if (response.status === 400) {
+          const { error } = response.data;
+          setModalTitle("Adding Error!");
+          setModalDescription(error);
+        } else if (response.status === 404) {
+          const { error } = response.data;
+          setModalTitle("Not Found Error!");
+          setModalDescription(error);
+        } else if (response.status === 500) {
+          const { error } = response.data;
+          setModalTitle("Internal Server Error!");
+          setModalDescription(error);
+        } else {
+          setModalTitle("Error!");
+          setModalDescription("An unexpected error occurred, please try again later.");
+        }
+      }
+      setShowErrorModal(true);
     }
   };
 
-
   return (
+    <>
+    <Modals
+        open={showErrorModal}
+        handleClose={() => setShowErrorModal(false)}
+        icon={<WarningIcon sx={{ fontSize: "200px", color: "red" }}/>}
+        title={modalTitle}
+        description={modalDescription}
+      />
     <Modal
       open={open}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       closeAfterTransition
     >
-         
       <div>
-      
         <Box sx={style}>
           <IconButton
             aria-label="close"
@@ -190,7 +239,6 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
           </Typography>
 
           <Grid container spacing={2}>
-            {/* Adviser select field */}
             <Grid item xs={12} sm={6} mt={3}>
               <FormControl variant="outlined" size="small" fullWidth error={teacherError}>
                 <InputLabel id="grade-level-label">Adviser</InputLabel>
@@ -202,10 +250,10 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
                     label="Teacher"
                     >
                     {teachers.map((teacher) => {
-                        const { teacher: teacherData, academic } = teacher; // Destructure nested properties
-                        console.log("Teacher:", teacher); // Log each teacher object
+                        const { teacher: teacherData, academic } = teacher; 
+                        console.log("Teacher:", teacher);
                         return (
-                        <MenuItem key={teacherData.id} value={teacherData.id}> {/* Access id from teacherData */}
+                        <MenuItem key={teacherData.id} value={teacherData.id}> 
                             {`${teacherData.firstName || ''} ${teacherData.middleName || ''} ${teacherData.lastName || ''}`}
                         </MenuItem>
                         );
@@ -215,8 +263,6 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
               </FormControl>
             </Grid>
           
-
-            {/* Grade level select field */}
             <Grid item xs={12} sm={6} mt={3}>
               <FormControl variant="outlined" size="small" fullWidth error={gradeError}>
                 <InputLabel id="grade-level-label">Grade Level</InputLabel>
@@ -238,9 +284,7 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
             </Grid>
           </Grid>
 
-          {/* New Row of Fields */}
           <Grid container spacing={2}>
-            {/* Section select field */}
             <Grid item xs={12} sm={6} mt={3}>
               <FormControl variant="outlined" size="small" fullWidth error={sectionError}>
                 <InputLabel id="section-label">Section</InputLabel>
@@ -264,7 +308,6 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
 
           </Grid>
 
-          {/* Align the button to the right using Box */}
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
           <Button
               variant="contained"
@@ -285,5 +328,6 @@ export default function AddSubjectHandleModal({ open, handleClose, handleSuccess
         </Box>
       </div>
     </Modal>
+    </>
   );
 }

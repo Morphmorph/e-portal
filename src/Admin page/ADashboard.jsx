@@ -1,24 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import users from '../assets/users.webp';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import useLocation and useNavigate hooks
-import star from '../assets/star.webp';
+import star from '../assets/triggers.webp';
 import attendance from '../assets/attendance.webp';
-import billings from '../assets/billings.webp';
 import ledger from '../assets/ledger.webp';
+import folder from '../assets/folder.webp';
 import Users from './Users';
 import Grades from './Grades';
 import Attendance from './Attendance';
-import Billings from './Billings';
-import folder from '../assets/folder.webp';
 import ASubjectHandles from './ASubjectHandles';
 import ASectionHandled from './ASectionHandled';
 
+const sections = [
+  { key: 'users', label: 'User accounts', image: users, bgColor: '#3E3A40' },
+  { key: 'grades', label: 'Triggers', image: star, bgColor: '#00476B' },
+  { key: 'attendance', label: 'Attendance', image: attendance, bgColor: '#682D6B' },
+  { key: 'subjecthandles', label: 'Teacher Subjects', image: ledger, bgColor: '#6B571A' },
+  { key: 'sectionhandles', label: 'Teacher Advisory', image: folder, bgColor: '#436B0E' },
+];
+
 function ADashboard() {
   const [activeSection, setActiveSection] = useState('');
-  const location = useLocation(); // Get the current location
-  const navigate = useNavigate(); // Get the navigate function
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedSection = localStorage.getItem('activeSection');
@@ -35,93 +41,38 @@ function ADashboard() {
   const handleCancelClick = () => {
     setActiveSection('');
     localStorage.removeItem('activeSection');
-    if (location.pathname.includes('/ADashboard/user-accounts')) {
-      // Check if the current path includes '/ADashboard/user-accounts'
-      // If yes, remove it from the path
-      const newPath = location.pathname.replace('/ADashboard/user-accounts', '/ADashboard');
-      navigate(newPath); // Navigate to the new path
-      console.log('New Path:', newPath);
-
-    }
+    const newPath = location.pathname.replace(/\/ADashboard\/(users|triggers|attendance|subjecthandles|sectionhandles)/, '/ADashboard');
+    navigate(newPath);
   };
-  
-  
+
   return (
     <div>
-      <Container maxWidth="xl" sx={{ paddingTop: '20px', marginBottom: '20px', cursor: 'pointer'}}>
-        {(activeSection === 'users' && <Users onCancelClick={handleCancelClick} />) ||
-        (activeSection === 'grades' && <Grades onCancelClick={handleCancelClick}/>) ||
-        (activeSection === 'attendance' && <Attendance onCancelClick={handleCancelClick}/>) ||
-        (activeSection === 'billings' && <Billings onCancelClick={handleCancelClick}/>) ||
-        (activeSection === 'subjecthandles' && <ASubjectHandles onCancelClick={handleCancelClick}/>) ||
-        (activeSection === 'sectionhandles' && <ASectionHandled onCancelClick={handleCancelClick}/>) ||
-        (
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-          <Link to="/ADashboard/user-accounts" className="link">
-            <div className="bg-slate-600 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('users')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>User accounts</h1>
-              <img
-              src={users}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-             </Link>
+      <Container maxWidth="xl" sx={{ paddingTop: '20px', marginBottom: '20px', cursor: 'pointer' }}>
+        {activeSection ? (
+          // Render the selected section component
+          {
+            users: <Users onCancelClick={handleCancelClick} />,
+            grades: <Grades onCancelClick={handleCancelClick} />,
+            attendance: <Attendance onCancelClick={handleCancelClick} />,
+            subjecthandles: <ASubjectHandles onCancelClick={handleCancelClick} />,
+            sectionhandles: <ASectionHandled onCancelClick={handleCancelClick} />,
+          }[activeSection]
+        ) : (
+          // Render section links
+          <Grid container spacing={3}>
+            {sections.map((section) => (
+              <Grid key={section.key} item xs={12} sm={6} md={4} lg={4}>
+                <Link to={`/ADashboard/${section.key}`} className="link">
+                  <div className={`text-white p-8 text-end rounded-xl item-div`} onClick={() => handleClick(section.key)} style={{ backgroundColor: section.bgColor, textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)' }}>
+                    <h1 className='text-2xl font-bold font-serif'>{section.label}</h1>
+                    <img src={section.image} alt="" className="h-12 w-12 lg:h-20 lg:w-20 item-image" />
+                  </div>
+                </Link>
+              </Grid>
+            ))}
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-violet-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('grades')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Grades</h1>
-              <img
-              src={star}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-orange-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('attendance')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Attendance</h1>
-              <img
-              src={attendance}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-red-300 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('billings')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Billings</h1>
-              <img
-              src={billings}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-pink-400 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('subjecthandles')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Teacher Subjects</h1>
-              <img
-              src={ledger}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <div className="bg-blue-400 text-white p-8 text-end rounded-xl item-div" onClick={() => handleClick('sectionhandles')} style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',  boxShadow: '8px 8px 8px rgba(0, 0, 0, 0.3)', }}>
-              <h1 className='text-2xl font-bold font-serif'>Teacher Advisory</h1>
-              <img
-              src={folder}
-              alt=""
-              className="h-12 w-12 lg:h-20 lg:w-20 item-image"
-            />
-            </div>
-          </Grid>
-        </Grid>)}
+        )}
       </Container>
-      
     </div>
   );
 }

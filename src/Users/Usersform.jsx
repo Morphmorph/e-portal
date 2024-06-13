@@ -12,14 +12,20 @@ import Button from "@mui/material/Button";
 import 'aos/dist/aos.css';
 import SuccessModal from "../component/SuccessModal";
 import data from './options.json'; // Import the JSON data
+import Modals from '../component/Modal';
+import WarningIcon from '@mui/icons-material/Warning';
 
-    function Usersform({ onCancelClick,  onSaveUserData, userTypeOptions  }) {
+function Usersform({ onCancelClick,  onSaveUserData, userTypeOptions  }) {
 
         const navigate = useNavigate();
         const [errors, setErrors] = useState({}); 
         const [loading, setLoading] = React.useState(false); 
         const [userType, setUserType] = useState('student');
         const [successModalOpen, setSuccessModalOpen] = useState(false);
+        const [showErrorModal, setShowErrorModal] = useState(false);
+        const [modalTitle, setModalTitle] = useState("");
+        const [modalDescription, setModalDescription] = useState("");
+      
         const [userData, setUserData] = useState({
             student: {
                 studentID: '',
@@ -89,9 +95,7 @@ import data from './options.json'; // Import the JSON data
         { value: 'other', label: 'Other' },
     ];
 
-    const gradeLevels = data.gradeLevels; // Updated to use JSON data
-    // Updated to use JSON data
-    const advisers = data.advisers;
+    const gradeLevels = data.gradeLevels;
 
     useEffect(() => {
         const initAos = async () => {
@@ -118,7 +122,6 @@ import data from './options.json'; // Import the JSON data
         initAos();
 
         return () => {
-            // Cleanup function if needed
         };
     }, []);
 
@@ -209,35 +212,33 @@ import data from './options.json'; // Import the JSON data
 
     const handlePasswordChange = () => {
         const { student, teacher } = userData;
-        const lrn = student.studentID || ''; // Get LRN value
-        const lastName = student.lastName || ''; // Get last name value
-        const studentPassword = lastName ? `${lrn}@${lastName}` : lrn; // Generate student password
+        const lrn = student.studentID || ''; 
+        const lastName = student.lastName || ''; 
+        const studentPassword = lastName ? `${lrn}@${lastName}` : lrn; 
 
-        const employeeID = teacher.employeeID || ''; // Get employee ID
-        const tlastName = teacher.lastName || ''; // Get last name of adviser
-        const adviserPassword = tlastName ? `${employeeID}@${tlastName}` : employeeID; // Generate adviser password
+        const employeeID = teacher.employeeID || ''; 
+        const tlastName = teacher.lastName || ''; 
+        const adviserPassword = tlastName ? `${employeeID}@${tlastName}` : employeeID; 
 
         setUserData(prevState => ({
             ...prevState,
             student: {
                 ...prevState.student,
-                password: studentPassword // Update student password field directly
+                password: studentPassword 
             },
             teacher: {
                 ...prevState.teacher,
-                password: adviserPassword // Update adviser password field directly
+                password: adviserPassword 
             }
         }));
     };
 
     useEffect(() => {
         handlePasswordChange();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData.student.studentID, userData.student.lastName, userData.teacher.employeeID, userData.teacher.lastName]);
 
     const handleInputChange = (e, category, subcategory = null) => {
         const { name, value } = e.target;
-        // Remove the error for the field being updated
         const updatedErrors = { ...errors };
         delete updatedErrors[name];
     
@@ -258,31 +259,25 @@ import data from './options.json'; // Import the JSON data
                 [category]: {
                     ...userData[category],
                     [name]: value,
-                    age: name === 'age' ? value : userData[category].age // Update age if age field changes
+                    age: name === 'age' ? value : userData[category].age 
                 }
             };
             setUserData(updatedUserData);
         }
     
-        // Check if the changed field is relevant to generating the password
         if ((category === 'student' && (name === 'studentID' || name === 'lastName')) ||
             (category === 'teacher' && (name === 'employeeID' || name === 'lastName'))) {
-            handlePasswordChange(); // Call handlePasswordChange to update the password field
+            handlePasswordChange(); 
         }
-    
-        // Clear error for password field if it has a value
+
         if (name === 'password' && value.trim() !== '') {
             delete updatedErrors['password'];
         }
-    
         setErrors(updatedErrors);
     };
     
-    
     const handleDropdownChange = (category, member, value) => {
-        // Update the value for the specified category and member
         if (member === 'gradeLevel') {
-            // If the selected member is gradeLevel, update the sections dropdown based on the selected grade level
             setUserData(prevState => ({
                 ...prevState,
                 [category]: {
@@ -292,7 +287,6 @@ import data from './options.json'; // Import the JSON data
                 }
             }));
         } else {
-            // If the selected member is not gradeLevel, update the value directly
             setUserData(prevState => ({
                 ...prevState,
                 [category]: {
@@ -305,17 +299,12 @@ import data from './options.json'; // Import the JSON data
 
     const handleUserTypeChange = (value) => {
         setUserType(value);
-        setErrors({}); // Reset errors when user type changes
+        setErrors({});
     };
-
-    // Remove the calls to validateTeacherData() and validateStudentData() here
-
-    // Modify the useEffect hook to watch for userType changes only
     useEffect(() => {
         setErrors({});
     }, [userType]);
 
-    // Rest of your code remains unchanged
     const handleDateChange = (category, member, date) => {
         const updatedUserData = {
             ...userData,
@@ -357,7 +346,7 @@ import data from './options.json'; // Import the JSON data
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--; // Adjust age if the birthday hasn't occurred yet
+        age--;
     }
     return age;
     };
@@ -366,8 +355,7 @@ import data from './options.json'; // Import the JSON data
         return grade ? grade.label : '';
       };
     
-
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         let validationErrors = {};
         let serializedData = {};
         
@@ -433,49 +421,85 @@ import data from './options.json'; // Import the JSON data
         if (Object.keys(validationErrors).length === 0) {
             console.log('Serialized Data:', serializedData);
             setLoading(true);
-            axios.post('http://127.0.0.1:8081/api/register/', serializedData)
-                .then(response => {
-                    setLoading(false);
-                    setSuccessModalOpen(true);
-                    console.log('Submitted data:', response.data);
-                    console.log('Serialized Data:', serializedData); // Display submitted data
-                    console.log('Response:', response.data);
-                    
-                })
-                .catch(error => {
-                    // Handle errors
-                });
+            try {
+                await axios.post('http://127.0.0.1:8081/api/register/', serializedData);
+                setLoading(false);
+                setSuccessModalOpen(true);
+            } catch (error) {
+                setLoading(false);
+                // Handle network error
+                console.error("Error registering:", error);
+        
+                if (!error.response) {
+                    setModalTitle("Network Error!");
+                    setModalDescription("Network error occurred, please try again later.");
+                } else {
+                    const { response } = error;
+                    if (response.status === 400) {
+                        const { data } = response;
+                        if (data.studentID && data.studentID[0] === "student with this studentID already exists.") {
+                            setModalTitle("Registration Error!");
+                            setModalDescription("A student with this ID already exists.");
+                        } else {
+                            setModalTitle("Registration Error!");
+                            setModalDescription(data.error || "An error occurred during registration.");
+                        }
+                    } else if (response.status === 404) {
+                        setModalTitle("Not Found Error!");
+                        setModalDescription(response.data.error || "Resource not found.");
+                    } else if (response.status === 500) {
+                        setModalTitle("Internal Server Error!");
+                        setModalDescription(response.data.error || "Internal server error occurred.");
+                    } else {
+                        setModalTitle("Error!");
+                        setModalDescription("An unexpected error occurred, please try again later.");
+                    }
+                }
+                setShowErrorModal(true);
+            }
         } else {
             setErrors(validationErrors);
         }
-    };
-       
+    }        
+
     return (
         <div>
             <SuccessModal
                 open={successModalOpen}
                 handleClose={() => {
                     setSuccessModalOpen(false);
-                    onCancelClick(); // Call onCancelClick to navigate to the parent file
+                    onCancelClick(); 
                 }}
             />
-            <div data-aos='fade-left' className='flex justify-start items-center pb-5' style={{ top: '10px', right: '10px' }}>
-                <CancelIcon
+             <Modals
+                open={showErrorModal}
+                handleClose={() => setShowErrorModal(false)}
+                icon={<WarningIcon sx={{ fontSize: "200px", color: "red" }}/>}
+                title={modalTitle}
+                description={modalDescription}
+            />
+            <div data-aos='fade-left' className='relative pb-5' style={{}}>
+                <div className='absolute top-0 right-0'>
+                    <CancelIcon
                     sx={{
                         color: '#F2B569',
                         fontSize: 40,
+                        marginTop: -1,
+                        marginRight: -1,
                         transition: 'color 0.3s, transform 0.3s',
                         '&:hover': {
-                            color: 'red', // Change the color on hover
-                            transform: 'scale(1.1)', // Apply a scale effect on hover
+                        color: 'red', // Change the color on hover
+                        transform: 'scale(1.1)', // Apply a scale effect on hover
                         },
                         cursor: 'pointer'
                     }}
                     onClick={onCancelClick}
-                />
-
-                <div className='justify-center items-center '>
-                    <h1 className='text-2xl md:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>ADD NEW USER</h1>
+                    />
+                </div>
+                <div className='flex flex-col md:flex-row justify-start items-start mt-0 md:mt-0' style={{  }}>
+                    <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
+                    <h1 className='text-xl sm:text-2xl font-serif font-semibold pr-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>ADD NEW USER</h1>
+                    </div>
                 </div>
             </div>
 
@@ -499,9 +523,9 @@ import data from './options.json'; // Import the JSON data
                             value={userData.student.studentID}
                             type='numeric'
                             onChange={e => {
-                                handleInputChange(e, 'student'); // Call handleInputChange to update LRN field
-                                handlePasswordChange(); // Call handlePasswordChange to update password field
-                            }} // Pass the category ('student') to handleInputChange
+                                handleInputChange(e, 'student'); 
+                                handlePasswordChange(); 
+                            }} 
                             name="studentID"
                             required
                             error={errors['studentID']}
@@ -511,8 +535,8 @@ import data from './options.json'; // Import the JSON data
                             label="Last Name"
                             value={userData.student.lastName}
                             onChange={e => {
-                                handleInputChange(e, 'student'); // Call handleInputChange to update LRN field
-                                handlePasswordChange(); // Call handlePasswordChange to update password field
+                                handleInputChange(e, 'student'); 
+                                handlePasswordChange(); 
                             }}
                             name="lastName"
                             required
@@ -570,7 +594,7 @@ import data from './options.json'; // Import the JSON data
                             value={userData.student.dob}
                             onChange={(date) => handleDateChange('student', 'dob', date)}
                             error={errors['dob']} 
-                            helperText={errors['dob']} // Pass the helperText prop
+                            helperText={errors['dob']} 
                         />
                     <CustomTextField
                         label="Age"
@@ -579,7 +603,7 @@ import data from './options.json'; // Import the JSON data
                         error={errors['age']}
                         helperText={errors['age']}
                         InputLabelProps={{
-                            shrink: !!userData.student.age, // Set label to active position if age has data
+                            shrink: !!userData.student.age, 
                         }}
                     />
 
@@ -592,9 +616,7 @@ import data from './options.json'; // Import the JSON data
                         required
                         error={errors['gradeLevel']}
                         helperText={errors['gradeLevel']}
-                    />
-
-                    
+                    /> 
                     </>
             )}
 
@@ -681,7 +703,7 @@ import data from './options.json'; // Import the JSON data
                         <CustomTextField
                             label="Age"
                             value={userData.teacher.age}
-                            onChange={(e) => handleInputChange(e, 'teacher')} // Ensure onChange handler for age field
+                            onChange={(e) => handleInputChange(e, 'teacher')}
                             readOnly
                             error={errors['age']}
                             helperText={errors['age'] ? "This field is required" : ""}
@@ -690,8 +712,7 @@ import data from './options.json'; // Import the JSON data
                     </>
                )}
             </div>
-
-            
+ 
             {userType === 'student' && (
                 <div>
                     <div  data-aos='fade-left' className='flex justify-center sm:justify-end mt-0 md:mt-0 items-center' style={Style}>
@@ -723,10 +744,9 @@ import data from './options.json'; // Import the JSON data
                         error={errors['m_age']}
                         helperText={errors['m_age']}
                         InputLabelProps={{
-                            shrink: !!userData.parents.m_age, // Set label to active position if age has data
+                            shrink: !!userData.parents.m_age, 
                         }}
                     />
-                
                         <CustomTextField
                             label="Mother's Contact number"
                             type='numeric'
@@ -771,7 +791,7 @@ import data from './options.json'; // Import the JSON data
                         error={errors['f_age']}
                         helperText={errors['f_age']}
                         InputLabelProps={{
-                            shrink: !!userData.parents.f_age, // Set label to active position if age has data
+                            shrink: !!userData.parents.f_age,
                         }}
                     />
                 
@@ -794,6 +814,7 @@ import data from './options.json'; // Import the JSON data
                             helperText={errors['fathersOccupation']}
                         />
                     </div>
+
                     <div className="flex justify-center mt-5">       
                         <Button
                         variant="contained"
@@ -884,7 +905,6 @@ import data from './options.json'; // Import the JSON data
                             helperText={errors['yearsOfTeaching']}
                         />
                         
-                       
                     </div>
                     <div className="flex justify-center mt-5">
                     <Button

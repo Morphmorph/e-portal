@@ -115,44 +115,49 @@ function TAttendance({ onCancelClick, enrolledStudents }) {
 
   return (
     <div>
-      <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
-        <CancelIcon
-          sx={{
-            color: '#F2B569',
-            fontSize: 40,
-            transition: 'color 0.3s, transform 0.3s',
-            '&:hover': {
-              color: 'red',
-              transform: 'scale(1.1)',
-            },
-            cursor: 'pointer'
-          }}
-          onClick={onCancelClick}
-        />
-      </div>
+     <div data-aos='fade-left' className='relative' style={{}}>
+          <div className='absolute top-0 right-0'>
+            <CancelIcon
+              sx={{
+                color: '#F2B569',
+                fontSize: 40,
+                marginTop: -1,
+                marginRight: -1,
+                transition: 'color 0.3s, transform 0.3s',
+                '&:hover': {
+                  color: 'red', // Change the color on hover
+                  transform: 'scale(1.1)', // Apply a scale effect on hover
+                },
+                cursor: 'pointer'
+              }}
+              onClick={onCancelClick}
+            />
+          </div>
 
-      <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center sm:justify-start mt-0 md:mt-0 items-center ' style={{ top: '10px', right: '10px' }}>
-        <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
-          <h1 className='text-2xl uppercase font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>Attendance</h1>
-        </div>
-        <TextField
-          id="outlined-basic"
-          variant="outlined"
-          label="Search"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          sx={{
-            width: '100%',
-            maxWidth: { md: '500px' },
-            mx: 2,
-            marginBottom: '10px',
-          }}
-        />
-      </div>
+          <div className='flex flex-col md:flex-row justify-start items-center mt-0 md:mt-0' style={{ top: '10px', right: '10px' }}>
+            <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0 w-full'>
+              <h1 className='text-xl sm:text-2xl font-serif font-semibold uppercase' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>CHECK ATTENDANCE</h1>
+            </div>
+            
+                </div>
+              </div>
 
       <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center md:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px' }}>
-      <Dropdown options={statusOptions} label="Status" value={statusFilter} onChange={handleStatusFilterChange} />
-
+      {/* <Dropdown options={statusOptions} label="Status" value={statusFilter} onChange={handleStatusFilterChange} /> */}
+      <div className='w-full'>
+              <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  label="Search"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  sx={{
+                    width: '100%',
+                    maxWidth: { md: '500px' },
+                    marginBottom: '10px',
+                  }}
+                />
+                  </div>
       </div>
 
       <div data-aos='fade-right'>

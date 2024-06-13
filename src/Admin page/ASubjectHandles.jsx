@@ -83,33 +83,41 @@ function ASubjectHandles({onCancelClick, }) {
           setOpen(false);
         }}
       />
-          <div data-aos='fade-left' className='flex justify-start items-center pb-5' style={{ top: '10px', right: '10px' }}>
-                <CancelIcon
+          <div data-aos='fade-left' className='relative pb-5' style={{  }}>
+                <div className='absolute top-0 right-0'>
+                    <CancelIcon
                     sx={{
                         color: '#F2B569',
                         fontSize: 40,
+                        marginTop: -1,
+                        marginRight: -1,
                         transition: 'color 0.3s, transform 0.3s',
                         '&:hover': {
-                            color: 'red', // Change the color on hover
-                            transform: 'scale(1.1)', // Apply a scale effect on hover
+                        color: 'red', // Change the color on hover
+                        transform: 'scale(1.1)', // Apply a scale effect on hover
                         },
                         cursor: 'pointer'
                     }}
                     onClick={onCancelClick}
-                />
-
-                <div className='justify-center items-center '>
-                    <h1 className='text-xl md:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>Handled Subjects</h1>
+                    />
+                </div>
+                <div className='flex flex-col md:flex-row justify-start items-start mt-0 md:mt-0' style={{  }}>
+                    <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
+                    <h1 className='text-xl sm:text-2xl font-serif font-semibold pr-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>SUBJECT TEACHERS</h1>
+                    </div>
                 </div>
             </div>
-            
         <div>
 
-              <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-0 items-center ' style={{ top: '10px', right: '10px', }}>
-              <div className='flex items-center justify-center rounded-lg px-5 py-2 w-full lg:w-80 item-div' style={{backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px',}} onClick={handleOpen}>
+              <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center md:justify-end mt-0 items-center ' style={{ top: '10px', right: '10px', }}>
+              <div
+              className='flex items-center justify-center rounded-lg py-2 w-full md:w-20 item-div'
+              style={{ backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px' }}
+              onClick={handleOpen}
+            >
               <img src={add} alt="" className="h-12 w-12 lg:h-10 lg:w-10" />
-              <h1 className='text-xl font-serif px-1 ' style={{ color: '#079440' }}>Add Handled Subjects</h1>
-              </div>
+              <h1 className='text-xl font-serif px-1 md:hidden' style={{ color: '#079440' }}>Add Subject Teachers</h1>
+            </div>
               </div>
 
            

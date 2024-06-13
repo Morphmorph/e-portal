@@ -60,6 +60,19 @@ const ASectionHandledTable = ({ rows, handleViewProfile }) => {
     return dateTime.toLocaleString('en-US', options);
   };
 
+  // Custom sorting function for grade levels
+  const gradeLevelComparator = (a, b) => {
+    const gradeLevelOrder = {
+      'Grade 1': 1,
+      'Grade 2': 2,
+      'Grade 3': 3,
+      'Grade 4': 4,
+      'Grade 5': 5,
+      'Grade 6': 6,
+    };
+    return gradeLevelOrder[a.grade_level] - gradeLevelOrder[b.grade_level];
+  };
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -86,7 +99,7 @@ const ASectionHandledTable = ({ rows, handleViewProfile }) => {
               </TableRow>
             ) : (
               rows
-                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // Sort rows by created_at in descending order
+                .sort(gradeLevelComparator)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) // Only display rows for the current page
                 .map((row, index) => {
                   return (

@@ -16,7 +16,7 @@ const columns = [
   { id: 'Remarks', label: 'Remarks', minWidth: 170, align: 'center' },
 ];
 
-const SGradeTable = ({ grades }) => {
+const GradeViewsTable = ({ grades }) => {
   if (grades.length === 0) {
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
@@ -48,14 +48,6 @@ const SGradeTable = ({ grades }) => {
 
       if (gradeValue !== null) {
         organizedData[subject_name].grades.push(gradeValue);
-      }
-    });
-
-    // Initialize subjects without grades
-    const allSubjects = [...new Set(grades.map((grade) => grade.subject_name))];
-    allSubjects.forEach((subject) => {
-      if (!organizedData[subject]) {
-        organizedData[subject] = { grades: [], remarks: '' };
       }
     });
 
@@ -124,6 +116,5 @@ const SGradeTable = ({ grades }) => {
     </Paper>
   );
 };
-export default SGradeTable;
-
+export default GradeViewsTable;
 

@@ -17,6 +17,7 @@ function Users({ onCancelClick }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedUserType, setSelectedUserType] = useState('all'); // State for selected user type
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchData(); // Fetch data initially
@@ -106,11 +107,14 @@ function Users({ onCancelClick }) {
         <Usersform onCancelClick={handleFormClose} onSaveUserData={handleSaveUserData} userTypeOptions={[{ value: 'student', label: 'Student' }, { value: 'teacher', label: 'Teacher' }]} />
       ) : (
         <div>
-          <div className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
+          <div data-aos='fade-left' className='relative' style={{}}>
+          <div className='absolute top-0 right-0'>
             <CancelIcon
               sx={{
                 color: '#F2B569',
                 fontSize: 40,
+                marginTop: -1,
+                marginRight: -1,
                 transition: 'color 0.3s, transform 0.3s',
                 '&:hover': {
                   color: 'red', // Change the color on hover
@@ -122,31 +126,44 @@ function Users({ onCancelClick }) {
             />
           </div>
 
-          <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center sm:justify-start mt-0 md:mt-0 items-center ' style={{ top: '10px', right: '10px' }}>
-            <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
-              <h1 className='text-xl sm:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>USER ACCOUNTS</h1>
+          <div className='flex flex-col md:flex-row justify-start items-center mt-0 md:mt-0' style={{ top: '10px', right: '10px' }}>
+            <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0 w-full'>
+              <h1 className='text-xl sm:text-2xl font-serif font-semibold pr-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>USER ACCOUNTS</h1>
             </div>
-            <TextField
-              id="outlined-basic"
-              variant="outlined"
-              label="Search"
-              sx={{
-                width: '100%',
-                maxWidth: { md: '500px', },
-                mx: 2,
-                marginBottom: '10px',
-              }}
-            />
-          </div>
-          <div data-aos='fade-left' className='flex flex-col md:flex-row justify-center lg:justify-end mt-5 items-center ' style={{ top: '10px', right: '10px', }}>
+            
+                </div>
+              </div>
 
-            <div className='flex items-center justify-center rounded-lg px-5 py-2 w-full lg:w-56 item-div' style={{ backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px', }} onClick={handleAddUserClick}>
+          <div data-aos='fade-left' className='flex flex-col sm:flex-row justify-center sm:justify-end mt-1 items-center' style={{ top: '10px', right: '10px' }}>
+          <div className='w-full'>
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  label="Search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  sx={{
+                    width: '100%',
+                    maxWidth: { md: '500px' },
+                    marginBottom: '10px',
+                  }}
+                />
+                  </div>
+                  <div className='ml-0 sm:ml-5'>
+
+                  </div>
+            <Dropdown options={userOptions} label="User type" onChange={handleUserTypeChange} />
+            
+            <div
+              className='flex items-center justify-center rounded-lg py-2 px-2 w-full sm:w-24 item-div ml-0 sm:ml-5 '
+              style={{ backgroundColor: '#F2B569', cursor: 'pointer', marginBottom: '10px' }}
+              onClick={handleAddUserClick}
+            >
               <img src={adduser} alt="" className="h-12 w-12 lg:h-10 lg:w-10" />
-              <h1 className='text-xl font-serif px-1 ' style={{ color: '#079440' }}>Add New User</h1>
+              <h1 className='text-xl font-serif px-1 sm:hidden' style={{ color: '#079440' }}>Add New User</h1>
             </div>
-            <Dropdown options={userOptions} label="User Type" onChange={handleUserTypeChange} />
-
           </div>
+
           <div data-aos='fade-right'>
             <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
             {/* Pass the selectedUserType state */}
@@ -156,7 +173,9 @@ function Users({ onCancelClick }) {
               selectedUserType={selectedUserType} // Pass the selected user type
               students={submittedUsers.students} // Pass students array as prop
               teachers={submittedUsers.teachers} //
+              searchQuery={searchQuery} // Pass the search query
             />
+
             </div>
         </div>
       )}

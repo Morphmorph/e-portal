@@ -4,7 +4,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
 import { Face, Phone, LocationOn, WorkOutline, Cake, Event, Face3, Person, Class, Stars, School, HomeWorkOutlined, FlagOutlined, Numbers, EventBusy, CalendarMonth, HistoryEdu } from '@mui/icons-material';
-import options from './options.json'; // Import the entire JSON object
 
 
 function Profile({ onCancelClick, userData }) {
@@ -94,21 +93,23 @@ function Profile({ onCancelClick, userData }) {
     <div className=' grid gap-8 md:grid-cols-2 mb-14 md:mb-5 h-1/3'  >
     
     <div className='flex flex-col items-center justify-center md:items-center md:justify-center' style={{}}>
-  <div data-aos='zoom-in' style={{ display: 'flex', justifyContent: 'space-between', width: '100%', }}>
+  
+    {isStudent ? (
+  <div data-aos='zoom-in' style={{ display: 'flex', justifyContent: 'space-between', width: '100%'}}>
     <div className='justify-start items-center'>
-    <CancelIcon
-                    sx={{
-                        color: '#F2B569',
-                        fontSize: 40,
-                        transition: 'color 0.3s, transform 0.3s',
-                        '&:hover': {
-                            color: 'red', // Change the color on hover
-                            transform: 'scale(1.1)', // Apply a scale effect on hover
-                        },
-                        cursor: 'pointer'
-                    }}
-                    onClick={onCancelClick}
-                />
+      <CancelIcon
+        sx={{
+          color: '#F2B569',
+          fontSize: 40,
+          transition: 'color 0.3s, transform 0.3s',
+          '&:hover': {
+            color: 'red', // Change the color on hover
+            transform: 'scale(1.1)', // Apply a scale effect on hover
+          },
+          cursor: 'pointer'
+        }}
+        onClick={onCancelClick}
+      />
     </div>
     <div className='justify-end items-center'>
       <EditIcon
@@ -122,6 +123,37 @@ function Profile({ onCancelClick, userData }) {
       />
     </div>
   </div>
+) : (
+  <div data-aos='zoom-in' style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: -60 }}>
+     <div className='justify-start items-center'>
+      <CancelIcon
+        sx={{
+          color: '#F2B569',
+          fontSize: 40,
+          transition: 'color 0.3s, transform 0.3s',
+          '&:hover': {
+            color: 'red', // Change the color on hover
+            transform: 'scale(1.1)', // Apply a scale effect on hover
+          },
+          cursor: 'pointer'
+        }}
+        onClick={onCancelClick}
+      />
+    </div>
+    <div className='justify-end items-center'>
+      <EditIcon
+        style={{
+          color: '#079440',
+          fontSize: 40,
+          transition: 'color 0.3s, transform 0.3s',
+          cursor: 'pointer'
+        }}
+        onClick={onCancelClick}
+      />
+    </div>
+  </div>
+)}
+
 
   <div data-aos='zoom-in' style={{ width: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
     <div className='flex h-60 w-60 md:h-80 md:w-80 rounded-full bg-slate-500 items-center justify-center' style={{borderBottomWidth: 10, borderTopWidth: 10, borderColor: '#F2B569'}}>

@@ -16,7 +16,7 @@ const columns = [
   { id: 'Remarks', label: 'Remarks', minWidth: 170, align: 'center' },
 ];
 
-const SGradeTable = ({ grades }) => {
+const SSGradeTable = ({ grades }) => {
   if (grades.length === 0) {
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
@@ -74,8 +74,8 @@ const SGradeTable = ({ grades }) => {
   const organizedGrades = organizeGrades();
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2, height: 'auto' }}>
+    <TableContainer sx={{ maxHeight: 'none' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -124,6 +124,6 @@ const SGradeTable = ({ grades }) => {
     </Paper>
   );
 };
-export default SGradeTable;
+export default SSGradeTable;
 
 

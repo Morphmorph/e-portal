@@ -7,6 +7,7 @@ import SDashboard from './Student page/SDashboard';
 import CustomAppBar from './component/CustomAppBar';
 import ScrollToTopOnNavigate from './component/ScrolltoNavigate';
 import { UserProvider } from './UserContext';
+import { SwitchProvider } from './switchStatesContext';
 import UserProfile from './Users/UserProfile';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -49,6 +50,7 @@ function App() {
 
   return (
     <UserProvider>
+      <SwitchProvider> 
       <Router>
         <ScrollToTopOnNavigate />
         <Routes>
@@ -60,6 +62,7 @@ function App() {
           <Route path='*' element={<Navigate to="/" />} />
         </Routes>
       </Router>
+      </SwitchProvider>
     </UserProvider>
   );
 }

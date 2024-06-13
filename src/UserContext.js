@@ -12,6 +12,19 @@ export const UserProvider = ({ children }) => {
     sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
   }, [loggedInUser]);
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const user = sessionStorage.getItem('loggedInUser');
+      if (user) {
+        setLoggedInUser(JSON.parse(user));
+      } else {
+        setLoggedInUser(null);
+      }
+    }, 1000); // Refresh every second
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
+
   const logout = () => {
     // Clear the logged-in user from session storage and state
     sessionStorage.removeItem('loggedInUser');

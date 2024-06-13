@@ -27,7 +27,7 @@ const columns = [
   
 ];
 
-const GradeTable = ({handleOpen, enrolledStudents,  }) => {
+const GradeTable = ({handleOpen, enrolledStudents, searchQuery }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -55,9 +55,16 @@ const GradeTable = ({handleOpen, enrolledStudents,  }) => {
 
     return dateTime.toLocaleString('en-US', options);
   };
+
+    // Filter enrolledStudents based on searchQuery
+    const filteredStudents = enrolledStudents.filter(student =>
+      student.student.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.student.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2, height: 'auto' }}>
+    <TableContainer sx={{ maxHeight: 'none' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -73,14 +80,14 @@ const GradeTable = ({handleOpen, enrolledStudents,  }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {enrolledStudents.length === 0 ? (
+            {filteredStudents.length === 0 ? (
                 <TableRow>
                 <TableCell colSpan={columns.length} align="center">
                     No data available
                 </TableCell>
                 </TableRow>
             ) : (
-                enrolledStudents
+                filteredStudents
                 
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (

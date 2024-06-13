@@ -29,9 +29,8 @@ const UAttendance = ({ enrolledStudents, attendanceData, handleStatusChange, sta
     localStorage.setItem('selectedStatus', JSON.stringify(selectedStatus));
   }, [selectedStatus]);
 
+  // Function to handle status change
   const handleChange = (status, studentId, sectionId) => {
-    console.log('Selected Status:', status); // Log selected status
-    console.log('Status Options:', statusOptions); // Log status options
     setSelectedStatus(prevState => ({
       ...prevState,
       [studentId]: status,
@@ -39,18 +38,56 @@ const UAttendance = ({ enrolledStudents, attendanceData, handleStatusChange, sta
     handleStatusChange(status, studentId, sectionId);
   };
 
+  // Function to filter students by status
   const filterStudentsByStatus = () => {
     if (!statusFilter) {
       return enrolledStudents;
     }
+
+    // Get today's date in the format YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
+
     return enrolledStudents.filter(student =>
-      attendanceData.some(entry => entry.student === student.student.user_id && entry.status === statusFilter)
+      attendanceData.some(entry =>
+        entry.student === student.student.user_id &&
+        entry.status === statusFilter &&
+        entry.date === today
+      )
     );
   };
 
+  // Function to check if it's a new day
+  const isNewDay = () => {
+    const storedDate = localStorage.getItem('lastRefreshDate');
+    const today = new Date().toISOString().split('T')[0];
+    return storedDate !== today;
+  };
+
+  // Function to reset status on a new day
+  const resetStatusOnNewDay = () => {
+    if (isNewDay()) {
+      localStorage.setItem('lastRefreshDate', new Date().toISOString().split('T')[0]);
+      setSelectedStatus({});
+    }
+  };
+
+  // Check for a new day on component mount
+  useEffect(() => {
+    resetStatusOnNewDay();
+  }, []);
+
+  // Check for a new day periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      resetStatusOnNewDay();
+    }, 60000); // Check every minute for a new day
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2, height: 'auto' }}>
+    <TableContainer sx={{ maxHeight: 'none' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -99,6 +136,6 @@ const UAttendance = ({ enrolledStudents, attendanceData, handleStatusChange, sta
       </TableContainer>
     </Paper>
   );
-  };
+};
 
 export default UAttendance;

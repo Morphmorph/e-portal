@@ -43,6 +43,9 @@ export default function AttendanceTable({ attendanceSData }) {
     return new Date(dateString).toLocaleDateString(undefined, { weekday: 'long' });
   };
 
+  // Sort the data by date in descending order
+  const sortedAttendanceData = [...attendanceSData].sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -61,14 +64,14 @@ export default function AttendanceTable({ attendanceSData }) {
             </TableRow>
           </TableHead>
           <TableBody>
-          {attendanceSData.length === 0 ? (
+          {sortedAttendanceData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length} align="center">
                   No data available.
                 </TableCell>
               </TableRow>
             ) : (
-            attendanceSData
+            sortedAttendanceData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
@@ -95,7 +98,7 @@ export default function AttendanceTable({ attendanceSData }) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={attendanceSData.length}
+        count={sortedAttendanceData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

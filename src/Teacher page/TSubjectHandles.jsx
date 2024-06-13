@@ -79,30 +79,32 @@ function TSubjectHandles({onCancelClick, }) {
         <TSubjectSection  selectedRow={selectedRow} onCancelClick={() => setSelectedRow(null)}/>
       ) : (
         <div>
-          <div data-aos='fade-left' className='flex justify-start items-center' style={{ top: '10px', right: '10px' }}>
-            <CancelIcon
-              sx={{
-                color: '#F2B569',
-                fontSize: 40,
-                transition: 'color 0.3s, transform 0.3s',
-                '&:hover': {
-                  color: 'red',
-                  transform: 'scale(1.1)',
-                },
-                cursor: 'pointer'
-              }}
-              onClick={onCancelClick}
-            />
-          
-        
-            <div className='justify-center items-center '>
-              <h1 className='text-xl sm:text-2xl font-serif font-semibold px-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>
-                Handled Subjects
-              </h1>
-            </div>
+          <div data-aos='fade-left' className='relative pb-5' style={{  }}>
+                <div className='absolute top-0 right-0'>
+                    <CancelIcon
+                    sx={{
+                        color: '#F2B569',
+                        fontSize: 40,
+                        marginTop: -1,
+                        marginRight: -1,
+                        transition: 'color 0.3s, transform 0.3s',
+                        '&:hover': {
+                        color: 'red', // Change the color on hover
+                        transform: 'scale(1.1)', // Apply a scale effect on hover
+                        },
+                        cursor: 'pointer'
+                    }}
+                    onClick={onCancelClick}
+                    />
+                </div>
+                <div className='flex flex-col md:flex-row justify-start items-start mt-0 md:mt-0' style={{  }}>
+                    <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
+                    <h1 className='text-xl sm:text-2xl font-serif font-semibold pr-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>ASSIGNED SUBJECTS</h1>
+                    </div>
+                </div>
             </div>
 
-          <div data-aos='fade-right' className='pt-5'>
+          <div data-aos='fade-right' className='pt-2'>
             <div style={{ borderBottomWidth: 1, borderColor: '#F2B569' }}></div>
             <TSubjectHandleTable rows={tableRows} showProfileView={handleViewProfile} />
           </div>

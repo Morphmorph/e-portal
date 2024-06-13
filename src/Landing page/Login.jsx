@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import CancelIcon from "@mui/icons-material/Cancel";
-import UserDoesNotExistModal from "../component/UserDoesNotExistModal";
+import WarningIcon from '@mui/icons-material/Warning';
 import SentResetLinkModal from "../component/SentResetLinkModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
@@ -11,6 +11,7 @@ import 'aos/dist/aos.css'
 import { useUser } from '../UserContext';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import Modals from "../component/Modal";
 
 function Login({ onCancelClick }) {
   const { setLoggedInUser } = useUser();
@@ -23,7 +24,8 @@ function Login({ onCancelClick }) {
     password: ''
   });
   const [errors, setErrors] = useState({ username: "", password: "" });
-  
+  const [showErrorModal, setShowErrorModal] = useState(false); // State for showing error modal
+
 const handleLogin = async () => {
   if (!userData.username.trim() || !userData.password.trim()) {
     setErrors({
@@ -67,13 +69,15 @@ const handleLogin = async () => {
           navigate('/TDashboard');
         }
       }
-    } else {
+    }  else {
       console.error("Invalid response from server");
-      // Handle error
+      // Show error modal for incorrect login details
+      setShowErrorModal(true);
     }
   } catch (error) {
     console.error("Login error:", error);
-    // Handle error
+    // Show error modal for any login errors
+    setShowErrorModal(true);
   }
 };
 
@@ -221,7 +225,13 @@ const handleLogin = async () => {
           handleClose={() => setOpenSentResetLink(false)}
         />
 
-        <UserDoesNotExistModal open={open} handleClose={() => setOpen(false)} />
+        <Modals
+          open={showErrorModal}
+          handleClose={() => setShowErrorModal(false)}
+          icon={<WarningIcon sx={{ fontSize: "200px", color: "red" }}/>}
+          title="Account Error!"
+          description="Incorrect username or password. Please try again."
+        />
       </div>
     </div>
   );

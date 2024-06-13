@@ -1,127 +1,115 @@
-import React from "react";
-import CancelIcon from "@mui/icons-material/Cancel";
-import TextField from "@mui/material/TextField";
-import Dropdown from "../component/Dropdown";
-import DatePickerViews from "../component/Datepicker";
-import SAttendanceTable from "./SAttendanceTable";
-import Aos from "aos";
-import "aos/dist/aos.css";
+import React, { useState, useEffect } from 'react';
+import CancelIcon from '@mui/icons-material/Cancel';
+import axios from 'axios';
+import Aos from 'aos';
+import 'aos/dist/aos.css';
+import { useUser } from '../UserContext';
+import SAttendanceTable from './SAttendanceTable';
 
-export default function SAttendance({ onCancelClick }) {
+function SAttendance({ onCancelClick, }) {
+
+  const [attendanceSData, setAttendanceSData] = useState([]);
+  const [filteredStatus, setFilteredStatus] = useState(null);
+  const [initialStatusCounts, setInitialStatusCounts] = useState({});
+  const { loggedInUser } = useUser()
+
   Aos.init({
-    // Global settings:
-    disable: false,
-    startEvent: "DOMContentLoaded",
-    initClassName: "aos-init",
-    animatedClassName: "aos-animate",
-    useClassNames: false,
-    disableMutationObserver: false,
-    debounceDelay: 50,
-    throttleDelay: 99,
-
-    offset: 0,
-    delay: 100,
-    duration: 500,
-    easing: "ease",
-    once: false,
-    mirror: false,
-    anchorPlacement: "top-bottom",
+    // Global settings...
   });
-  const sy = [
-    { value: "1", label: "2023-2024" },
-    { value: "2", label: "2024-2025" },
-  ];
-  const gradelevel = [
-    { value: "1", label: "Kinder" },
-    { value: "2", label: "Grade 1" },
-    { value: "3", label: "Grade 2" },
-    { value: "4", label: "Grade 3" },
-    { value: "5", label: "Grade 4" },
-    { value: "6", label: "Grade 5" },
-    { value: "7", label: "Grade 6" },
-  ];
-  const sections = [
-    { value: "1", label: "Love" },
-    { value: "2", label: "Peace" },
-    { value: "3", label: "Faith" },
-  ];
-  const Style = {
-    backdropFilter: "blur(16px) saturate(180%)",
-    WebkitBackdropFilter: "blur(16px) saturate(180%)",
-    backgroundColor: "rgba(17, 25, 40, 0.75)",
-    borderRadius: "10px",
-    border: "1px solid rgba(255, 255, 255, 0.125)",
-    boxShadow: "5px -4px 1px rgb(173, 173, 172)",
+
+  useEffect(() => {
+    const fetchAttendanceSData = async () => {
+      try {
+        
+        if (loggedInUser.user_id) {
+          const response = await axios.get(`http://127.0.0.1:8081/api/attendance/${loggedInUser.user_id}`);
+          setAttendanceSData(response.data);
+          setInitialStatusCounts(getInitialStatusCounts(response.data));
+        }
+  
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
+      }
+    };
+  
+    fetchAttendanceSData();
+  }, [loggedInUser.user_id]);
+
+  const getInitialStatusCounts = (data) => {
+    const counts = {
+      'Present': 0,
+      'Absent': 0,
+      'Cutting': 0,
+      'Late': 0,
+      'Excuse': 0
+    };
+    data.forEach(item => {
+      counts[item.status] += 1;
+    });
+    return counts;
   };
+  console.log('Selected row:', attendanceSData)
+
+  const handleFilterStatus = (status) => {
+    setFilteredStatus(filteredStatus === status ? null : status);
+  };
+
+  const filteredData = filteredStatus ? attendanceSData.filter(data => data.status === filteredStatus) : attendanceSData;
+
   return (
     <div>
-      <div
-        className="flex justify-start items-center"
-        style={{ top: "10px", right: "10px" }}
-      >
-        <CancelIcon
-          sx={{
-            color: "#F2B569",
-            fontSize: 40,
-            transition: "color 0.3s, transform 0.3s",
-            "&:hover": {
-              color: "red",
-              transform: "scale(1.1)",
-            },
-            cursor: "pointer",
-          }}
-          onClick={onCancelClick}
-        />
-      </div>
-      <div
-        data-aos="fade-left"
-        className="flex flex-col sm:flex-row justify-center sm:justify-start mt-0 items-center"
-      >
-        <div className="justify-start items-start sm:justify-center sm:items-center mb-2 md:mt-0">
-          <h1
-            className="text-2xl font-serif font-semibold px-5"
-            style={{
-              color: "#079440",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            ATTENDANCE
-          </h1>
+      <div data-aos='fade-left' className='relative pb-5' style={{  }}>
+                <div className='absolute top-0 right-0'>
+                    <CancelIcon
+                    sx={{
+                        color: '#F2B569',
+                        fontSize: 40,
+                        marginTop: -1,
+                        marginRight: -1,
+                        transition: 'color 0.3s, transform 0.3s',
+                        '&:hover': {
+                        color: 'red', // Change the color on hover
+                        transform: 'scale(1.1)', // Apply a scale effect on hover
+                        },
+                        cursor: 'pointer'
+                    }}
+                    onClick={onCancelClick}
+                    />
+                </div>
+                <div className='flex flex-col md:flex-row justify-start items-start mt-0 md:mt-0' style={{  }}>
+                    <div className='justify-center items-center lg:justify-start md:items-start mb-2 md:mt-0'>
+                    <h1 className='text-xl sm:text-2xl font-serif font-semibold pr-5' style={{ color: '#079440', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>ATTENDANCE RECORD</h1>
+                    </div>
+                </div>
+            </div>
+      
+      <div data-aos='fade-left' className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5 mb-2'>
+      {['Present', 'Absent', 'Cutting', 'Late', 'Excuse'].map((status, index) => (
+        <div key={index} className='px-6 py-2 rounded-lg text-center item-div' style={{ backgroundColor: '#F2B569', cursor: 'pointer' }} onClick={() => handleFilterStatus(status)}>
+          <p className='font-semibold text-green-800 uppercase'>Total {status}</p>
+          <p className='font-bold' style={{ color: getStatusColor(status) }}>{initialStatusCounts[status]}</p>
         </div>
-        <div className="mb-2 mx-2 mt-2 sm:mt-0" style={{ width: "100%" }}>
-          <DatePickerViews />
-        </div>
+      ))}
       </div>
-      <div
-        data-aos="fade-left"
-        className="flex flex-col sm:flex-row justify-center sm:justify-end mt-5 items-center"
-      >
-        <Dropdown options={sy} label="School Year" />
-        <Dropdown options={gradelevel} label="Grade level" />
-        <Dropdown options={sections} label="Section" />
-      </div>
-      <div
-        data-aos="fade-right"
-        style={{ borderBottomWidth: 1, borderColor: "#F2B569" }}
-      ></div>
-      <div
-        data-aos="fade-right"
-        className="flex flex-col sm:flex-row justify-center sm:justify-start mt-5 items-center px-5 py-5"
-        style={Style}
-      >
-        <h1 className="text-2xl font-semibold" style={{ color: "#F2B569" }}>
-          Class adviser:
-        </h1>
-        <span className="text-xl font-medium px-3 uppercase text-white">
-          Son Goku
-        </span>
-        <span className="ml-0 text-center sm:ml-auto text-green-600 px-2 item-div">
-          View details
-        </span>
-      </div>
-      <div data-aos="fade-right">
-        <SAttendanceTable />
+
+      <div data-aos='fade-right' style={{borderBottomWidth: 1, borderColor: '#F2B569'}}></div>
+      
+        <div data-aos='fade-right' >
+      <SAttendanceTable attendanceSData={filteredData} />
       </div>
     </div>
   );
 }
+
+const getStatusColor = (status) => {
+  const colorMap = {
+    'Present': 'blue',
+    'Absent': 'red',
+    'Late': 'red',
+    'Cutting': 'red',
+    'Excuse': 'blue'
+  };
+  return colorMap[status];
+};
+
+export default SAttendance;

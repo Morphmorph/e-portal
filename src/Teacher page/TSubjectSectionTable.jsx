@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,7 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
-import TSubjectSection from './TSubjectSection';
 
 const columns = [
   { id: 'created_at', label: 'Date created', minWidth: 170, align: 'center' },
@@ -38,7 +37,7 @@ const columns = [
   },
 ];
 
-const TSubjectSectionTable = ({ showProfileView, showGradesView, enrolledStudents }) => {
+const TSubjectSectionTable = ({ showProfileView, showGradesView, enrolledStudents, searchQuery }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -66,9 +65,16 @@ const TSubjectSectionTable = ({ showProfileView, showGradesView, enrolledStudent
 
     return dateTime.toLocaleString('en-US', options);
   };
+
+    // Filter enrolledStudents based on searchQuery
+    const filteredStudents = enrolledStudents.filter(student =>
+      student.student.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.student.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2, height: 'auto' }}>
+      <TableContainer sx={{ maxHeight: 'none' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -84,14 +90,14 @@ const TSubjectSectionTable = ({ showProfileView, showGradesView, enrolledStudent
             </TableRow>
           </TableHead>
           <TableBody>
-            {enrolledStudents.length === 0 ? (
+            {filteredStudents.length === 0 ? (
                 <TableRow>
                 <TableCell colSpan={columns.length} align="center">
                     No data available
                 </TableCell>
                 </TableRow>
             ) : (
-                enrolledStudents
+              filteredStudents
                 .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (

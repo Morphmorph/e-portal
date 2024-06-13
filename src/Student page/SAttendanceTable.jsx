@@ -1,66 +1,20 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+import React from 'react';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
 
 const columns = [
-  { id: "id", label: "ID", minWidth: 170 },
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "gradelevel", label: "Grade level", minWidth: 170 },
-  { id: "section", label: "Section", minWidth: 170 },
-  { id: "subject", label: "Subject", minWidth: 170 },
-  { id: "adviser", label: "Adviser", minWidth: 170 },
-  {
-    id: "status",
-    label: "Status",
-    minWidth: 170,
-    align: "center",
-    render: (value) => (
-      <span
-        style={{
-          fontWeight: "bold",
-          padding: 10,
-          color: value === "Present" ? "#079440" : "#F2B569",
-          borderRadius: 5,
-        }}
-      >
-        {value}
-      </span>
-    ),
-  },
+  { id: 'date', label: 'Date', minWidth: 170, align: 'center' },
+  { id: 'day', label: 'Day', minWidth: 170, align: 'center' },
+  { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
 ];
 
-function createData(id, name, gradelevel, section, subject, adviser, status) {
-  return { id, name, gradelevel, section, subject, adviser, status };
-}
-
-const rows = [
-  createData(
-    1234567890,
-    "John Doe Dobido",
-    "Grade 1",
-    "Peace",
-    "Mathematics",
-    "Son Goku",
-    "Absent"
-  ),
-  createData(
-    1234567890,
-    "John Doe Dobido",
-    "Grade 1",
-    "Peace",
-    "English",
-    "Evelyn Stone",
-    "Present"
-  ),
-];
-
-export default function SAttendanceTable() {
+export default function SAttendanceTable({ attendanceSData }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -73,9 +27,28 @@ export default function SAttendanceTable() {
     setPage(0);
   };
 
+  const formatDateTime = (dateTimeString) => {
+    const dateTime = new Date(dateTimeString);
+    
+    const options = {
+      year: 'numeric',
+      month: 'long', // This will give you the full month name (e.g., "January")
+      day: '2-digit',
+    };
+  
+    return dateTime.toLocaleString('en-US', options);
+  };
+
+  const formatDay = (dateString) => {
+    return new Date(dateString).toLocaleDateString(undefined, { weekday: 'long' });
+  };
+
+  // Sort the data by date in descending order
+  const sortedAttendanceData = [...attendanceSData].sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden", mt: 2 }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2, height: 'auto' }}>
+    <TableContainer sx={{ maxHeight: 'none' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -83,11 +56,7 @@ export default function SAttendanceTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{
-                    minWidth: column.minWidth,
-                    color: "#079440",
-                    fontWeight: "bold",
-                  }}
+                  style={{ minWidth: column.minWidth, color: '#079440', fontWeight: 'bold' }}
                 >
                   {column.label}
                 </TableCell>
@@ -95,33 +64,41 @@ export default function SAttendanceTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+          {sortedAttendanceData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  No data available.
+                </TableCell>
+              </TableRow>
+            ) : (
+            sortedAttendanceData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ borderLeft: "1px solid #ccc" }}
-                        >
-                          {column.render ? column.render(value) : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+              .map((row, index) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  <TableCell align="center" >{formatDateTime(row.date)}</TableCell>
+                  <TableCell align="center" style={{borderLeftWidth: 1,}}>{formatDay(row.date)}</TableCell>
+                  <TableCell align="center" style={{borderLeftWidth: 1,}}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '5px 50px', // Padding inside the background color
+                        color: row.status === 'Present' ? 'blue' : 'red',
+                        
+                        borderRadius: '4px',
+                      }}
+                    >
+                      {row.status}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              )))}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={sortedAttendanceData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
