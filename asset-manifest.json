@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/e-portal/static/css/main.da2b9523.css",
-    "main.js": "/e-portal/static/js/main.b00d329f.js",
+    "main.css": "/e-portal/static/css/main.acbbe444.css",
+    "main.js": "/e-portal/static/js/main.093dde93.js",
     "static/media/schlogo.webp": "/e-portal/static/media/schlogo.05ffa8ebb926ad87681b.webp",
     "static/media/attendance.webp": "/e-portal/static/media/attendance.c38b62cfa59d3e31cbd8.webp",
     "static/media/uccplogo.webp": "/e-portal/static/media/uccplogo.2996c6462dbc2f38b3f4.webp",
@@ -14,11 +14,11 @@
     "static/media/adduser.webp": "/e-portal/static/media/adduser.7dcf17dfe8d972282039.webp",
     "static/media/add.webp": "/e-portal/static/media/add.cce92f26e34896081ec4.webp",
     "index.html": "/e-portal/index.html",
-    "main.da2b9523.css.map": "/e-portal/static/css/main.da2b9523.css.map",
-    "main.b00d329f.js.map": "/e-portal/static/js/main.b00d329f.js.map"
+    "main.acbbe444.css.map": "/e-portal/static/css/main.acbbe444.css.map",
+    "main.093dde93.js.map": "/e-portal/static/js/main.093dde93.js.map"
   },
   "entrypoints": [
-    "static/css/main.da2b9523.css",
-    "static/js/main.b00d329f.js"
+    "static/css/main.acbbe444.css",
+    "static/js/main.093dde93.js"
   ]
 }
